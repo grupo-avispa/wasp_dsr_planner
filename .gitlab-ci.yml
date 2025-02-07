@@ -23,8 +23,6 @@ build:
   dependencies: [behaviortree_cpp]
   before_script:
     - DEBIAN_FRONTEND=noninteractive apt-get update
-    - ./.gitlab/dependencies_installer.sh
-    - ln -s /usr/include/eigen3/Eigen /usr/include/Eigen
   cache:
     key: cache-${CI_COMMIT_REF_SLUG}
     fallback_keys:
