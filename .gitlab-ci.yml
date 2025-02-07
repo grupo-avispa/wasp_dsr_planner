@@ -4,39 +4,9 @@ stages:
 
 behaviortree_cpp:
   stage: install_dependencies
-  image: grupoavispa/behaviortree_cpp:3.8
+  image: grupoavispa/behaviortree_cpp:4.6
   script:
     - echo "Getting BehaviorTree.CPP"
-    # Copy include and lib directories to the CI_PROJECT_DIR (to be able to use them in the next stage)
-    - mkdir -p $CI_PROJECT_DIR/artifacts/include
-    - mkdir -p $CI_PROJECT_DIR/artifacts/lib
-    - cp -r /usr/local/include/ $CI_PROJECT_DIR/artifacts
-    - cp -r /usr/local/lib/ $CI_PROJECT_DIR/artifacts
-  artifacts:
-    paths:
-      - artifacts/
-    expire_in: 15 min
-
-mongocxx:
-  stage: install_dependencies
-  image: grupoavispa/mongo-cxx-driver:3.6.7-jammy
-  script:
-    - echo "Getting Mongocxx"
-    # Copy include and lib directories to the CI_PROJECT_DIR (to be able to use them in the next stage)
-    - mkdir -p $CI_PROJECT_DIR/artifacts/include
-    - mkdir -p $CI_PROJECT_DIR/artifacts/lib
-    - cp -r /usr/local/include/ $CI_PROJECT_DIR/artifacts
-    - cp -r /usr/local/lib/ $CI_PROJECT_DIR/artifacts
-  artifacts:
-    paths:
-      - artifacts/
-    expire_in: 15 min
-
-oatpp:
-  stage: install_dependencies
-  image: grupoavispa/oatpp:1.3.0-jammy
-  script:
-    - echo "Getting Oatpp"
     # Copy include and lib directories to the CI_PROJECT_DIR (to be able to use them in the next stage)
     - mkdir -p $CI_PROJECT_DIR/artifacts/include
     - mkdir -p $CI_PROJECT_DIR/artifacts/lib
@@ -50,7 +20,7 @@ oatpp:
 build:
   stage: build
   image: grupoavispa/cortex:development-latest
-  dependencies: [behaviortree_cpp, mongocxx, oatpp]
+  dependencies: [behaviortree_cpp]
   before_script:
     - DEBIAN_FRONTEND=noninteractive apt-get update
     - ./.gitlab/dependencies_installer.sh
