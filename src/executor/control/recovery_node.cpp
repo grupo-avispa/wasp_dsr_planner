@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include <string>
-#include "plannerAgent/executor/control/recovery_node.hpp"
+#include "wasp_dsr_planner/executor/control/recovery_node.hpp"
 
 RecoveryNode::RecoveryNode(
   const std::string & name,

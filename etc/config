@@ -1,9 +1,0 @@
-agent_id = 300 # Change id
-agent_name = planner
-
-robot_name = robot
-bt_tree_file = /home/robocomp/robocomp/components/cajasvacias-campero/etc/behavior_trees/CamperoUseCases.xml
-bt_log_path = /home/robocomp/robocomp/components/cajasvacias-campero/logs/plannerAgent
-groot_publisher_port = 1667
-use_dsr = true
-plugin_libs = 

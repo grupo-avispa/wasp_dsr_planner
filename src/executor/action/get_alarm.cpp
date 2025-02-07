@@ -13,8 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "plannerAgent/executor/action/get_alarm.hpp"
-#include "plannerAgent/executor/bt_types.hpp"
+#include "wasp_dsr_planner/executor/action/get_alarm.hpp"
+#include "wasp_dsr_planner/executor/bt_types.hpp"
 
 GetAlarm::GetAlarm(
   const std::string & xml_tag_name, const std::string & action_name,

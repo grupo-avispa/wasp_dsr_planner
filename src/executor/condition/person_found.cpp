@@ -15,8 +15,8 @@
 
 #include "nlohmann/json.hpp"
 
-#include "plannerAgent/executor/condition/person_found.hpp"
-#include "plannerAgent/json_messages.hpp"
+#include "wasp_dsr_planner/executor/condition/person_found.hpp"
+#include "wasp_dsr_planner/json_messages.hpp"
 
 PersonFound::PersonFound(
   const std::string & xml_tag_name, const std::string & condition_name,

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(plannerAgent)
+project(wasp_dsr_planner)
 
 # Default to C++20
 if(NOT CMAKE_CXX_STANDARD)
@@ -14,6 +14,9 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic -Wdeprecated -fPIC -Wshadow -Wnull-dereference)
   add_compile_options("$<$<COMPILE_LANGUAGE:CXX>:-Wnon-virtual-dtor>")
 endif()
+
+# Set variables to install
+SET(COMPONENT_INSTALL_PATH "/opt/wasp" CACHE STRING "component install path")
 
 # Find dependencies
 find_package(Eigen3 3.3 REQUIRED)
@@ -126,11 +129,6 @@ foreach(bt_plugin ${plugin_libs})
   target_compile_definitions(${bt_plugin} PRIVATE BT_PLUGIN_EXPORT)
   target_link_libraries(${bt_plugin} PRIVATE ${BTCPP_LIBRARY})
   target_link_libraries(${bt_plugin} ${QT_LIBRARIES} dsr_core dsr_api fastcdr fastrtps)
-
-  # set_target_properties(${bt_plugin}
-  # PROPERTIES
-  # LIBRARY_OUTPUT_DIRECTORY "${COMPONENT_DEVEL_PATH}/lib"
-  # )
 endforeach()
 
 # Add ejecutable to generate the xml
@@ -138,19 +136,10 @@ add_executable(generate_planner_agent_tree_nodes_xml src/generate_planner_agent_
 target_link_libraries(generate_planner_agent_tree_nodes_xml behaviortree_cpp)
 
 # We will embed the list of plugin names inside a header file
-set(GENERATED_DIR ${CMAKE_CURRENT_BINARY_DIR}/gen/plannerAgent)
+set(GENERATED_DIR ${CMAKE_CURRENT_BINARY_DIR}/gen/wasp_dsr_planner)
 configure_file(plugins_list.hpp.in ${GENERATED_DIR}/plugins_list.hpp)
 
-# # Install in the devel path
-# INSTALL(TARGETS ${library_name}
-# DESTINATION ${COMPONENT_DEVEL_PATH}/lib
-# )
-
-# INSTALL(TARGETS ${executable_name}
-# DESTINATION ${COMPONENT_DEVEL_PATH}/bin
-# )
-
-# Install in the install path (/opt/campero)
+# Install in the install path
 INSTALL(TARGETS ${library_name} ${plugin_libs}
   DESTINATION ${COMPONENT_INSTALL_PATH}/lib
 )
@@ -159,12 +148,11 @@ install(TARGETS ${executable_name} generate_planner_agent_tree_nodes_xml
   DESTINATION ${COMPONENT_INSTALL_PATH}/bin
 )
 
-INSTALL(FILES params/config
-  DESTINATION ${COMPONENT_INSTALL_PATH}/etc-default/
-  RENAME ${PROJECT_NAME}.conf
+INSTALL(DIRECTORY params
+  DESTINATION ${COMPONENT_INSTALL_PATH}/${PROJECT_NAME}
 )
 
 # Install the generated header file
 install(FILES ${GENERATED_DIR}/plugins_list.hpp
-  DESTINATION include/plannerAgent
+  DESTINATION include/wasp_dsr_planner
 )

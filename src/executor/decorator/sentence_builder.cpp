@@ -13,8 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "plannerAgent/executor/decorator/sentence_builder.hpp"
-#include "plannerAgent/json_messages.hpp"
+#include "wasp_dsr_planner/executor/decorator/sentence_builder.hpp"
+#include "wasp_dsr_planner/json_messages.hpp"
 
 SentenceBuilder::SentenceBuilder(
   const std::string & xml_tag_name,

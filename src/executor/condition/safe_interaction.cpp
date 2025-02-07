@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "plannerAgent/executor/condition/safe_interaction.hpp"
+#include "wasp_dsr_planner/executor/condition/safe_interaction.hpp"
 
 SafeInteraction::SafeInteraction(
   const std::string & xml_tag_name, const std::string & condition_name,

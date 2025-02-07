@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "plannerAgent/executor/action/cancel_action.hpp"
+#include "wasp_dsr_planner/executor/action/cancel_action.hpp"
 
 CancelAction::CancelAction(
   const std::string & xml_tag_name, const std::string & action_name,

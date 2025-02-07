@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "plannerAgent/executor/decorator/distance_approach.hpp"
+#include "wasp_dsr_planner/executor/decorator/distance_approach.hpp"
 
 DistanceApproach::DistanceApproach(
   const std::string & xml_tag_name,

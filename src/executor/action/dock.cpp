@@ -15,7 +15,7 @@
 
 #include <limits>
 
-#include "plannerAgent/executor/action/dock.hpp"
+#include "wasp_dsr_planner/executor/action/dock.hpp"
 
 Dock::Dock(
   const std::string & xml_tag_name, const std::string & action_name,

@@ -15,7 +15,7 @@
 
 #include <limits>
 
-#include "plannerAgent/executor/action/move.hpp"
+#include "wasp_dsr_planner/executor/action/move.hpp"
 
 Move::Move(
   const std::string & xml_tag_name, const std::string & action_name,

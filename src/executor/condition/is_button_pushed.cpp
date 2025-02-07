@@ -15,8 +15,8 @@
 // limitations under the License.
 
 #include "nlohmann/json.hpp"
-#include "plannerAgent/executor/condition/is_button_pushed.hpp"
-#include "plannerAgent/json_messages.hpp"
+#include "wasp_dsr_planner/executor/condition/is_button_pushed.hpp"
+#include "wasp_dsr_planner/json_messages.hpp"
 
 IsButtonPushed::IsButtonPushed(
   const std::string & xml_tag_name, const std::string & condition_name,

@@ -22,7 +22,7 @@
 #include "behaviortree_cpp/utils/shared_library.h"
 #include "behaviortree_cpp/xml_parsing.h"
 
-#include "plannerAgent/plugins_list.hpp"
+#include "wasp_dsr_planner/plugins_list.hpp"
 
 int main()
 {

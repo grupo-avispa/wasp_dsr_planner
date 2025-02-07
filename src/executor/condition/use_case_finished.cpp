@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "plannerAgent/executor/condition/use_case_finished.hpp"
+#include "wasp_dsr_planner/executor/condition/use_case_finished.hpp"
 
 UseCaseFinished::UseCaseFinished(
   const std::string & xml_tag_name, const std::string & condition_name,

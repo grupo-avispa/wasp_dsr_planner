@@ -15,7 +15,7 @@
 
 #include <limits>
 
-#include "plannerAgent/executor/action/generate_response.hpp"
+#include "wasp_dsr_planner/executor/action/generate_response.hpp"
 
 GenerateResponse::GenerateResponse(
   const std::string & xml_tag_name, const std::string & action_name,

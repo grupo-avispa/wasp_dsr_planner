@@ -19,8 +19,8 @@
 #include "behaviortree_cpp/loggers/bt_cout_logger.h"
 #include "behaviortree_cpp/loggers/bt_file_logger_v2.h"
 
-#include "plannerAgent/behavior_tree_engine.hpp"
-#include "plannerAgent/plugins_list.hpp"
+#include "wasp_dsr_planner/behavior_tree_engine.hpp"
+#include "wasp_dsr_planner/plugins_list.hpp"
 
 BehaviorTreeEngine::BehaviorTreeEngine(
   std::string agent_name, int agent_id, std::string robot_name, bool use_dsr)

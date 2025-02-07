@@ -1,6 +1,38 @@
-## PlannerAgent
+## wasp_dsr_planner
 
-The `PlannerAgent` is responsible for loading and executing a Behavior Tree (BT) in which different use cases are executed. This component contains the following BT nodes:
+The `wasp_dsr_planner` is responsible for loading and executing a Behavior Tree (BT) in which different use cases are executed. 
+
+
+### Installation
+
+To install the `wasp_dsr_planner` package, you can use the following command:
+
+```bash
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+```
+
+### Usage
+
+First, you must add the following lines to your .bashrc file:
+
+```bash
+export PATH=/opt/wasp/bin:$PATH
+export LD_LIBRARY_PATH=/opt/wasp/lib:$LD_LIBRARY_PATH
+```
+
+Then, you can run the `wasp_dsr_planner` package using the following command:
+
+```bash
+wasp_dsr_planner /opt/wasp/wasp_dsr_planner/params/default.conf
+```
+
+### BT Nodes
+
+This package contains the following BT nodes:
 
 ### Action Nodes
  * `cancel_action`: Cancels the current action.

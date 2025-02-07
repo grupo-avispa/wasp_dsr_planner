@@ -20,7 +20,7 @@
 
 #include <boost/algorithm/string.hpp>
 
-#include "plannerAgent/behavior_tree_engine.hpp"
+#include "wasp_dsr_planner/behavior_tree_engine.hpp"
 
 // Trim the string
 std::string trim(const std::string & str)
@@ -65,7 +65,10 @@ int main(int argc, char * argv[])
   QCoreApplication app(argc, argv);
 
   if (argc < 2) {
-    std::cerr << "Usage: " << argv[0] << " <config_file>" << std::endl;
+    std::cerr << "Usage: " << argv[0] << " <config_file>." << std::endl;
+    std::cerr << "Example: " << argv[0] << " $HOME/" << argv[0] << "/params/default.conf";
+    std::cerr << std::endl;
+
     return 1;
   }
 
@@ -89,7 +92,7 @@ int main(int argc, char * argv[])
     boost::split(user_libs, plugin_libs, boost::is_any_of(";"));
   }
 
-  std::cout << "Configuration parameters for the plannerAgent:" << std::endl;
+  std::cout << "Configuration parameters for the wasp_dsr_planner:" << std::endl;
   std::cout << "Agent name: " << agent_name << std::endl;
   std::cout << "Agent id: " << agent_id << std::endl;
   std::cout << "Robot name: " << robot_name << std::endl;

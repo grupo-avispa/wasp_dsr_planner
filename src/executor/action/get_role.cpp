@@ -15,7 +15,7 @@
 
 #include <limits>
 
-#include "plannerAgent/executor/action/get_role.hpp"
+#include "wasp_dsr_planner/executor/action/get_role.hpp"
 
 GetRole::GetRole(
   const std::string & xml_tag_name, const std::string & action_name,

@@ -15,7 +15,7 @@
 
 #include <limits>
 
-#include "plannerAgent/executor/action/get_intent.hpp"
+#include "wasp_dsr_planner/executor/action/get_intent.hpp"
 
 GetIntent::GetIntent(
   const std::string & xml_tag_name, const std::string & action_name,

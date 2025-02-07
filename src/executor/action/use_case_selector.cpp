@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "plannerAgent/executor/action/use_case_selector.hpp"
+#include "wasp_dsr_planner/executor/action/use_case_selector.hpp"
 
 UseCaseSelector::UseCaseSelector(
   const std::string & xml_tag_name, const std::string & action_name,
