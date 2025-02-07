@@ -16,9 +16,9 @@
 #ifndef PLANNER_AGENT__EXECUTOR__BT_TYPES_HPP_
 #define PLANNER_AGENT__EXECUTOR__BT_TYPES_HPP_
 
-#include <behaviortree_cpp_v3/behavior_tree.h>
-#include "../../../include/dsr_api_ext.hpp"
-#include "../../../include/helpers.hpp"
+#include "behaviortree_cpp/behavior_tree.h"
+#include "plannerAgent/dsr_api_ext.hpp"
+#include "plannerAgent/helpers.hpp"
 
 struct Goal
 {

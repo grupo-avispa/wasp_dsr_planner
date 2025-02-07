@@ -14,7 +14,10 @@
 // limitations under the License.
 
 #include <boost/algorithm/string.hpp>
-#include "behaviortree_cpp_v3/utils/shared_library.h"
+#include "behaviortree_cpp/utils/shared_library.h"
+#include "behaviortree_cpp/xml_parsing.h"
+#include "behaviortree_cpp/loggers/bt_cout_logger.h"
+#include "behaviortree_cpp/loggers/bt_file_logger_v2.h"
 
 #include "plannerAgent/behavior_tree_engine.hpp"
 #include "plannerAgent/plugins_list.hpp"
@@ -40,7 +43,7 @@ BehaviorTreeEngine::BehaviorTreeEngine(
 BehaviorTreeEngine::~BehaviorTreeEngine()
 {
   blackboard_.reset();
-  groot_monitor_.reset();
+  groot_publisher_.reset();
   if (use_dsr_) {
     G_.reset();
   }
@@ -95,39 +98,31 @@ void BehaviorTreeEngine::initBehaviorTree(
     exit(-1);
   }
 
-  // Add loggers
+  // Add loggers and Groot2 publisher
   BT::StdCoutLogger logger_cout(tree_);
   std::string filename = "bt_trace_" + std::to_string(std::time(nullptr)) + ".fbl";
   std::string fullpath = log_filepath + "/" + filename;
-  BT::FileLogger logger_file(tree_, fullpath.c_str());
+  BT::FileLogger2 logger_file(tree_, fullpath.c_str());
 
-  try {
-    groot_monitor_ = std::make_unique<BT::PublisherZMQ>(
-      tree_, max_msg_per_second_, publisher_port_, server_port_);
-    std::cout << "Enabling Groot monitoring: " << publisher_port_ << ", " << server_port_ <<
-      std::endl;
-  } catch (const std::logic_error & e) {
-    std::cout << "ZMQ already enabled, Error: " << e.what() << std::endl;
-  }
+  groot_publisher_ = std::make_unique<BT::Groot2Publisher>(tree_, publisher_port_);
+  std::cout << "Enabling Groot2 monitoring using port: " << publisher_port_ << std::endl;
 
   // Execute the tree
-  tree_.tickRootWhileRunning(std::chrono::milliseconds(100));
+  tree_.tickWhileRunning(std::chrono::milliseconds(100));
   exit(1);
 }
 
-void BehaviorTreeEngine::setGrootMonitoring(
-  uint16_t publisher_port, uint16_t server_port, uint16_t max_msg_per_second)
+void BehaviorTreeEngine::setGrootMonitoring(uint16_t publisher_port)
 {
   publisher_port_ = publisher_port;
-  server_port_ = server_port;
-  max_msg_per_second_ = max_msg_per_second;
 }
 
 void BehaviorTreeEngine::insertDsrIntoBlackboard(BT::Tree & tree)
 {
   // Set the blackboard for all nodes in the tree
-  for (auto & blackboard : tree.blackboard_stack) {
+  for (auto & subtree : tree.subtrees) {
+    auto & blackboard = subtree->blackboard;
     blackboard->set("dsr_graph", G_);
-    blackboard->set<std::string>("robot_name", robot_name_);
+    blackboard->set("robot_name", robot_name_);
   }
 }

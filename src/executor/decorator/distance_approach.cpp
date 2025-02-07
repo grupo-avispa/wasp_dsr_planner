@@ -47,7 +47,7 @@ BT::NodeStatus DistanceApproach::tick()
     auto pose_y = G_->get_attrib_by_name<pose_y_att>(robot_node.value());
     auto pose_yaw = G_->get_attrib_by_name<pose_angle_att>(robot_node.value());
     if (pose_x.has_value() && pose_y.has_value() && pose_yaw.has_value()) {
-      Goal robot_pose(pose_x.value(), pose_y.value());
+      Goal robot_pose(pose_x.value(), pose_y.value(), 0.0);
       float dx = input_goal.x - robot_pose.x;
       float dy = input_goal.y - robot_pose.y;
       float rps = std::sqrt(dx * dx + dy * dy);
@@ -66,7 +66,7 @@ BT::NodeStatus DistanceApproach::tick()
   return success;
 }
 
-#include "behaviortree_cpp_v3/bt_factory.h"
+#include "behaviortree_cpp/bt_factory.h"
 BT_REGISTER_NODES(factory) {
   BT::NodeBuilder builder =
     [](const std::string & name, const BT::NodeConfiguration & config) {

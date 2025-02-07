@@ -19,7 +19,7 @@
 
 #include <string>
 
-#include "behaviortree_cpp_v3/decorator_node.h"
+#include "behaviortree_cpp/decorator_node.h"
 #include "dsr/api/dsr_api.h"
 
 #include "plannerAgent/executor/bt_types.hpp"

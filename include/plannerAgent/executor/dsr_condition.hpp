@@ -16,10 +16,10 @@
 #ifndef PLANNER_AGENT__EXECUTOR__DSR_CONDITION_HPP_
 #define PLANNER_AGENT__EXECUTOR__DSR_CONDITION_HPP_
 
-#include <behaviortree_cpp_v3/condition_node.h>
+#include "behaviortree_cpp/condition_node.h"
 #include "dsr/api/dsr_api.h"
 
-#include "../../../include/dsr_api_ext.hpp"
+#include "plannerAgent/dsr_api_ext.hpp"
 
 /**
  * @brief Main class for the DSR conditions. This conditions are used to check

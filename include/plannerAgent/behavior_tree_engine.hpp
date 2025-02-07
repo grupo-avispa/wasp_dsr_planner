@@ -16,12 +16,9 @@
 #ifndef PLANNER_AGENT__BEHAVIOR_TREE_ENGINE_HPP_
 #define PLANNER_AGENT__BEHAVIOR_TREE_ENGINE_HPP_
 
-#include <behaviortree_cpp_v3/bt_factory.h>
-#include <behaviortree_cpp_v3/behavior_tree.h>
-#include <behaviortree_cpp_v3/xml_parsing.h>
-#include <behaviortree_cpp_v3/loggers/bt_cout_logger.h>
-#include <behaviortree_cpp_v3/loggers/bt_file_logger.h>
-#include <behaviortree_cpp_v3/loggers/bt_zmq_publisher.h>
+#include "behaviortree_cpp/bt_factory.h"
+#include "behaviortree_cpp/behavior_tree.h"
+#include "behaviortree_cpp/loggers/groot2_publisher.h"
 
 // DSR
 #include "dsr/api/dsr_api.h"
@@ -61,14 +58,11 @@ public:
     const std::vector<std::string> & user_libs);
 
   /**
-   * @brief Add groot monitor to publish BT status changes.
+   * @brief Add Groot2 publisher to publish BT status changes.
    *
-   * @param publisher_port ZMQ publisher port for the Groot monitor
-   * @param server_port ZMQ server port for the Groot monitor
-   * @param max_msg_per_second Maximum number of messages that can be sent per second
+   * @param publisher_port Groot2 publisher port
    */
-  void setGrootMonitoring(
-    uint16_t publisher_port, uint16_t server_port, uint16_t max_msg_per_second = 25);
+  void setGrootMonitoring(uint16_t publisher_port = 1667);
 
 private:
   /**
@@ -85,11 +79,9 @@ private:
   BT::Tree tree_;
   BT::Blackboard::Ptr blackboard_;
 
-  // Groot monitoring
-  std::unique_ptr<BT::PublisherZMQ> groot_monitor_;
+  // Groot2 monitoring
+  std::unique_ptr<BT::Groot2Publisher> groot_publisher_;
   uint16_t publisher_port_;
-  uint16_t server_port_;
-  uint16_t max_msg_per_second_;
 };
 
 

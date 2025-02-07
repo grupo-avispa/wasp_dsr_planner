@@ -16,10 +16,10 @@
 #ifndef PLANNER_AGENT__EXECUTOR__ACTION__INTERACTION_HPP_
 #define PLANNER_AGENT__EXECUTOR__ACTION__INTERACTION_HPP_
 
-#include <behaviortree_cpp_v3/behavior_tree.h>
+#include "behaviortree_cpp/behavior_tree.h"
 #include "dsr/api/dsr_api.h"
 #include "plannerAgent/executor/bt_types.hpp"
-#include "../../../include/dsr_api_ext.hpp"
+#include "plannerAgent/dsr_api_ext.hpp"
 
 /**
  * @class Help
@@ -28,44 +28,44 @@
 class Help : public BT::CoroActionNode
 {
 public:
-    Help(
+  Help(
     const std::string & xml_tag_name, const std::string & action_name,
     const BT::NodeConfiguration & conf);
 
-    Help() = delete;
+  Help() = delete;
 
-    ~Help()
-    {
-        std::cout << "[" << action_name_ << "]: Destroyed DSR-BT node" << std::endl;
-        G_.reset();
-    }
+  ~Help()
+  {
+    std::cout << "[" << action_name_ << "]: Destroyed DSR-BT node" << std::endl;
+    G_.reset();
+  }
 
-    BT::NodeStatus tick() override;
+  BT::NodeStatus tick() override;
 
-    void halt() override
-    {
-        CoroActionNode::halt();
-    }
+  void halt() override
+  {
+    CoroActionNode::halt();
+  }
 
-    static BT::PortsList providedPorts()
-    {
-        return{
-            BT::OutputPort<Goal>("goal", "Goal to approach")
-        };
-    }
+  static BT::PortsList providedPorts()
+  {
+    return{
+      BT::OutputPort<Goal>("goal", "Goal to approach")
+    };
+  }
 
-    private:
-    /**
-     * @brief Check the result of the action.
-     *
-     * @return BT::NodeStatus
-     */
-    BT::NodeStatus checkResult();
+private:
+  /**
+   * @brief Check the result of the action.
+   *
+   * @return BT::NodeStatus
+   */
+  BT::NodeStatus checkResult();
 
     // DSR graph
-    std::shared_ptr<DSR::DSRGraph> G_;
-    std::string robot_name_;
-    std::string action_name_;
+  std::shared_ptr<DSR::DSRGraph> G_;
+  std::string robot_name_;
+  std::string action_name_;
 };
 
 #endif  // PLANNER_AGENT__EXECUTOR__ACTION__INTERACTION_HPP_

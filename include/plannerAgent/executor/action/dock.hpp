@@ -16,7 +16,7 @@
 #ifndef PLANNER_AGENT__EXECUTOR__EXECUTOR__ACTION__DOCK_HPP_
 #define PLANNER_AGENT__EXECUTOR__EXECUTOR__ACTION__DOCK_HPP_
 
-#include <behaviortree_cpp_v3/behavior_tree.h>
+#include "behaviortree_cpp/behavior_tree.h"
 #include "dsr/api/dsr_api.h"
 
 #include "plannerAgent/executor/dsr_action.hpp"

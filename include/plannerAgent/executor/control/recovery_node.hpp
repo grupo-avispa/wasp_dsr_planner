@@ -16,7 +16,7 @@
 #define PLANNER_AGENT__EXECUTOR__CONTROL__RECOVERY_NODE_HPP_
 
 #include <string>
-#include "behaviortree_cpp_v3/control_node.h"
+#include "behaviortree_cpp/control_node.h"
 
 /**
  * @brief The RecoveryNode has only two children and returns SUCCESS if and only if the first child
@@ -34,7 +34,7 @@ class RecoveryNode : public BT::ControlNode
 {
 public:
   /**
-   * @brief A constructor for RecoveryNode
+   * @brief A constructor for nav2_behavior_tree::RecoveryNode
    * @param name Name for the XML tag for this node
    * @param conf BT node configuration
    */
@@ -43,7 +43,7 @@ public:
     const BT::NodeConfiguration & conf);
 
   /**
-   * @brief A destructor for RecoveryNode
+   * @brief A destructor for nav2_behavior_tree::RecoveryNode
    */
   ~RecoveryNode() override = default;
 

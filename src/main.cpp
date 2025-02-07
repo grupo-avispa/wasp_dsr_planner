@@ -79,8 +79,6 @@ int main(int argc, char * argv[])
   auto log_filepath = config["bt_log_path"];
   auto publisher_port =
     config["groot_publisher_port"].empty() ? 1666 : std::stoi(config["groot_publisher_port"]);
-  auto server_port =
-    config["groot_server_port"].empty() ? 1667 : std::stoi(config["groot_server_port"]);
   auto use_dsr = config["use_dsr"].empty() ? true : (config["use_dsr"] == "true" ? true : false);
   auto plugin_libs = config["plugin_libs"];
 
@@ -97,15 +95,14 @@ int main(int argc, char * argv[])
   std::cout << "Robot name: " << robot_name << std::endl;
   std::cout << "Tree filename: " << tree_filename << std::endl;
   std::cout << "Log filepath: " << log_filepath << std::endl;
-  std::cout << "Groot publisher port: " << publisher_port << std::endl;
-  std::cout << "Groot server port: " << server_port << std::endl;
+  std::cout << "Groot2 publisher port: " << publisher_port << std::endl;
   std::cout << "Use DSR: " << (use_dsr ? "true" : "false") << std::endl;
   std::cout << "Plugin libraries: " << plugin_libs.size() << std::endl;
 
   // Create the behavior tree engine
   auto tree = std::make_shared<BehaviorTreeEngine>(agent_name, agent_id, robot_name, use_dsr);
-  // Add groot monitor to publish BT status changes
-  tree->setGrootMonitoring(publisher_port, server_port);
+  // Add Groot 2 publisher to publish BT status changes
+  tree->setGrootMonitoring(publisher_port);
   // Initialize the behavior tree
   tree->initBehaviorTree(tree_filename, log_filepath, user_libs);
 

@@ -293,7 +293,7 @@ BT::NodeStatus GetCauses::tick()
   return success;
 }
 
-#include "behaviortree_cpp_v3/bt_factory.h"
+#include "behaviortree_cpp/bt_factory.h"
 BT_REGISTER_NODES(factory) {
   BT::NodeBuilder builder =
     [](const std::string & name, const BT::NodeConfiguration & config) {

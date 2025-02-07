@@ -44,7 +44,7 @@ set(dependencies
   ${QT_LIBRARIES}
   ${DSR_LIBRARIES}
   Eigen3::Eigen
-  behaviortree_cpp_v3
+  behaviortree_cpp
 )
 
 # Add library
@@ -135,7 +135,7 @@ endforeach()
 
 # Add ejecutable to generate the xml
 add_executable(generate_planner_agent_tree_nodes_xml src/generate_planner_agent_tree_nodes_xml.cpp)
-target_link_libraries(generate_planner_agent_tree_nodes_xml behaviortree_cpp_v3)
+target_link_libraries(generate_planner_agent_tree_nodes_xml behaviortree_cpp)
 
 # We will embed the list of plugin names inside a header file
 set(GENERATED_DIR ${CMAKE_CURRENT_BINARY_DIR}/gen/plannerAgent)
@@ -159,7 +159,7 @@ install(TARGETS ${executable_name} generate_planner_agent_tree_nodes_xml
   DESTINATION ${COMPONENT_INSTALL_PATH}/bin
 )
 
-INSTALL(FILES etc/config
+INSTALL(FILES params/config
   DESTINATION ${COMPONENT_INSTALL_PATH}/etc-default/
   RENAME ${PROJECT_NAME}.conf
 )

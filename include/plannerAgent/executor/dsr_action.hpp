@@ -16,10 +16,10 @@
 #ifndef PLANNER_AGENT__EXECUTOR__DSR_ACTION_HPP_
 #define PLANNER_AGENT__EXECUTOR__DSR_ACTION_HPP_
 
-#include <behaviortree_cpp_v3/behavior_tree.h>
+#include "behaviortree_cpp/behavior_tree.h"
 #include "dsr/api/dsr_api.h"
 
-#include "../../../include/dsr_api_ext.hpp"
+#include "plannerAgent/dsr_api_ext.hpp"
 
 /**
  * @brief Main class for the DSR actions. This actions are used to create nodes in the DSR graph and
@@ -152,14 +152,18 @@ protected:
    *
    * @param node The node to be modified.
    */
-  virtual bool setAttributesBeforeStart(DSR::Node & node) {}
+  virtual bool setAttributesBeforeStart(DSR::Node & /*node*/) {
+    return true;
+  }
 
   /**
    * @brief Derived classes can override this function to set the outputs after the action has finished.
    *
    * @param node The node that has finished.
    */
-  virtual bool setOutputsAfterFinished(DSR::Node & node) {}
+  virtual bool setOutputsAfterFinished(DSR::Node & /*node*/) {
+    return true;
+  }
 
   // DSR graph
   std::shared_ptr<DSR::DSRGraph> G_;

@@ -24,7 +24,7 @@
 #include <algorithm>
 #include <boost/algorithm/string.hpp>
 
-#include "behaviortree_cpp_v3/decorator_node.h"
+#include "behaviortree_cpp/decorator_node.h"
 #include "dsr/api/dsr_api.h"
 
 /**

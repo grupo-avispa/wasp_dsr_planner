@@ -39,10 +39,8 @@ BT::NodeStatus UseCaseFinished::checkCondition()
         auto new_edge = DSR::create_edge_with_priority<finished_edge_type>(
           G_, robot_node.value().id(), use_case_node.value().id(), 0, robot_name_);
         // Add result_code attribute
-        if (auto use_case_node = G_->get_node("use_case"); use_case_node.has_value()) {
-          G_->add_or_modify_attrib_local<result_code_att>(use_case_node.value(), result_code_);
-          G_->update_node(use_case_node.value());
-        }
+        G_->add_or_modify_attrib_local<result_code_att>(use_case_node.value(), result_code_);
+        G_->update_node(use_case_node.value());
         // Insert the new edge
         if (!G_->insert_or_assign_edge(new_edge)) {
           std::cout << "[" << condition_name_ << "]: ";
@@ -55,7 +53,7 @@ BT::NodeStatus UseCaseFinished::checkCondition()
   return success;
 }
 
-#include "behaviortree_cpp_v3/bt_factory.h"
+#include "behaviortree_cpp/bt_factory.h"
 BT_REGISTER_NODES(factory) {
   BT::NodeBuilder builder =
     [](const std::string & name, const BT::NodeConfiguration & config) {

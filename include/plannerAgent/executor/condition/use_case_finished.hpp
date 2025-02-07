@@ -18,7 +18,7 @@
 
 #include <string>
 
-#include <behaviortree_cpp_v3/behavior_tree.h>
+#include "behaviortree_cpp/behavior_tree.h"
 #include "dsr/api/dsr_api.h"
 
 #include "plannerAgent/executor/dsr_condition.hpp"

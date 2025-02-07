@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
-<root main_tree_to_execute="BehaviorTree">
+<root BTCPP_format="4" main_tree_to_execute="BehaviorTree">
     <!-- ////////// -->
     <BehaviorTree ID="BehaviorTree">
-        <Parallel failure_threshold="1" success_threshold="1">
+        <Parallel failure_count="1" success_count="1">
             <Repeat num_cycles="-1">
                 <Action ID="UseCaseSelector" use_case="{variant}"/>
             </Repeat>
@@ -39,7 +39,7 @@
                     </Sequence>
                 </Fallback>
                 <Action ID="Interaction" node_id="{person_id}"/>
-                <Parallel failure_threshold="1" success_threshold="2">
+                <Parallel failure_count="1" success_count="2">
                     <Delay delay_msec="500">
                         <Action ID="Say" text="Por favor, seleccione qué necesita en las opciones de la pantalla" volume="{person_volume}"/>
                     </Delay>
@@ -63,7 +63,7 @@
     <BehaviorTree ID="Charging">
         <Fallback>
             <Sequence name="Charging">
-                <Parallel failure_threshold="1" name="SayAndShow" success_threshold="2">
+                <Parallel failure_count="1" name="SayAndShow" success_count="2">
                     <Action ID="Say" name="NoBatterySay" text="Lo siento, tengo que ir a cargarme" volume="50.0"/>
                     <Action ID="Show" interface="low_battery" name="LowBatteryInterface"/>
                 </Parallel>
@@ -94,11 +94,11 @@
         <Fallback>
             <Sequence>
                 <Action ID="Say" text="Hello, what explanaiton do you need?" volume="50.0"/>
-                <Parallel failure_threshold="1" success_threshold="2">
+                <Parallel failure_count="1" success_count="2">
                     <Action ID="Listen" text="{question}"/>
                     <Action ID="Show" interface="explanation"/>
                 </Parallel>
-                <Parallel failure_threshold="1" success_threshold="2">
+                <Parallel failure_count="1" success_count="2">
                     <Action ID="GetIntent" entity="{entity}" intent="{intent}" name="Intent Recognition" question="{question}"/>
                     <Action ID="GetRole" entity="{entity2}" intent="{role}" name="Role Recognition" question="{question}"/>
                 </Parallel>
@@ -148,7 +148,7 @@
                     <Action ID="Interaction" name="SetInteraction" node_id="{person_id}"/>
                 </Sequence>
                 <Sequence name="RequestMenu">
-                    <Parallel failure_threshold="1" name="SelectMenu" success_threshold="2">
+                    <Parallel failure_count="1" name="SelectMenu" success_count="2">
                         <Sequence>
                             <Decorator ID="SentenceBuilder" node_id="{person_id}" text="{sentence}" use_case="menu1_first">
                                 <Delay delay_msec="500">
@@ -172,7 +172,7 @@
                             </Sequence>
                         </Fallback>
                     </Parallel>
-                    <Parallel failure_threshold="1" name="SelectMenu" success_threshold="2">
+                    <Parallel failure_count="1" name="SelectMenu" success_count="2">
                         <Sequence>
                             <Decorator ID="SentenceBuilder" node_id="{person_id}" text="{sentence}" use_case="menu2_first">
                                 <Delay delay_msec="500">
@@ -196,7 +196,7 @@
                             </Sequence>
                         </Fallback>
                     </Parallel>
-                    <Parallel failure_threshold="1" name="SelectMenu" success_threshold="2">
+                    <Parallel failure_count="1" name="SelectMenu" success_count="2">
                         <Sequence>
                             <Decorator ID="SentenceBuilder" node_id="{person_id}" text="{sentence}" use_case="menu3_first">
                                 <Delay delay_msec="500">
@@ -220,7 +220,7 @@
                             </Sequence>
                         </Fallback>
                     </Parallel>
-                    <Parallel failure_threshold="1" name="SelectMenu" success_threshold="2">
+                    <Parallel failure_count="1" name="SelectMenu" success_count="2">
                         <Sequence>
                             <Decorator ID="SentenceBuilder" node_id="{person_id}" text="{sentence}" use_case="menu4_first">
                                 <Delay delay_msec="500">
@@ -244,7 +244,7 @@
                             </Sequence>
                         </Fallback>
                     </Parallel>
-                    <Parallel failure_threshold="1" name="SelectMenu" success_threshold="2">
+                    <Parallel failure_count="1" name="SelectMenu" success_count="2">
                         <Sequence>
                             <Decorator ID="SentenceBuilder" node_id="{person_id}" text="{sentence}" use_case="menu5_first">
                                 <Delay delay_msec="500">
@@ -268,7 +268,7 @@
                             </Sequence>
                         </Fallback>
                     </Parallel>
-                    <Parallel failure_threshold="1" name="SelectMenu" success_threshold="2">
+                    <Parallel failure_count="1" name="SelectMenu" success_count="2">
                         <Sequence>
                             <Decorator ID="SentenceBuilder" node_id="{person_id}" text="{sentence}" use_case="menu6_first">
                                 <Delay delay_msec="500">
@@ -292,7 +292,7 @@
                             </Sequence>
                         </Fallback>
                     </Parallel>
-                    <Parallel failure_threshold="1" name="SelectMenu" success_threshold="2">
+                    <Parallel failure_count="1" name="SelectMenu" success_count="2">
                         <Sequence>
                             <Decorator ID="SentenceBuilder" node_id="{person_id}" text="{sentence}" use_case="menu7_first">
                                 <Delay delay_msec="500">
@@ -336,7 +336,7 @@
                     </Sequence>
                 </RetryUntilSuccessful>
                 <Action ID="Say" text="A bailar todo el mundo que va a comenzar la terapia musical" volume="50.0"/>
-                <Parallel failure_threshold="1" success_threshold="1">
+                <Parallel failure_count="1" success_count="1">
                     <Action ID="Play" sound="relax" volume="50.0"/>
                     <Repeat name="RepeatMoveInfinitely" num_cycles="-1">
                         <RetryUntilSuccessful name="RetryMove" num_attempts="8">
@@ -372,7 +372,7 @@
                     <Decorator ID="SentenceBuilder" node_id="{person_id}" text="{sentence}" use_case="neuron">
                         <Action ID="Say" text="{sentence}" volume="{person_volume}"/>
                     </Decorator>
-                    <Parallel failure_threshold="1" success_threshold="2">
+                    <Parallel failure_count="1" success_count="2">
                         <Delay delay_msec="500">
                             <Action ID="Say" text="¿Cuánto es dos más dos?" volume="{person_volume}"/>
                         </Delay>
@@ -448,7 +448,7 @@
                 </Fallback>
                 <Action ID="Say" text="Me voy a cargar. Hasta luego" volume="{person_volume}"/>
                 <Fallback name="TryToFindPerson">
-                    <Parallel failure_threshold="1" success_threshold="1">
+                    <Parallel failure_count="1" success_count="1">
                         <Action ID="Dock"/>
                         <Inverter>
                             <RetryUntilSuccessful num_attempts="-1">

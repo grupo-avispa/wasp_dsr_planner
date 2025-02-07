@@ -14,7 +14,7 @@
 // limitations under the License.
 
 #include "plannerAgent/executor/decorator/sentence_builder.hpp"
-#include "../../../include/json_messages.hpp"
+#include "plannerAgent/json_messages.hpp"
 
 SentenceBuilder::SentenceBuilder(
   const std::string & xml_tag_name,
@@ -389,7 +389,7 @@ BT::NodeStatus SentenceBuilder::tick()
   return BT::NodeStatus::FAILURE;
 }
 
-#include "behaviortree_cpp_v3/bt_factory.h"
+#include "behaviortree_cpp/bt_factory.h"
 BT_REGISTER_NODES(factory) {
   BT::NodeBuilder builder =
     [](const std::string & name, const BT::NodeConfiguration & config) {

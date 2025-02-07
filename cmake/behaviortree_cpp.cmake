@@ -1,18 +1,18 @@
 
 find_package(ament_cmake QUIET)
 if(ament_cmake_FOUND)
-    message(STATUS "Found behaviortree_cpp_v3: 3.8 (${behaviortree_cpp_v3_DIR})")
-    find_package(behaviortree_cpp_v3 REQUIRED)
+    message(STATUS "Found behaviortree_cpp: 4.6 (${behaviortree_cpp_DIR})")
+    find_package(behaviortree_cpp REQUIRED)
     set(ROS_DISTRO $ENV{ROS_DISTRO})
     include_directories(/opt/ros/${ROS_DISTRO}/include)
     link_directories(/opt/ros/${ROS_DISTRO}/lib)
 else()
-    if(EXISTS "/usr/local/include/behaviortree_cpp_v3")
-        message(STATUS "Found behaviortree_cpp_v3: 3.8 (/usr/local/include/behaviortree_cpp_v3)")
-        include_directories(/usr/local/include/behaviortree_cpp_v3)
-        set(behaviortree_cpp_v3_FOUND TRUE)
+    if(EXISTS "/usr/local/include/behaviortree_cpp")
+        message(STATUS "Found behaviortree_cpp: 4.6 (/usr/local/include/behaviortree_cpp)")
+        include_directories(/usr/local/include/behaviortree_cpp)
+        set(behaviortree_cpp_FOUND TRUE)
     endif()
-    if(NOT behaviortree_cpp_v3_FOUND)
+    if(NOT behaviortree_cpp_FOUND)
         message(STATUS "Downloading BehaviorTree.CPP")
         include(FetchContent)
 
@@ -24,7 +24,7 @@ else()
         set(FETCHCONTENT_QUIET ON)
         FetchContent_Declare(behaviortree_cpp
             GIT_REPOSITORY https://github.com/BehaviorTree/BehaviorTree.CPP.git
-            GIT_TAG         v3.8
+            GIT_TAG         4.6.2
             GIT_PROGRESS    TRUE
             GIT_SHALLOW     TRUE
             SOURCE_DIR "${CMAKE_CURRENT_BINARY_DIR}/behaviortree_cpp-src"
