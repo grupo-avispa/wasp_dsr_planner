@@ -1,0 +1,161 @@
+<root BTCPP_format="4">
+  <TreeNodesModel>
+    <!-- ############################### ACTION NODES ################################# -->
+    <Action ID="CancelAction">
+      <input_port name="action_name">Action to cancel</input_port>
+    </Action>
+    <Action ID="Dock"/>
+    <Action ID="GenerateResponse">
+      <output_port name="answer">Final answer generated</output_port>
+      <input_port name="text">Prompt for Llama</input_port>
+    </Action>
+    <Action ID="GetAlarm">
+      <output_port name="alarm">Person alarm</output_port>
+      <output_port name="goal">Person goal</output_port>
+    </Action>
+    <Action ID="GetIntent">
+      <output_port name="entity">Entity from RASA</output_port>
+      <output_port name="intent">Primary intent from RASA</output_port>
+      <input_port name="question">User question</input_port>
+    </Action>
+    <Action ID="GetRandomGoal">
+      <output_port name="goal">Goal to approach</output_port>
+      <input_port name="zone">Where to move the robot</input_port>
+    </Action>
+    <Action ID="GetRole">
+      <output_port name="entity"/>
+      <output_port name="intent"/>
+      <input_port name="question"/>
+    </Action>
+    <Action ID="Help">
+      <input_port name="goal">Goal to approach</input_port>
+    </Action>
+    <Action ID="InsertNode">
+      <input_port name="node">Node to insert</input_port>
+      <input_port name="attributes">Attributes of the node</input_port>
+    </Action>
+    <Action ID="Interaction">
+      <input_port name="node_id" type="unsigned long">Node id of the person found</input_port>
+    </Action>
+    <Action ID="Listen">
+      <output_port name="text">Text listened</output_port>
+    </Action>
+    <Action ID="Move">
+      <input_port name="goal">Goal to approach</input_port>
+    </Action>
+    <Action ID="Play">
+      <input_port name="sound">Name of the file to play</input_port>
+      <input_port name="volume"default="50.0">Volume level to play the sound</input_port>
+    </Action>
+    <Action ID="Say">
+      <input_port name="text">Text to say</input_port>
+      <input_port name="volume"default="50.0">Volume level to say the text</input_port>
+    </Action>
+    <Action ID="SetVolume">
+      <input_port name="volume" default="50.0">Volume level to set</input_port>
+    </Action>
+    <Action ID="Show">
+      <input_port name="interface" type="std::string">Interface to show in the screen</input_port>
+    </Action>
+    <Action ID="Sign"/>
+    <Action ID="UseCaseSelector">
+      <output_port name="use_case">Name of the use case</output_port>
+    </Action>
+    <Action ID="WaitMenuSelection"/>
+
+    <!-- ############################### CONDITION NODES ################################# -->
+    <Condition ID="CanTrackPerson">
+      <input_port name="node_id"/>
+    </Condition>
+    <Condition ID="IsButtonPushed"/>
+    <Condition ID="IsNavigating"/>
+    <Condition ID="PersonFound">
+      <input_port name="filter_case">Value to filter the person found (Optional)</input_port>
+      <output_port name="node_id">Node Identifier of the person found</output_port>
+      <output_port name="pose">Pose of the person found</output_port>
+      <output_port name="safe_distance">Safe distance near the person to approach</output_port>
+      <output_port name="volume">Volume level to say the text</output_port>
+    </Condition>
+    <Condition ID="ResetPersonId"/>
+    <Condition ID="SafeInteraction">
+      <input_port name="node_id">Node Identifier of the person found</input_port>
+      <input_port name="pose">Pose of the person found</input_port>
+    </Condition>
+    <Condition ID="UseCaseFinished">
+      <input_port name="result_code" type="std::string">Result code of the use case</input_port>
+    </Condition>
+
+    <!-- ############################### CONTROL NODES ################################# -->
+    <Control ID="RecoveryNode">
+      <input_port name="number_of_retries">Number of retries</input_port>
+    </Control>
+    <Control ID="Switch10">
+      <input_port name="case_1"/>
+      <input_port name="case_10"/>
+      <input_port name="case_2"/>
+      <input_port name="case_3"/>
+      <input_port name="case_4"/>
+      <input_port name="case_5"/>
+      <input_port name="case_6"/>
+      <input_port name="case_7"/>
+      <input_port name="case_8"/>
+      <input_port name="case_9"/>
+      <input_port name="variable"/>
+    </Control>
+    <Control ID="Switch7">
+      <input_port name="case_1"/>
+      <input_port name="case_2"/>
+      <input_port name="case_3"/>
+      <input_port name="case_4"/>
+      <input_port name="case_5"/>
+      <input_port name="case_6"/>
+      <input_port name="case_7"/>
+      <input_port name="variable"/>
+    </Control>
+    <Control ID="Switch8">
+      <input_port name="case_1"/>
+      <input_port name="case_2"/>
+      <input_port name="case_3"/>
+      <input_port name="case_4"/>
+      <input_port name="case_5"/>
+      <input_port name="case_6"/>
+      <input_port name="case_7"/>
+      <input_port name="case_8"/>
+      <input_port name="variable"/>
+    </Control>
+    <Control ID="Switch9">
+      <input_port name="case_1"/>
+      <input_port name="case_2"/>
+      <input_port name="case_3"/>
+      <input_port name="case_4"/>
+      <input_port name="case_5"/>
+      <input_port name="case_6"/>
+      <input_port name="case_7"/>
+      <input_port name="case_8"/>
+      <input_port name="case_9"/>
+      <input_port name="variable"/>
+    </Control>
+
+    <!-- ############################### DECORATOR NODES ################################# -->
+    <Decorator ID="DistanceApproach">
+      <input_port name="distance" type="double">Distance to approach</input_port>
+      <input_port name="input_goal" type="Goal">Original goal to approach</input_port>
+      <output_port name="output_goal" type="Goal">New goal to approach</output_port>
+    </Decorator>
+    <Decorator ID="GetCauses">
+      <input_port name="causal_log_file">Path of causal_log</input_port>
+      <input_port name="dictionary_file">Path of dictionary</input_port>
+      <input_port name="entity">Entity from RASA</input_port>
+      <input_port name="intent">Intent from RASA</input_port>
+      <input_port name="question">Question received</input_port>
+      <input_port name="role">Role of the asker</input_port>
+      <output_port name="text">Prompt for Llama</output_port>
+    </Decorator>
+    <Decorator ID="SentenceBuilder">
+      <input_port name="node_id">Identifier node of the person you are interacting with</input_port>
+      <output_port name="text">Text to say</output_port>
+      <input_port name="use_case">Use case that is running at the moment</input_port>
+    </Decorator>
+  </TreeNodesModel>
+</root>
+

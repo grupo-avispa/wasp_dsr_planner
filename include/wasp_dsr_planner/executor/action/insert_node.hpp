@@ -51,7 +51,7 @@ public:
     return {
       BT::InputPort<DSR::Node>("node", "Node to insert"),
       BT::InputPort<std::map<std::string, DSR::Attribute>>(
-        "attributes", "Attributes of the node to insert"),
+        "attributes", "Attributes of the node"),
     };
   }
 
