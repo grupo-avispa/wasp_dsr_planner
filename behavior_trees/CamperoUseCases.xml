@@ -1,0 +1,658 @@
+<?xml version="1.0"?>
+<root main_tree_to_execute="BehaviorTree">
+    <!-- ////////// -->
+    <BehaviorTree ID="BehaviorTree">
+        <Parallel failure_threshold="1" success_threshold="1">
+            <Repeat num_cycles="-1">
+                <Action ID="UseCaseSelector" use_case="{variant}"/>
+            </Repeat>
+            <Control ID="Switch9" case_1="wandering" case_2="charging" case_3="menu" case_4="reminder" case_5="music" case_6="water" case_7="tracking" case_8="neuron" case_9="explanation" name="UseCase" variable="{variant}">
+                <SubTree ID="Wandering" __shared_blackboard="true"/>
+                <SubTree ID="Charging" __shared_blackboard="true"/>
+                <SubTree ID="Menu" __shared_blackboard="true"/>
+                <SubTree ID="Reminder" __shared_blackboard="true"/>
+                <SubTree ID="MusicalTherapy" __shared_blackboard="true"/>
+                <SubTree ID="BringMeWater" __shared_blackboard="true"/>
+                <SubTree ID="Tracking" __shared_blackboard="true"/>
+                <SubTree ID="NeuronUp" __shared_blackboard="true"/>
+                <SubTree ID="Explanation" __shared_blackboard="true"/>
+                <SubTree ID="DoNothing" __shared_blackboard="true"/>
+            </Control>
+        </Parallel>
+    </BehaviorTree>
+    <!-- ////////// -->
+    <BehaviorTree ID="BringMeWater">
+        <Fallback>
+            <Sequence>
+                <Action ID="Say" text="Has pulsado el botón, ponte delante para identificarte" volume="50.0"/>
+                <Fallback name="TryToIdentifyPerson">
+                    <RetryUntilSuccessful num_attempts="5">
+                        <Delay delay_msec="5000">
+                            <Condition ID="PersonFound" filter_case="" node_id="{person_id}" pose="{person_pose}" safe_distance="{person_distance}" volume="{person_volume}"/>
+                        </Delay>
+                    </RetryUntilSuccessful>
+                    <Sequence>
+                        <Action ID="Say" text="Lo siento, no he podido identificarte" volume="50.0"/>
+                        <Condition ID="ResetPersonId"/>
+                        <Condition ID="UseCaseFinished" result_code="GetMeWater use case finished no person identified"/>
+                        <SubTree ID="DoNothing" __shared_blackboard="true"/>
+                    </Sequence>
+                </Fallback>
+                <Action ID="Interaction" node_id="{person_id}"/>
+                <Parallel failure_threshold="1" success_threshold="2">
+                    <Delay delay_msec="500">
+                        <Action ID="Say" text="Por favor, seleccione qué necesita en las opciones de la pantalla" volume="{person_volume}"/>
+                    </Delay>
+                    <Action ID="Show" interface="water"/>
+                </Parallel>
+                <Sequence name="GetGoalAndMove">
+                    <Action ID="GetRandomGoal" goal="{goal}" name="GetGoalFromZone" zone="entrada"/>
+                    <Action ID="Move" goal="{goal}" name="MoveZone"/>
+                </Sequence>
+                <Decorator ID="SentenceBuilder" node_id="{person_id}" text="{greetings}" use_case="water">
+                    <Action ID="Say" text="{greetings}" volume="{person_volume}"/>
+                </Decorator>
+                <Condition ID="ResetPersonId"/>
+                <Condition ID="UseCaseFinished" result_code="GetMeWater finished correctly"/>
+                <SubTree ID="DoNothing" __shared_blackboard="true"/>
+            </Sequence>
+            <SubTree ID="DoNothing" __shared_blackboard="true"/>
+        </Fallback>
+    </BehaviorTree>
+    <!-- ////////// -->
+    <BehaviorTree ID="Charging">
+        <Fallback>
+            <Sequence name="Charging">
+                <Parallel failure_threshold="1" name="SayAndShow" success_threshold="2">
+                    <Action ID="Say" name="NoBatterySay" text="Lo siento, tengo que ir a cargarme" volume="50.0"/>
+                    <Action ID="Show" interface="low_battery" name="LowBatteryInterface"/>
+                </Parallel>
+                <IfThenElse name="TryCharging">
+                    <RetryUntilSuccessful name="RetryDocking" num_attempts="3">
+                        <Action ID="Dock"/>
+                    </RetryUntilSuccessful>
+                    <Condition ID="UseCaseFinished" name="ChargingSuccess" result_code="Robot docked succesfully"/>
+                    <Condition ID="UseCaseFinished" name="ChargingFailure" result_code="Robot cannot dock."/>
+                </IfThenElse>
+                <SubTree ID="DoNothing" __shared_blackboard="true"/>
+            </Sequence>
+            <SubTree ID="DoNothing" __shared_blackboard="true"/>
+        </Fallback>
+    </BehaviorTree>
+    <!-- ////////// -->
+    <BehaviorTree ID="DoNothing">
+        <Repeat num_cycles="-1">
+            <ForceSuccess>
+                <Delay delay_msec="1000">
+                    <AlwaysSuccess name="DoNothing"/>
+                </Delay>
+            </ForceSuccess>
+        </Repeat>
+    </BehaviorTree>
+    <!-- ////////// -->
+    <BehaviorTree ID="Explanation">
+        <Fallback>
+            <Sequence>
+                <Action ID="Say" text="Hello, what explanaiton do you need?" volume="50.0"/>
+                <Parallel failure_threshold="1" success_threshold="2">
+                    <Action ID="Listen" text="{question}"/>
+                    <Action ID="Show" interface="explanation"/>
+                </Parallel>
+                <Parallel failure_threshold="1" success_threshold="2">
+                    <Action ID="GetIntent" entity="{entity}" intent="{intent}" name="Intent Recognition" question="{question}"/>
+                    <Action ID="GetRole" entity="{entity2}" intent="{role}" name="Role Recognition" question="{question}"/>
+                </Parallel>
+                <Decorator ID="GetCauses" causal_log_file="/home/demo/logs/causal_log.csv" dictionary_file="/home/demo/logs/dictionary.csv" entity="{entity}" intent="{intent}" question="{question}" role="{role}" text="{prompt}">
+                    <Action ID="GenerateResponse" answer="{answer}" text="{prompt}"/>
+                </Decorator>
+                <Action ID="Say" text="{answer}" volume="50.0"/>
+                <Action ID="Say" text="If you have other question, press the button again. Thanks!" volume="50.0"/>
+                <Condition ID="ResetPersonId"/>
+                <Condition ID="UseCaseFinished" result_code="Give explanation done succesfully"/>
+                <SubTree ID="DoNothing" __shared_blackboard="true"/>
+            </Sequence>
+            <SubTree ID="DoNothing" __shared_blackboard="true"/>
+        </Fallback>
+    </BehaviorTree>
+    <!-- ////////// -->
+    <BehaviorTree ID="Menu">
+        <Fallback>
+            <Sequence name="FindFirstPersonAndRequestMenu">
+                <Sequence name="ApproachToFirstPerson">
+                    <Fallback name="TryToFindPerson">
+                        <Condition ID="PersonFound" filter_case="menu" name="GetPersonPoseAndId" node_id="{person_id}" pose="{person_pose}" safe_distance="{person_distance}" volume="{person_volume}"/>
+                        <Sequence>
+                            <Action ID="Say" text="Lo siento, no puedo acercarme. ¿Podrías ponerte delante a 1 metro?" volume="{person_volume}"/>
+                            <Delay delay_msec="5000">
+                                <Fallback name="TryToFindPersonAgain">
+                                    <Control ID="RecoveryNode" name="FollowPerson2" number_of_retries="3">
+                                        <Sequence name="UpdateNewPersonPose">
+                                            <Condition ID="PersonFound" filter_case="menu" name="GetNewPersonPoseAndId" node_id="{person_id}" pose="{person_pose}" safe_distance="{person_distance}" volume="{person_volume}"/>
+                                            <Decorator ID="DistanceApproach" distance="{person_distance}" input_goal="{person_pose}" name="GetDistanceApproach" output_goal="{approach_pose}">
+                                                <Condition ID="SafeInteraction" name="PersonNearRobot" node_id="{person_id}" pose="{approach_pose}"/>
+                                            </Decorator>
+                                        </Sequence>
+                                        <RetryUntilSuccessful num_attempts="5">
+                                            <Action ID="Move" goal="{approach_pose}" name="ApproachPerson"/>
+                                        </RetryUntilSuccessful>
+                                    </Control>
+                                    <Sequence>
+                                        <Condition ID="ResetPersonId"/>
+                                        <Condition ID="UseCaseFinished" result_code="Cannot approach to person"/>
+                                        <SubTree ID="DoNothing" __shared_blackboard="true"/>
+                                    </Sequence>
+                                </Fallback>
+                            </Delay>
+                        </Sequence>
+                    </Fallback>
+                    <Action ID="Interaction" name="SetInteraction" node_id="{person_id}"/>
+                </Sequence>
+                <Sequence name="RequestMenu">
+                    <Parallel failure_threshold="1" name="SelectMenu" success_threshold="2">
+                        <Sequence>
+                            <Decorator ID="SentenceBuilder" node_id="{person_id}" text="{sentence}" use_case="menu1_first">
+                                <Delay delay_msec="500">
+                                    <Action ID="Say" text="{sentence}" volume="{person_volume}"/>
+                                </Delay>
+                            </Decorator>
+                            <Action ID="WaitMenuSelection"/>
+                            <Decorator ID="SentenceBuilder" node_id="{person_id}" text="{sentence}" use_case="menu1_second">
+                                <Delay delay_msec="500">
+                                    <Action ID="Say" text="{sentence}" volume="{person_volume}"/>
+                                </Delay>
+                            </Decorator>
+                        </Sequence>
+                        <Fallback name="ShowFallback">
+                            <Timeout msec="240000">
+                                <Action ID="Show" interface="menu1" name="MenuInterface"/>
+                            </Timeout>
+                            <Sequence>
+                                <Condition ID="ResetPersonId"/>
+                                <Condition ID="UseCaseFinished" name="MenuFailure" result_code="TIMEOUT. Use Case Menu Failure"/>
+                            </Sequence>
+                        </Fallback>
+                    </Parallel>
+                    <Parallel failure_threshold="1" name="SelectMenu" success_threshold="2">
+                        <Sequence>
+                            <Decorator ID="SentenceBuilder" node_id="{person_id}" text="{sentence}" use_case="menu2_first">
+                                <Delay delay_msec="500">
+                                    <Action ID="Say" text="{sentence}" volume="{person_volume}"/>
+                                </Delay>
+                            </Decorator>
+                            <Action ID="WaitMenuSelection"/>
+                            <Decorator ID="SentenceBuilder" node_id="{person_id}" text="{sentence}" use_case="menu2_second">
+                                <Delay delay_msec="500">
+                                    <Action ID="Say" text="{sentence}" volume="{person_volume}"/>
+                                </Delay>
+                            </Decorator>
+                        </Sequence>
+                        <Fallback name="ShowFallback">
+                            <Timeout msec="240000">
+                                <Action ID="Show" interface="menu2" name="MenuInterface"/>
+                            </Timeout>
+                            <Sequence>
+                                <Condition ID="ResetPersonId"/>
+                                <Condition ID="UseCaseFinished" name="MenuFailure" result_code="TIMEOUT. Use Case Menu Failure"/>
+                            </Sequence>
+                        </Fallback>
+                    </Parallel>
+                    <Parallel failure_threshold="1" name="SelectMenu" success_threshold="2">
+                        <Sequence>
+                            <Decorator ID="SentenceBuilder" node_id="{person_id}" text="{sentence}" use_case="menu3_first">
+                                <Delay delay_msec="500">
+                                    <Action ID="Say" text="{sentence}" volume="{person_volume}"/>
+                                </Delay>
+                            </Decorator>
+                            <Action ID="WaitMenuSelection"/>
+                            <Decorator ID="SentenceBuilder" node_id="{person_id}" text="{sentence}" use_case="menu3_second">
+                                <Delay delay_msec="500">
+                                    <Action ID="Say" text="{sentence}" volume="{person_volume}"/>
+                                </Delay>
+                            </Decorator>
+                        </Sequence>
+                        <Fallback name="ShowFallback">
+                            <Timeout msec="240000">
+                                <Action ID="Show" interface="menu3" name="MenuInterface"/>
+                            </Timeout>
+                            <Sequence>
+                                <Condition ID="ResetPersonId"/>
+                                <Condition ID="UseCaseFinished" name="MenuFailure" result_code="TIMEOUT. Use Case Menu Failure"/>
+                            </Sequence>
+                        </Fallback>
+                    </Parallel>
+                    <Parallel failure_threshold="1" name="SelectMenu" success_threshold="2">
+                        <Sequence>
+                            <Decorator ID="SentenceBuilder" node_id="{person_id}" text="{sentence}" use_case="menu4_first">
+                                <Delay delay_msec="500">
+                                    <Action ID="Say" text="{sentence}" volume="{person_volume}"/>
+                                </Delay>
+                            </Decorator>
+                            <Action ID="WaitMenuSelection"/>
+                            <Decorator ID="SentenceBuilder" node_id="{person_id}" text="{sentence}" use_case="menu4_second">
+                                <Delay delay_msec="500">
+                                    <Action ID="Say" text="{sentence}" volume="{person_volume}"/>
+                                </Delay>
+                            </Decorator>
+                        </Sequence>
+                        <Fallback name="ShowFallback">
+                            <Timeout msec="240000">
+                                <Action ID="Show" interface="menu4" name="MenuInterface"/>
+                            </Timeout>
+                            <Sequence>
+                                <Condition ID="ResetPersonId"/>
+                                <Condition ID="UseCaseFinished" name="MenuFailure" result_code="TIMEOUT. Use Case Menu Failure"/>
+                            </Sequence>
+                        </Fallback>
+                    </Parallel>
+                    <Parallel failure_threshold="1" name="SelectMenu" success_threshold="2">
+                        <Sequence>
+                            <Decorator ID="SentenceBuilder" node_id="{person_id}" text="{sentence}" use_case="menu5_first">
+                                <Delay delay_msec="500">
+                                    <Action ID="Say" text="{sentence}" volume="{person_volume}"/>
+                                </Delay>
+                            </Decorator>
+                            <Action ID="WaitMenuSelection"/>
+                            <Decorator ID="SentenceBuilder" node_id="{person_id}" text="{sentence}" use_case="menu5_second">
+                                <Delay delay_msec="500">
+                                    <Action ID="Say" text="{sentence}" volume="{person_volume}"/>
+                                </Delay>
+                            </Decorator>
+                        </Sequence>
+                        <Fallback name="ShowFallback">
+                            <Timeout msec="240000">
+                                <Action ID="Show" interface="menu5" name="MenuInterface"/>
+                            </Timeout>
+                            <Sequence>
+                                <Condition ID="ResetPersonId"/>
+                                <Condition ID="UseCaseFinished" name="MenuFailure" result_code="TIMEOUT. Use Case Menu Failure"/>
+                            </Sequence>
+                        </Fallback>
+                    </Parallel>
+                    <Parallel failure_threshold="1" name="SelectMenu" success_threshold="2">
+                        <Sequence>
+                            <Decorator ID="SentenceBuilder" node_id="{person_id}" text="{sentence}" use_case="menu6_first">
+                                <Delay delay_msec="500">
+                                    <Action ID="Say" text="{sentence}" volume="{person_volume}"/>
+                                </Delay>
+                            </Decorator>
+                            <Action ID="WaitMenuSelection"/>
+                            <Decorator ID="SentenceBuilder" node_id="{person_id}" text="{sentence}" use_case="menu6_second">
+                                <Delay delay_msec="500">
+                                    <Action ID="Say" text="{sentence}" volume="{person_volume}"/>
+                                </Delay>
+                            </Decorator>
+                        </Sequence>
+                        <Fallback name="ShowFallback">
+                            <Timeout msec="240000">
+                                <Action ID="Show" interface="menu6" name="MenuInterface"/>
+                            </Timeout>
+                            <Sequence>
+                                <Condition ID="ResetPersonId"/>
+                                <Condition ID="UseCaseFinished" name="MenuFailure" result_code="TIMEOUT. Use Case Menu Failure"/>
+                            </Sequence>
+                        </Fallback>
+                    </Parallel>
+                    <Parallel failure_threshold="1" name="SelectMenu" success_threshold="2">
+                        <Sequence>
+                            <Decorator ID="SentenceBuilder" node_id="{person_id}" text="{sentence}" use_case="menu7_first">
+                                <Delay delay_msec="500">
+                                    <Action ID="Say" text="{sentence}" volume="{person_volume}"/>
+                                </Delay>
+                            </Decorator>
+                            <Action ID="WaitMenuSelection"/>
+                            <Decorator ID="SentenceBuilder" node_id="{person_id}" text="{sentence}" use_case="menu7_second">
+                                <Delay delay_msec="500">
+                                    <Action ID="Say" text="{sentence}" volume="{person_volume}"/>
+                                </Delay>
+                            </Decorator>
+                        </Sequence>
+                        <Fallback name="ShowFallback">
+                            <Timeout msec="240000">
+                                <Action ID="Show" interface="menu7" name="MenuInterface"/>
+                            </Timeout>
+                            <Sequence>
+                                <Condition ID="ResetPersonId"/>
+                                <Condition ID="UseCaseFinished" name="MenuFailure" result_code="TIMEOUT. Use Case Menu Failure"/>
+                            </Sequence>
+                        </Fallback>
+                    </Parallel>
+                    <Action ID="Say" name="Greetings" text="Muchas gracias" volume="{person_volume}"/>
+                    <Condition ID="ResetPersonId"/>
+                    <Condition ID="UseCaseFinished" name="MenuSuccess" result_code="Menu use case finished correctly"/>
+                    <SubTree ID="DoNothing" __shared_blackboard="true"/>
+                </Sequence>
+            </Sequence>
+            <SubTree ID="DoNothing" __shared_blackboard="true"/>
+        </Fallback>
+    </BehaviorTree>
+    <!-- ////////// -->
+    <BehaviorTree ID="MusicalTherapy">
+        <Fallback>
+            <Sequence name="MusicalTherapy">
+                <RetryUntilSuccessful name="RetryMove" num_attempts="8">
+                    <Sequence name="GetGoalAndMove">
+                        <Action ID="GetRandomGoal" goal="{goal}" name="GetGoalFromZone" zone="sur"/>
+                        <Action ID="Move" goal="{goal}" name="MoveZone"/>
+                    </Sequence>
+                </RetryUntilSuccessful>
+                <Action ID="Say" text="A bailar todo el mundo que va a comenzar la terapia musical" volume="50.0"/>
+                <Parallel failure_threshold="1" success_threshold="1">
+                    <Action ID="Play" sound="relax" volume="50.0"/>
+                    <Repeat name="RepeatMoveInfinitely" num_cycles="-1">
+                        <RetryUntilSuccessful name="RetryMove" num_attempts="8">
+                            <Sequence name="GetGoalAndMove">
+                                <Action ID="GetRandomGoal" goal="{goal}" name="GetGoalFromZone" zone="sur"/>
+                                <Action ID="Move" goal="{goal}" name="MoveZone"/>
+                            </Sequence>
+                        </RetryUntilSuccessful>
+                    </Repeat>
+                </Parallel>
+                <Condition ID="UseCaseFinished" name="MusicalTherapySuccess" result_code="Terapia musical finished correctly"/>
+                <SubTree ID="DoNothing" __shared_blackboard="true"/>
+            </Sequence>
+            <SubTree ID="DoNothing" __shared_blackboard="true"/>
+        </Fallback>
+    </BehaviorTree>
+    <!-- ////////// -->
+    <BehaviorTree ID="NeuronUp">
+        <Fallback>
+            <Sequence name="NeuronUp">
+                <Sequence name="AproachToPerson">
+                    <Fallback>
+                        <Condition ID="PersonFound" filter_case="neuron" node_id="{person_id}" pose="{person_pose}" safe_distance="{person_distance}" volume="{person_volume}"/>
+                        <Sequence>
+                            <Condition ID="ResetPersonId"/>
+                            <Condition ID="UseCaseFinished" name="AproachFailure" result_code="Cannot approach to person"/>
+                            <SubTree ID="DoNothing" __shared_blackboard="true"/>
+                        </Sequence>
+                    </Fallback>
+                    <Action ID="Interaction" node_id="{person_id}"/>
+                </Sequence>
+                <Sequence name="DoingNeuronUp">
+                    <Decorator ID="SentenceBuilder" node_id="{person_id}" text="{sentence}" use_case="neuron">
+                        <Action ID="Say" text="{sentence}" volume="{person_volume}"/>
+                    </Decorator>
+                    <Parallel failure_threshold="1" success_threshold="2">
+                        <Delay delay_msec="500">
+                            <Action ID="Say" text="¿Cuánto es dos más dos?" volume="{person_volume}"/>
+                        </Delay>
+                        <Action ID="Show" interface="neuron"/>
+                    </Parallel>
+                    <Delay delay_msec="3000">
+                        <Sequence>
+                            <Condition ID="ResetPersonId"/>
+                            <Condition ID="UseCaseFinished" name="NeuronFinished" result_code="NeuronFinished"/>
+                        </Sequence>
+                    </Delay>
+                </Sequence>
+                <SubTree ID="DoNothing" __shared_blackboard="true"/>
+            </Sequence>
+            <SubTree ID="DoNothing" __shared_blackboard="true"/>
+        </Fallback>
+    </BehaviorTree>
+    <!-- ////////// -->
+    <BehaviorTree ID="Reminder">
+        <Fallback>
+            <Sequence name="FindFirstPersonAndReminder">
+                <Sequence name="ApproachToFirstPerson">
+                    <Fallback name="TryToFindPerson">
+                        <Condition ID="PersonFound" filter_case="" name="GetPersonPoseAndId" node_id="{person_id}" pose="{person_pose}" safe_distance="{person_distance}" volume="{person_volume}"/>
+                        <Sequence>
+                            <Condition ID="ResetPersonId"/>
+                            <Condition ID="UseCaseFinished" name="ReminderFailure" result_code="Cannot approach to person"/>
+                            <SubTree ID="DoNothing" __shared_blackboard="true"/>
+                        </Sequence>
+                    </Fallback>
+                    <Action ID="Interaction" name="SetInteraction" node_id="{person_id}"/>
+                </Sequence>
+                <Sequence name="Reminder">
+                    <Decorator ID="SentenceBuilder" node_id="{person_id}" text="{reminder}" use_case="reminder">
+                        <Action ID="Say" text="{reminder}" volume="{person_volume}"/>
+                    </Decorator>
+                    <Condition ID="ResetPersonId"/>
+                    <Condition ID="UseCaseFinished" name="ReminderSuccess" result_code="Reminder use case finished"/>
+                    <SubTree ID="DoNothing" __shared_blackboard="true"/>
+                </Sequence>
+            </Sequence>
+            <SubTree ID="DoNothing" __shared_blackboard="true"/>
+        </Fallback>
+    </BehaviorTree>
+    <!-- ////////// -->
+    <BehaviorTree ID="Tracking">
+        <Fallback>
+            <Sequence>
+                <Action ID="Say" text="Ponte delante" volume="50.0"/>
+                <Fallback name="TryToFindPerson">
+                    <RetryUntilSuccessful num_attempts="5">
+                        <Delay delay_msec="2000">
+                            <Condition ID="PersonFound" filter_case="" node_id="{person_id}" pose="{person_pose}" safe_distance="{person_distance}" volume="{person_volume}"/>
+                        </Delay>
+                    </RetryUntilSuccessful>
+                    <Sequence>
+                        <Action ID="Say" text="Lo siento, no te veo bien" volume="50.0"/>
+                        <Condition ID="ResetPersonId"/>
+                        <Condition ID="UseCaseFinished" result_code="Tracking use case finished no person to track"/>
+                    </Sequence>
+                </Fallback>
+                <Action ID="Interaction" node_id="{person_id}"/>
+                <Fallback>
+                    <Condition ID="CanTrackPerson" node_id="{person_id}"/>
+                    <Sequence>
+                        <Decorator ID="SentenceBuilder" node_id="{person_id}" text="{hello}" use_case="persona">
+                            <Action ID="Say" text="{hello}" volume="{person_volume}"/>
+                        </Decorator>
+                        <Action ID="Say" text="No tienes permisos para que te siga" volume="{person_volume}"/>
+                        <Condition ID="UseCaseFinished" result_code="Tracking use case finished person should not be tracked"/>
+                        <SubTree ID="DoNothing" __shared_blackboard="true"/>
+                    </Sequence>
+                </Fallback>
+                <Action ID="Say" text="Me voy a cargar. Hasta luego" volume="{person_volume}"/>
+                <Fallback name="TryToFindPerson">
+                    <Parallel failure_threshold="1" success_threshold="1">
+                        <Action ID="Dock"/>
+                        <Inverter>
+                            <RetryUntilSuccessful num_attempts="-1">
+                                <Condition ID="IsButtonPushed"/>
+                            </RetryUntilSuccessful>
+                        </Inverter>
+                    </Parallel>
+                    <Condition ID="UseCaseFinished" name="TrackingFailure" result_code="Finish"/>
+                </Fallback>
+                <SubTree ID="DoNothing" __shared_blackboard="true"/>
+            </Sequence>
+            <SubTree ID="DoNothing" __shared_blackboard="true"/>
+        </Fallback>
+    </BehaviorTree>
+    <!-- ////////// -->
+    <BehaviorTree ID="Wandering">
+        <Fallback>
+            <Sequence name="Wandering">
+                <Action ID="Show" interface="default" name="DefaultInterface"/>
+                <Condition ID="ResetPersonId"/>
+                <IfThenElse name="TryMoving">
+                    <Repeat name="RepeatMoveInfinitely" num_cycles="-1">
+                        <RetryUntilSuccessful name="RetryMove" num_attempts="8">
+                            <Sequence name="GetGoalAndMove">
+                                <Action ID="GetRandomGoal" goal="{goal}" name="GetGoalFromZone" zone="all"/>
+                                <Action ID="Move" goal="{goal}" name="MoveAnyZone"/>
+                            </Sequence>
+                        </RetryUntilSuccessful>
+                    </Repeat>
+                    <Condition ID="UseCaseFinished" name="WanderingSuccess" result_code="Wandering finished successfully"/>
+                    <Condition ID="UseCaseFinished" name="WanderingFailure" result_code="Wandering failure miserably"/>
+                </IfThenElse>
+                <SubTree ID="DoNothing" __shared_blackboard="true"/>
+            </Sequence>
+            <SubTree ID="DoNothing" __shared_blackboard="true"/>
+        </Fallback>
+    </BehaviorTree>
+    <!-- ////////// -->
+    <TreeNodesModel>
+        <SubTree ID="BringMeWater">
+            <input_port default="true" name="__shared_blackboard">If false (default), the Subtree has an isolated blackboard and needs port remapping</input_port>
+        </SubTree>
+        <Condition ID="CanTrackPerson">
+            <input_port name="node_id"/>
+        </Condition>
+        <Action ID="CancelAction">
+            <input_port name="action_name">Action to cancel</input_port>
+        </Action>
+        <SubTree ID="Charging">
+            <input_port default="true" name="__shared_blackboard">If false (default), the Subtree has an isolated blackboard and needs port remapping</input_port>
+        </SubTree>
+        <Decorator ID="DistanceApproach">
+            <input_port name="distance" type="double">Distance to approach</input_port>
+            <input_port name="input_goal" type="Goal">Original goal to approach</input_port>
+            <output_port name="output_goal" type="Goal">New goal to approach</output_port>
+        </Decorator>
+        <SubTree ID="DoNothing">
+            <input_port default="true" name="__shared_blackboard">If false (default), the Subtree has an isolated blackboard and needs port remapping</input_port>
+        </SubTree>
+        <Action ID="Dock"/>
+        <SubTree ID="Explanation">
+            <input_port default="true" name="__shared_blackboard">If false (default), the Subtree has an isolated blackboard and needs port remapping</input_port>
+        </SubTree>
+        <Action ID="GenerateResponse">
+            <output_port name="answer">Final answer generated</output_port>
+            <input_port name="text">Prompt for Llama</input_port>
+        </Action>
+        <Decorator ID="GetCauses">
+            <input_port name="causal_log_file">Path of causal_log</input_port>
+            <input_port name="dictionary_file">Path of dictionary</input_port>
+            <input_port name="entity">Entity from RASA</input_port>
+            <input_port name="intent">Intent from RASA</input_port>
+            <input_port name="question">Question received</input_port>
+            <input_port name="role">Role of the asker</input_port>
+            <output_port name="text">Prompt for Llama</output_port>
+        </Decorator>
+        <Action ID="GetIntent">
+            <output_port name="entity">Entity from RASA</output_port>
+            <output_port name="intent">Primary intent from RASA</output_port>
+            <input_port name="question">User question</input_port>
+        </Action>
+        <Action ID="GetRandomGoal">
+            <output_port name="goal">Goal to approach</output_port>
+            <input_port name="zone">Where to move the robot</input_port>
+        </Action>
+        <Action ID="GetRole">
+            <output_port name="entity"/>
+            <output_port name="intent"/>
+            <input_port name="question"/>
+        </Action>
+        <Action ID="Interaction">
+            <input_port name="node_id" type="unsigned long">Node id of the person found</input_port>
+        </Action>
+        <Condition ID="IsButtonPushed"/>
+        <Condition ID="IsNavigating"/>
+        <Action ID="Listen">
+            <output_port name="text">Text listened</output_port>
+        </Action>
+        <SubTree ID="Menu">
+            <input_port default="true" name="__shared_blackboard">If false (default), the Subtree has an isolated blackboard and needs port remapping</input_port>
+        </SubTree>
+        <Action ID="Move">
+            <input_port name="goal">Goal to approach</input_port>
+        </Action>
+        <SubTree ID="MusicalTherapy">
+            <input_port default="true" name="__shared_blackboard">If false (default), the Subtree has an isolated blackboard and needs port remapping</input_port>
+        </SubTree>
+        <SubTree ID="NeuronUp">
+            <input_port default="true" name="__shared_blackboard">If false (default), the Subtree has an isolated blackboard and needs port remapping</input_port>
+        </SubTree>
+        <Condition ID="PersonFound">
+            <input_port name="filter_case">Value to filter the person found (Optional)</input_port>
+            <output_port name="node_id">Node Identifier of the person found</output_port>
+            <output_port name="pose">Pose of the person found</output_port>
+            <output_port name="safe_distance">Safe distance near the person to approach</output_port>
+            <output_port name="volume">Volume level to say the text</output_port>
+        </Condition>
+        <Action ID="Play">
+            <input_port name="sound">Name of the file to play</input_port>
+            <input_port default="50.0" name="volume">Volume level to play the sound</input_port>
+        </Action>
+        <Control ID="RecoveryNode">
+            <input_port name="number_of_retries">Number of retries</input_port>
+        </Control>
+        <SubTree ID="Reminder">
+            <input_port default="true" name="__shared_blackboard">If false (default), the Subtree has an isolated blackboard and needs port remapping</input_port>
+        </SubTree>
+        <Condition ID="ResetPersonId"/>
+        <Condition ID="SafeInteraction">
+            <input_port name="node_id">Node Identifier of the person found</input_port>
+            <input_port name="pose">Pose of the person found</input_port>
+        </Condition>
+        <Action ID="Say">
+            <input_port name="text">Text to say</input_port>
+            <input_port default="50.0" name="volume">Volume level to say the text</input_port>
+        </Action>
+        <Decorator ID="SentenceBuilder">
+            <input_port name="node_id">Identifier node of the person you are interacting with</input_port>
+            <output_port name="text">Text to say</output_port>
+            <input_port name="use_case">Use case that is running at the moment</input_port>
+        </Decorator>
+        <Action ID="Show">
+            <input_port name="interface" type="std::string">Interface to show in the screen</input_port>
+        </Action>
+        <SubTree ID="SubTree"/>
+        <Control ID="Switch10">
+            <input_port name="case_1"/>
+            <input_port name="case_10"/>
+            <input_port name="case_2"/>
+            <input_port name="case_3"/>
+            <input_port name="case_4"/>
+            <input_port name="case_5"/>
+            <input_port name="case_6"/>
+            <input_port name="case_7"/>
+            <input_port name="case_8"/>
+            <input_port name="case_9"/>
+            <input_port name="variable"/>
+        </Control>
+        <Control ID="Switch7">
+            <input_port name="case_1"/>
+            <input_port name="case_2"/>
+            <input_port name="case_3"/>
+            <input_port name="case_4"/>
+            <input_port name="case_5"/>
+            <input_port name="case_6"/>
+            <input_port name="case_7"/>
+            <input_port name="variable"/>
+        </Control>
+        <Control ID="Switch8">
+            <input_port name="case_1"/>
+            <input_port name="case_2"/>
+            <input_port name="case_3"/>
+            <input_port name="case_4"/>
+            <input_port name="case_5"/>
+            <input_port name="case_6"/>
+            <input_port name="case_7"/>
+            <input_port name="case_8"/>
+            <input_port name="variable"/>
+        </Control>
+        <Control ID="Switch9">
+            <input_port name="case_1"/>
+            <input_port name="case_2"/>
+            <input_port name="case_3"/>
+            <input_port name="case_4"/>
+            <input_port name="case_5"/>
+            <input_port name="case_6"/>
+            <input_port name="case_7"/>
+            <input_port name="case_8"/>
+            <input_port name="case_9"/>
+            <input_port name="variable"/>
+        </Control>
+        <SubTree ID="Tracking">
+            <input_port default="true" name="__shared_blackboard">If false (default), the Subtree has an isolated blackboard and needs port remapping</input_port>
+        </SubTree>
+        <Condition ID="UseCaseFinished">
+            <input_port name="result_code" type="std::string">Result code of the use case</input_port>
+        </Condition>
+        <Action ID="UseCaseSelector">
+            <output_port name="use_case">Name of the use case</output_port>
+        </Action>
+        <Action ID="WaitMenuSelection"/>
+        <SubTree ID="Wandering">
+            <input_port default="true" name="__shared_blackboard">If false (default), the Subtree has an isolated blackboard and needs port remapping</input_port>
+        </SubTree>
+    </TreeNodesModel>
+    <!-- ////////// -->
+</root>

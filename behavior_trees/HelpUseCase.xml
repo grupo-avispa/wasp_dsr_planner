@@ -1,0 +1,154 @@
+<?xml version="1.0"?>
+<root main_tree_to_execute="HelpInterface">
+    <!-- ////////// -->
+    <BehaviorTree ID="HelpInterface">
+        <Sequence>
+            <Action ID="Help" goal="{help_goal}"/>
+            <RetryUntilSuccessful name="RetryMove" num_attempts="8">
+                <Decorator ID="DistanceApproach" distance="1.0" input_goal="{help_goal}" output_goal="{safe_distance}">
+                    <Action ID="Move" goal="{safe_distance}" name="ApproachPerson"/>
+                </Decorator>
+            </RetryUntilSuccessful>
+            <Action ID="Say" text="..... Hoolaaa... , he detectado que se ha caído, necesita ayuda?" volume="70.0"/>
+        </Sequence>
+    </BehaviorTree>
+    <!-- ////////// -->
+    <TreeNodesModel>
+        <SubTree ID="BringMeWater">
+            <input_port default="true" name="__shared_blackboard">If false (default), the Subtree has an isolated blackboard and needs port remapping</input_port>
+        </SubTree>
+        <Condition ID="CanTrackPerson">
+            <input_port name="node_id"/>
+        </Condition>
+        <Action ID="CancelAction">
+            <input_port name="action_name">Action to cancel</input_port>
+        </Action>
+        <SubTree ID="Charging">
+            <input_port default="true" name="__shared_blackboard">If false (default), the Subtree has an isolated blackboard and needs port remapping</input_port>
+        </SubTree>
+        <Decorator ID="DistanceApproach">
+            <input_port name="distance" type="double">Distance to approach</input_port>
+            <input_port name="input_goal" type="Goal">Original goal to approach</input_port>
+            <output_port name="output_goal" type="Goal">New goal to approach</output_port>
+        </Decorator>
+        <SubTree ID="DoNothing">
+            <input_port default="true" name="__shared_blackboard">If false (default), the Subtree has an isolated blackboard and needs port remapping</input_port>
+        </SubTree>
+        <Action ID="Dock"/>
+        <Action ID="Help">
+            <output_port name="goal">Goal to approach</output_port>
+        </Action>
+        <Action ID="Interaction">
+            <input_port name="node_id" type="unsigned long">Node id of the person found</input_port>
+        </Action>
+        <Condition ID="IsButtonPushed"/>
+        <Condition ID="IsNavigating"/>
+        <SubTree ID="Menu">
+            <input_port default="true" name="__shared_blackboard">If false (default), the Subtree has an isolated blackboard and needs port remapping</input_port>
+        </SubTree>
+        <Action ID="Move">
+            <input_port name="goal">Goal to approach</input_port>
+        </Action>
+        <SubTree ID="MusicalTherapy">
+            <input_port default="true" name="__shared_blackboard">If false (default), the Subtree has an isolated blackboard and needs port remapping</input_port>
+        </SubTree>
+        <SubTree ID="NeuronUp">
+            <input_port default="true" name="__shared_blackboard">If false (default), the Subtree has an isolated blackboard and needs port remapping</input_port>
+        </SubTree>
+        <Condition ID="PersonFound">
+            <input_port name="filter_case">Value to filter the person found (Optional)</input_port>
+            <output_port name="node_id">Node Identifier of the person found</output_port>
+            <output_port name="pose">Pose of the person found</output_port>
+            <output_port name="safe_distance">Safe distance near the person to approach</output_port>
+            <output_port name="volume">Volume level to say the text</output_port>
+        </Condition>
+        <Action ID="Play">
+            <input_port name="sound">Name of the file to play</input_port>
+            <input_port default="50.0" name="volume">Volume level to play the sound</input_port>
+        </Action>
+        <Control ID="RecoveryNode">
+            <input_port name="number_of_retries">Number of retries</input_port>
+        </Control>
+        <SubTree ID="Reminder">
+            <input_port default="true" name="__shared_blackboard">If false (default), the Subtree has an isolated blackboard and needs port remapping</input_port>
+        </SubTree>
+        <Condition ID="ResetPersonId"/>
+        <Condition ID="SafeInteraction">
+            <input_port name="node_id">Node Identifier of the person found</input_port>
+            <input_port name="pose">Pose of the person found</input_port>
+        </Condition>
+        <Action ID="Say">
+            <input_port name="text">Text to say</input_port>
+            <input_port default="50.0" name="volume">Volume level to say the text</input_port>
+        </Action>
+        <Decorator ID="SentenceBuilder">
+            <input_port name="node_id">Identifier node of the person you are interacting with</input_port>
+            <output_port name="text">Text to say</output_port>
+            <input_port name="use_case">Use case that is running at the moment</input_port>
+        </Decorator>
+        <Action ID="Show">
+            <input_port name="interface" type="std::string">Interface to show in the screen</input_port>
+        </Action>
+        <Action ID="Sign"/>
+        <SubTree ID="SubTree"/>
+        <Control ID="Switch10">
+            <input_port name="case_1"/>
+            <input_port name="case_10"/>
+            <input_port name="case_2"/>
+            <input_port name="case_3"/>
+            <input_port name="case_4"/>
+            <input_port name="case_5"/>
+            <input_port name="case_6"/>
+            <input_port name="case_7"/>
+            <input_port name="case_8"/>
+            <input_port name="case_9"/>
+            <input_port name="variable"/>
+        </Control>
+        <Control ID="Switch7">
+            <input_port name="case_1"/>
+            <input_port name="case_2"/>
+            <input_port name="case_3"/>
+            <input_port name="case_4"/>
+            <input_port name="case_5"/>
+            <input_port name="case_6"/>
+            <input_port name="case_7"/>
+            <input_port name="variable"/>
+        </Control>
+        <Control ID="Switch8">
+            <input_port name="case_1"/>
+            <input_port name="case_2"/>
+            <input_port name="case_3"/>
+            <input_port name="case_4"/>
+            <input_port name="case_5"/>
+            <input_port name="case_6"/>
+            <input_port name="case_7"/>
+            <input_port name="case_8"/>
+            <input_port name="variable"/>
+        </Control>
+        <Control ID="Switch9">
+            <input_port name="case_1"/>
+            <input_port name="case_2"/>
+            <input_port name="case_3"/>
+            <input_port name="case_4"/>
+            <input_port name="case_5"/>
+            <input_port name="case_6"/>
+            <input_port name="case_7"/>
+            <input_port name="case_8"/>
+            <input_port name="case_9"/>
+            <input_port name="variable"/>
+        </Control>
+        <SubTree ID="Tracking">
+            <input_port default="true" name="__shared_blackboard">If false (default), the Subtree has an isolated blackboard and needs port remapping</input_port>
+        </SubTree>
+        <Condition ID="UseCaseFinished">
+            <input_port name="result_code" type="std::string">Result code of the use case</input_port>
+        </Condition>
+        <Action ID="UseCaseSelector">
+            <output_port name="use_case">Name of the use case</output_port>
+        </Action>
+        <SubTree ID="Wandering">
+            <input_port default="true" name="__shared_blackboard">If false (default), the Subtree has an isolated blackboard and needs port remapping</input_port>
+        </SubTree>
+    </TreeNodesModel>
+    <!-- ////////// -->
+</root>

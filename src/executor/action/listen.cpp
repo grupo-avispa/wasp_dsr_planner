@@ -1,0 +1,54 @@
+// Copyright (c) 2024 Grupo Avispa, DTE, Universidad de Málaga
+// Copyright (c) 2024 Jose M. Galeas Merchan
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+#include <limits>
+
+#include "plannerAgent/executor/action/listen.hpp"
+
+Listen::Listen(
+  const std::string & xml_tag_name, const std::string & action_name,
+  const BT::NodeConfiguration & conf)
+: DSRAction<listen_node_type>(xml_tag_name, action_name, conf)
+{
+}
+
+void Listen::getInputsOnTick()
+{
+}
+
+bool Listen::setAttributesBeforeStart(DSR::Node & node)
+{
+  return true;
+}
+
+bool Listen::setOutputsAfterFinished(DSR::Node & node)
+{
+  bool success = false;
+  if (auto text = G_->get_attrib_by_name<text_att>(node); text.has_value()) {
+    setOutput<std::string>("text", text.value());
+    success = true;
+  }
+  return success;
+}
+
+#include "behaviortree_cpp_v3/bt_factory.h"
+BT_REGISTER_NODES(factory) {
+  BT::NodeBuilder builder =
+    [](const std::string & name, const BT::NodeConfiguration & config) {
+      return std::make_unique<Listen>(name, "listen", config);
+    };
+
+  factory.registerBuilder<Listen>("Listen", builder);
+}

@@ -1,0 +1,24 @@
+# Ignore build and bin folders
+build/
+bin/
+lib/
+
+# Ignore cmake files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# Ignore Visual Studio Code
+**/.vscode/
+
+# Local History for Visual Studio Code
+.history/
+
+# Ignore trace and logs
+*.fbl
+*.csv
+*.log
+
+# Ignore temp files
+*.*~
