@@ -21,6 +21,6 @@ RUN make install
 
 FROM ubuntu:24.04
 
-RUN apt update && apt upgrade -y && rm -rf /var/lib/apt/lists/*
+RUN apt update && apt upgrade -y && apt install -y libzmq3-dev && rm -rf /var/lib/apt/lists/*
 COPY --from=builder /opt/behaviortree_cpp /usr/local
 RUN ldconfig
