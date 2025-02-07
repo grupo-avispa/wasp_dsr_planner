@@ -16,10 +16,12 @@
 #include <boost/algorithm/string.hpp>
 #include "behaviortree_cpp/utils/shared_library.h"
 #include "behaviortree_cpp/xml_parsing.h"
+#include "behaviortree_cpp/json_export.h"
 #include "behaviortree_cpp/loggers/bt_cout_logger.h"
 #include "behaviortree_cpp/loggers/bt_file_logger_v2.h"
 
 #include "wasp_dsr_planner/behavior_tree_engine.hpp"
+#include "wasp_dsr_planner/executor/bt_types.hpp"
 #include "wasp_dsr_planner/plugins_list.hpp"
 
 BehaviorTreeEngine::BehaviorTreeEngine(
@@ -74,9 +76,7 @@ void BehaviorTreeEngine::initBehaviorTree(
   factory.registerNodeType<BT::SwitchNode<10>>("Switch10");
 
   // Print all the registered nodes
-  for (const auto & model : factory.manifests()) {
-    std::cout << "Loading BT Node: " << model.first << std::endl;
-  }
+  std::cout << "Loaded BT plugins: " << factory.manifests().size() << std::endl;
 
   // Create the blackboard that will be shared by all nodes in the tree
   blackboard_ = BT::Blackboard::create();
@@ -106,6 +106,9 @@ void BehaviorTreeEngine::initBehaviorTree(
 
   groot_publisher_ = std::make_unique<BT::Groot2Publisher>(tree_, publisher_port_);
   std::cout << "Enabling Groot2 monitoring using port: " << publisher_port_ << std::endl;
+
+  // Add the JSON exporter for the custom types
+  BT::JsonExporter::get().addConverter<Goal>();
 
   // Execute the tree
   tree_.tickWhileRunning(std::chrono::milliseconds(100));

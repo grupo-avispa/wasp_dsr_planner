@@ -26,14 +26,23 @@ struct Goal
   float x;
   float y;
   float yaw;
+
+  bool operator==(const Goal & p) const
+  {
+    return x == p.x && y == p.y && yaw == p.yaw;
+  }
+  bool operator!=(const Goal & p) const
+  {
+    return !(*this == p);
+  }
 };
 
 // Allow bi-directional convertion to JSON
-BT_JSON_CONVERTER(Goal, point)
+BT_JSON_CONVERTER(Goal, goal)
 {
-  add_field("x", &point.x);
-  add_field("y", &point.y);
-  add_field("yaw", &point.yaw);
+  add_field("x", &goal.x);
+  add_field("y", &goal.y);
+  add_field("yaw", &goal.yaw);
 }
 
 // Template specialization to converts a string to Goal.
@@ -48,14 +57,14 @@ template<>
   }
 
   // We expect real numbers separated by semicolons
-  auto parts = splitString(str, ',');
+  const auto parts = splitString(str, ',');
   if (parts.size() != 3) {
-    throw RuntimeError("invalid input)");
+    throw BT::RuntimeError("invalid input)");
   } else {
     Goal output;
-    output.x = convertFromString<double>(parts[0]);
-    output.y = convertFromString<double>(parts[1]);
-    output.yaw = convertFromString<double>(parts[2]);
+    output.x = convertFromString<float>(parts[0]);
+    output.y = convertFromString<float>(parts[1]);
+    output.yaw = convertFromString<float>(parts[2]);
     return output;
   }
 }
@@ -65,11 +74,11 @@ template<> inline DSR::Node convertFromString(BT::StringView str)
   // We expect string values separated by semicolons
   auto parts = splitString(str, ',');
   if (parts.size() != 2) {
-    throw RuntimeError("invalid node)");
+    throw BT::RuntimeError("invalid node)");
   } else {
     auto type = convertFromString<std::string>(parts[1]);
     if (!node_types::check_type(type)) {
-      throw std::runtime_error("Error, [" + type + "] is not a valid node type");
+      throw BT::RuntimeError("Error, [" + type + "] is not a valid node type");
     } else {
       DSR::Node output;
       output.name(convertFromString<std::string>(parts[0]));
@@ -84,7 +93,7 @@ template<> inline std::map<std::string, DSR::Attribute> convertFromString(BT::St
   // We expect string values separated by semicolons
   auto parts = splitString(str, ',');
   if (parts.size() % 3 != 0) {
-    throw RuntimeError("invalid attribute)");
+    throw BT::RuntimeError("invalid attribute)");
   } else {
     std::map<std::string, DSR::Attribute> output;
     for (unsigned int i = 0; i < parts.size(); i += 3) {
