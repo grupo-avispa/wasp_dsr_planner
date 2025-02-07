@@ -23,7 +23,7 @@ build:
   dependencies: [behaviortree_cpp]
   before_script:
     - DEBIAN_FRONTEND=noninteractive apt-get update
-    - DEBIAN_FRONTEND=noninteractive apt-get install -y cmake make build-essential libboost-all-dev nlohmann-json3-dev
+    - DEBIAN_FRONTEND=noninteractive apt-get install -y cmake make build-essential libboost-all-dev nlohmann-json3-dev libzmq3-dev
   cache:
     key: cache-${CI_COMMIT_REF_SLUG}
     fallback_keys:
