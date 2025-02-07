@@ -17,6 +17,7 @@
 #define PLANNER_AGENT__EXECUTOR__BT_TYPES_HPP_
 
 #include "behaviortree_cpp/behavior_tree.h"
+#include "behaviortree_cpp/json_export.h"
 #include "wasp_dsr_planner/dsr_api_ext.hpp"
 #include "wasp_dsr_planner/helpers.hpp"
 
@@ -27,11 +28,25 @@ struct Goal
   float yaw;
 };
 
+// Allow bi-directional convertion to JSON
+BT_JSON_CONVERTER(Goal, point)
+{
+  add_field("x", &point.x);
+  add_field("y", &point.y);
+  add_field("yaw", &point.yaw);
+}
+
 // Template specialization to converts a string to Goal.
 namespace BT
 {
-template<> inline Goal convertFromString(BT::StringView str)
+template<>
+[[nodiscard]] Goal convertFromString<Goal>(BT::StringView str)
 {
+  if (StartWith(str, "json:")) {
+    str.remove_prefix(5);
+    return convertFromJSON<Goal>(str);
+  }
+
   // We expect real numbers separated by semicolons
   auto parts = splitString(str, ',');
   if (parts.size() != 3) {
