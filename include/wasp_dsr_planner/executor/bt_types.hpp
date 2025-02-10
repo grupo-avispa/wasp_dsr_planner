@@ -45,7 +45,40 @@ BT_JSON_CONVERTER(Goal, goal)
   add_field("yaw", &goal.yaw);
 }
 
-// Template specialization to converts a string to Goal.
+BT_JSON_CONVERTER(DSR::Node, node)
+{
+  add_field("name", &node.name());
+  add_field("type", &node.type());
+}
+
+BT_JSON_CONVERTER(DSR::DSRGraph, graph)
+{
+  auto nodes_size = graph.get_nodes().size();
+  std::vector<DSR::Edge> edges;
+  for (const auto & node : graph.get_nodes()) {
+    if (auto edges_gr = graph.get_edges(node.id()); edges_gr.has_value()) {
+      for (const auto & edge_pair : edges_gr.value()) {
+        edges.push_back(edge_pair.second);
+      }
+    }
+  }
+  auto edges_size = edges.size();
+  add_field("nodes", &nodes_size);
+  add_field("edges", &edges_size);
+}
+
+using AttrMap = std::map<std::string, DSR::Attribute>;
+BT_JSON_CONVERTER(AttrMap, attributes)
+{
+  auto att_str = dsr_util::helpers::attributes_to_string(attributes);
+  for (unsigned int i = 0; i < att_str.size(); i += 3) {
+    add_field("name", &att_str[i]);
+    add_field("value", &att_str[i + 1]);
+    add_field("type", &att_str[i + 2]);
+  }
+}
+
+// Template specialization to converts a string to custom types
 namespace BT
 {
 template<>
@@ -69,9 +102,15 @@ template<>
   }
 }
 
-template<> inline DSR::Node convertFromString(BT::StringView str)
+template<>
+[[nodiscard]] DSR::Node convertFromString<DSR::Node>(BT::StringView str)
 {
-  // We expect string values separated by semicolons
+  if (StartWith(str, "json:")) {
+    str.remove_prefix(5);
+    return convertFromJSON<DSR::Node>(str);
+  }
+
+  // We expect string values separated by semicolons: "name,type"
   auto parts = splitString(str, ',');
   if (parts.size() != 2) {
     throw BT::RuntimeError("invalid node)");
@@ -88,9 +127,16 @@ template<> inline DSR::Node convertFromString(BT::StringView str)
   }
 }
 
-template<> inline std::map<std::string, DSR::Attribute> convertFromString(BT::StringView str)
+template<>
+[[nodiscard]] std::map<std::string, DSR::Attribute>
+convertFromString<std::map<std::string, DSR::Attribute>>(BT::StringView str)
 {
-  // We expect string values separated by semicolons
+  if (StartWith(str, "json:")) {
+    str.remove_prefix(5);
+    return convertFromJSON<std::map<std::string, DSR::Attribute>>(str);
+  }
+
+  // We expect string values separated by semicolons: "name,value,type"
   auto parts = splitString(str, ',');
   if (parts.size() % 3 != 0) {
     throw BT::RuntimeError("invalid attribute)");
