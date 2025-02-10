@@ -89,6 +89,7 @@ endforeach()
 # Conditions
 set(condition_plugins
   can_track_person
+  check_keyword
   is_button_pushed
   is_navigating
   person_found
