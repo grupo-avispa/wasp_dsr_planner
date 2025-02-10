@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4"
+      main_tree_to_execute="BehaviorTree">
+  <BehaviorTree ID="BehaviorTree">
+    <Parallel failure_count="1"
+              success_count="-1">
+      <Repeat num_cycles="-1">
+        <Sequence>
+          <RetryUntilSuccessful num_attempts="-1">
+            <Sequence>
+              <Listen text="{keyword}"/>
+              <CheckKeyword keyword="{keyword}"
+                            word_to_check="Hola robot"/>
+            </Sequence>
+          </RetryUntilSuccessful>
+          <Listen text="{task}"/>
+          <GetIntent entity="{entity}"
+                     intent="{intent}"
+                     question="{task}"/>
+        </Sequence>
+      </Repeat>
+      <Switch2 case_1="move"
+               case_2="charging"
+               variable="{intent}">
+        <SubTree ID="MoveToZone"
+                 zone="{entity}"
+                 _autoremap="true"/>
+        <SubTree ID="Charging"
+                 _autoremap="true"/>
+        <Delay delay_msec="5000000">
+          <Say text="Hola"
+               volume="50.0"/>
+        </Delay>
+      </Switch2>
+    </Parallel>
+  </BehaviorTree>
+
+  <BehaviorTree ID="Charging">
+    <Fallback>
+      <Sequence name="Charging">
+        <Parallel name="SayAndShow"
+                  failure_count="1"
+                  success_count="2">
+          <Say name="NoBatterySay"
+               text="Lo siento, tengo que ir a cargarme"
+               volume="50.0"/>
+          <Show name="LowBatteryInterface"
+                interface="low_battery"/>
+        </Parallel>
+        <RetryUntilSuccessful name="RetryDocking"
+                              num_attempts="3">
+          <Dock/>
+        </RetryUntilSuccessful>
+        <UseCaseFinished name="ChargingSuccess"
+                         result_code="Robot docked succesfully"/>
+        <UseCaseFinished name="ChargingFailure"
+                         result_code="Robot cannot dock."/>
+      </Sequence>
+    </Fallback>
+  </BehaviorTree>
+
+  <BehaviorTree ID="MoveToZone">
+    <Sequence>
+      <GetRandomGoal goal="{goal}"
+                     zone="{zone}"/>
+      <Move goal="{goal}"/>
+    </Sequence>
+  </BehaviorTree>
+
+  <!-- Description of Node Models (used by Groot) -->
+  <TreeNodesModel>
+    <Condition ID="CheckKeyword"
+               editable="true">
+      <input_port name="keyword">Keyword </input_port>
+      <input_port name="word_to_check">Word to check</input_port>
+    </Condition>
+    <Action ID="Dock"/>
+    <Action ID="GetIntent">
+      <output_port name="entity">Entity from RASA</output_port>
+      <output_port name="intent">Primary intent from RASA</output_port>
+      <input_port name="question">User question</input_port>
+    </Action>
+    <Action ID="GetRandomGoal">
+      <output_port name="goal">Goal to approach</output_port>
+      <input_port name="zone">Where to move the robot</input_port>
+    </Action>
+    <Action ID="Listen">
+      <output_port name="text">Text listened</output_port>
+    </Action>
+    <Action ID="Move">
+      <input_port name="goal">Goal to approach</input_port>
+    </Action>
+    <SubTree ID="MoveToZone"
+             editable="true">
+      <input_port name="zone"/>
+    </SubTree>
+    <Action ID="Say">
+      <input_port name="text">Text to say</input_port>
+      <input_port name="volume"
+                  default="50.0">Volume level to say the text</input_port>
+    </Action>
+    <Action ID="Show">
+      <input_port name="interface"
+                  type="std::string">Interface to show in the screen</input_port>
+    </Action>
+    <Condition ID="UseCaseFinished">
+      <input_port name="result_code"
+                  type="std::string">Result code of the use case</input_port>
+    </Condition>
+  </TreeNodesModel>
+
+</root>
