@@ -39,6 +39,7 @@ bool Move::setAttributesBeforeStart(DSR::Node & node)
     G_->add_or_modify_attrib_local<goal_angle_att>(node, goal_.yaw);
     std::cout << "[" << action_name_ << "]: ";
     std::cout << "Goal is: " << goal_.x << ", " << goal_.y << ", " << goal_.yaw << std::endl;
+    success = true;
   } else {
     std::cout << "[" << action_name_ << "]: Goal is not set" << std::endl;
   }

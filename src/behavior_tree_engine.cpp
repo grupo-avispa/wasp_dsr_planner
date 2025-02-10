@@ -100,7 +100,7 @@ void BehaviorTreeEngine::initBehaviorTree(
 
   // Add loggers and Groot2 publisher
   BT::StdCoutLogger logger_cout(tree_);
-  std::string filename = "bt_trace_" + std::to_string(std::time(nullptr)) + ".fbl";
+  std::string filename = "bt_trace_" + std::to_string(std::time(nullptr)) + ".btlog";
   std::string fullpath = log_filepath + "/" + filename;
   BT::FileLogger2 logger_file(tree_, fullpath.c_str());
 
