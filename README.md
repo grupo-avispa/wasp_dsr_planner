@@ -1,9 +1,11 @@
-## wasp_dsr_planner
+# wasp_dsr_planner
+
+[![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](https://opensource.org/licenses/Apache-2.0)
 
 The `wasp_dsr_planner` is responsible for loading and executing a Behavior Tree (BT) in which different use cases are executed. 
 
 
-### Installation
+## Installation
 
 To install the `wasp_dsr_planner` package, you can use the following command:
 
@@ -15,7 +17,7 @@ make
 sudo make install
 ```
 
-### Usage
+## Usage
 
 First, you must add the following lines to your .bashrc file:
 
@@ -30,11 +32,11 @@ Then, you can run the `wasp_dsr_planner` package using the following command:
 wasp_dsr_planner /opt/wasp/wasp_dsr_planner/params/default.conf
 ```
 
-### BT Nodes
+## BT Nodes
 
 This package contains the following BT nodes:
 
-### Action Nodes
+## Action Nodes
  * `cancel_action`: Cancels the current action.
  * `dock`: Docks the robot ro a charging station.
  * `generate_response`: Generates a response using LLM.
@@ -55,7 +57,7 @@ This package contains the following BT nodes:
  * `use_case_selector`: Selects a specific use case.
  * `wait_menu_selection`: Waits for a menu selection.
 
-### Condition Nodes
+## Condition Nodes
  * `can_track_person`: Checks if the agent can track a person.
  * `is_button_pushed`: Checks if a button is pushed.
  * `is_navigating`: Checks if the agent is currently navigating.
@@ -64,10 +66,10 @@ This package contains the following BT nodes:
  * `safe_interaction`: Checks if the person is at a safe distance.
  * `use_case_finished`: Checks if the current use case has finished.
 
-### Control Nodes
+## Control Nodes
  * `recovery_node`: Performs a recovery action.
 
-### Decorator Nodes
+## Decorator Nodes
  * `distance_approach`: Approaches a target location based on distance.
  * `get_causes`: Gets the causes of a specific use case.
  * `sentence_builder`: Builds a sentence based on current use case and the person.
