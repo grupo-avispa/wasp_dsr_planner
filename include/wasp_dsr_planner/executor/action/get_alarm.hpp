@@ -20,7 +20,6 @@
 #include "dsr/api/dsr_api.h"
 
 #include "wasp_dsr_planner/dsr_api_ext.hpp"
-#include "wasp_dsr_planner/executor/bt_types.hpp"
 
 /**
  * @class GetAlarm
@@ -66,7 +65,7 @@ private:
 
   // DSR graph
   std::shared_ptr<DSR::DSRGraph> G_;
-  std::string robot_name_;
+  std::string executor_name_;
   std::string action_name_;
 };
 

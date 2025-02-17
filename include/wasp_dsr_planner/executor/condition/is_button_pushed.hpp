@@ -23,7 +23,6 @@
 #include "dsr/api/dsr_api.h"
 
 #include "wasp_dsr_planner/executor/dsr_condition.hpp"
-#include "wasp_dsr_planner/executor/bt_types.hpp"
 
 /**
  * @class IsButtonPushed
@@ -50,9 +49,7 @@ public:
    */
   static BT::PortsList providedPorts()
   {
-    return {
-
-    };
+    return providedBasicPorts({});
   }
 
 private:

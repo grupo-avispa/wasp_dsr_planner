@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "wasp_dsr_planner/executor/bt_utils.hpp"
 #include "wasp_dsr_planner/executor/action/use_case_selector.hpp"
 
 UseCaseSelector::UseCaseSelector(
@@ -22,11 +23,8 @@ UseCaseSelector::UseCaseSelector(
 {
   // Get the DSR graph from the blackboard
   G_ = config().blackboard->get<std::shared_ptr<DSR::DSRGraph>>("dsr_graph");
-  // Get the robot node name from the blackboard
-  robot_name_ = config().blackboard->get<std::string>("robot_name");
-
-  std::cout << "[" << xml_tag_name << ", " << action_name_ << "]: ";
-  std::cout << "Created DSR-BT node for the robot node '" << robot_name_ << "'" << std::endl;
+  // Get the executor node name from input or blackboard
+  getInputOrBlackboard("executor_name", executor_name_);
 }
 
 BT::NodeStatus UseCaseSelector::tick()
@@ -45,7 +43,7 @@ BT::NodeStatus UseCaseSelector::tick()
 
 BT::NodeStatus UseCaseSelector::checkResult()
 {
-  auto robot_node = G_->get_node(robot_name_);
+  auto robot_node = G_->get_node(executor_name_);
   auto use_case_node = G_->get_node("use_case");
   if (robot_node.has_value() && use_case_node.has_value()) {
     // Check if the robot wants_to start a new use case: robot ---(wants_to)---> use_case
@@ -54,7 +52,7 @@ BT::NodeStatus UseCaseSelector::checkResult()
     if (wants_to_edge.has_value()) {
       // Replace the 'wants_to' edge with a 'is_performing' edge between robot and use_case
       if (DSR::replace_edge<is_performing_edge_type>(
-          G_, robot_node.value().id(), use_case_node.value().id(), "wants_to", robot_name_))
+          G_, robot_node.value().id(), use_case_node.value().id(), "wants_to", executor_name_))
       {
         auto use_case_name = G_->get_attrib_by_name<use_case_id_att>(use_case_node.value());
         use_case_ = use_case_name.has_value() ? use_case_name.value() : "";

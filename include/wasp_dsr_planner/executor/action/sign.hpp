@@ -62,7 +62,7 @@ private:
 
   // DSR graph
   std::shared_ptr<DSR::DSRGraph> G_;
-  std::string robot_name_;
+  std::string executor_name_;
   std::string action_name_;
 };
 

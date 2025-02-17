@@ -35,11 +35,11 @@ public:
    *
    * @param agent_name The name of the agent.
    * @param agent_id The ID of the agent.
-   * @param robot_name The name of the robot.
+   * @param executor_name The name of the executor.
    * @param use_dsr A flag to use DSR. Default is true.
    */
   BehaviorTreeEngine(
-    std::string agent_name, int agent_id, std::string robot_name, bool use_dsr = true);
+    std::string agent_name, int agent_id, std::string executor_name, bool use_dsr = true);
 
   /**
    * @brief Destructor for the BehaviorTreeEngine object.
@@ -73,7 +73,7 @@ private:
   void insertDsrIntoBlackboard(BT::Tree & tree);
 
   std::shared_ptr<DSR::DSRGraph> G_;
-  std::string robot_name_;
+  std::string executor_name_;
   bool use_dsr_;
 
   BT::Tree tree_;

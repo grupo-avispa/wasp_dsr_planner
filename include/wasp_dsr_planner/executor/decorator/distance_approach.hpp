@@ -22,7 +22,7 @@
 #include "behaviortree_cpp/decorator_node.h"
 #include "dsr/api/dsr_api.h"
 
-#include "wasp_dsr_planner/executor/bt_types.hpp"
+#include "wasp_dsr_planner/executor/bt_utils.hpp"
 
 /**
  * @clas DistanceApproach
@@ -39,7 +39,6 @@ public:
 
   ~DistanceApproach()
   {
-    std::cout << "[" << decorator_name_ << "]: Destroyed DSR-BT node" << std::endl;
     G_.reset();
   }
 
@@ -56,6 +55,7 @@ public:
   static BT::PortsList providedPorts()
   {
     return {
+      BT::InputPort<std::string>("executor_name", "Name of the executor performing the action"),
       BT::InputPort<float>("distance", 0.0, "Distance to approach"),
       BT::InputPort<Goal>("input_goal", "Original goal to approach"),
       BT::OutputPort<Goal>("output_goal", "New goal to approach")
@@ -65,7 +65,7 @@ public:
 private:
   // DSR graph
   std::shared_ptr<DSR::DSRGraph> G_;
-  std::string robot_name_;
+  std::string executor_name_;
   std::string decorator_name_;
 
   std::optional<uint64_t> current_action_id_;

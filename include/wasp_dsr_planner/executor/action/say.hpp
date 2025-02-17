@@ -38,10 +38,10 @@ public:
 
   static BT::PortsList providedPorts()
   {
-    return {
+    return providedBasicPorts({
       BT::InputPort<std::string>("text", "", "Text to say"),
       BT::InputPort<float>("volume", 50.0, "Volume level to say the text")
-    };
+    });
   }
 
 private:

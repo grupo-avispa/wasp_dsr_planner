@@ -37,7 +37,7 @@ BT::NodeStatus IsButtonPushed::checkCondition()
   for (const auto & edge: finished_edges) {
     auto from_node = G_->get_node(edge.from());
     auto to_node = G_->get_node(edge.to());
-    if (from_node.has_value() && from_node.value().name() == robot_name_) {
+    if (from_node.has_value() && from_node.value().name() == executor_name_) {
       if (to_node.has_value() && to_node.value().name() == "tracking") {
         std::cout << "Edge finished between robot and tracking found" << std::endl;
         // And delete the node

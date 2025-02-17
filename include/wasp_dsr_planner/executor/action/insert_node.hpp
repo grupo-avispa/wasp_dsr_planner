@@ -19,7 +19,6 @@
 #include "behaviortree_cpp/behavior_tree.h"
 #include "dsr/api/dsr_api.h"
 #include "wasp_dsr_planner/dsr_api_ext.hpp"
-#include "wasp_dsr_planner/executor/bt_types.hpp"
 /**
  * @class InsertNode
  * @brief This BT action node inserts a node with an attribute in the DSR graph.
@@ -49,6 +48,7 @@ public:
   static BT::PortsList providedPorts()
   {
     return {
+      BT::InputPort<std::string>("executor_name", "Name of the executor performing the action"),
       BT::InputPort<DSR::Node>("node", "Node to insert"),
       BT::InputPort<std::map<std::string, DSR::Attribute>>(
         "attributes", "Attributes of the node"),
@@ -65,7 +65,7 @@ private:
 
   // DSR graph
   std::shared_ptr<DSR::DSRGraph> G_;
-  std::string robot_name_;
+  std::string executor_name_;
   std::string action_name_;
 
   DSR::Node new_node_;

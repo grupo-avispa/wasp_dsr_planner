@@ -20,7 +20,6 @@
 #include "dsr/api/dsr_api.h"
 
 #include "wasp_dsr_planner/executor/dsr_action.hpp"
-#include "wasp_dsr_planner/executor/bt_types.hpp"
 
 /**
  * @class GetRandomGoal
@@ -42,10 +41,10 @@ public:
 
   static BT::PortsList providedPorts()
   {
-    return {
+    return providedBasicPorts({
       BT::InputPort<std::string>("zone", "", "Where to move the robot"),
       BT::OutputPort<Goal>("goal", "Goal to approach")
-    };
+    });
   }
 
 private:

@@ -50,6 +50,7 @@ public:
   static BT::PortsList providedPorts()
   {
     return {
+      BT::InputPort<std::string>("executor_name", "Name of the executor performing the action"),
       BT::InputPort<uint64_t>("node_id", 0, "Node id of the person found")
     };
   }
@@ -64,7 +65,7 @@ private:
 
   // DSR graph
   std::shared_ptr<DSR::DSRGraph> G_;
-  std::string robot_name_;
+  std::string executor_name_;
   std::string action_name_;
 
   uint64_t person_id_;

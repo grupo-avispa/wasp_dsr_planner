@@ -20,7 +20,6 @@
 #include "dsr/api/dsr_api.h"
 
 #include "wasp_dsr_planner/executor/dsr_action.hpp"
-#include "wasp_dsr_planner/executor/bt_types.hpp"
 
 /**
  * @class GetIntent
@@ -41,11 +40,11 @@ public:
 
   static BT::PortsList providedPorts()
   {
-    return {
+    return providedBasicPorts({
       BT::InputPort<std::string>("question", "", "Question received"),
       BT::OutputPort<std::string>("intent", "Primary intent from RASA"),
       BT::OutputPort<std::string>("entity", "Entity from RASA")
-    };
+    });
   }
 
 private:

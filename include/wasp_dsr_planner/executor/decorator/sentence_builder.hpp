@@ -37,7 +37,6 @@ public:
 
   ~SentenceBuilder()
   {
-    std::cout << "[" << decorator_name_ << "]: Destroyed DSR-BT node" << std::endl;
     G_.reset();
   }
 
@@ -54,6 +53,7 @@ public:
   static BT::PortsList providedPorts()
   {
     return {
+      BT::InputPort<std::string>("executor_name", "Name of the executor performing the action"),
       BT::InputPort<uint64_t>("node_id", "Identifier node of the person you are interacting with"),
       BT::InputPort<std::string>("use_case", "menu", "Use case that is running at the moment"),
       BT::OutputPort<std::string>("text", "Text to say")
@@ -63,7 +63,7 @@ public:
 private:
   // DSR graph
   std::shared_ptr<DSR::DSRGraph> G_;
-  std::string robot_name_;
+  std::string executor_name_;
   std::string decorator_name_;
 
   std::optional<uint64_t> current_action_id_;

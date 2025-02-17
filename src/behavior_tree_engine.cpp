@@ -21,12 +21,12 @@
 #include "behaviortree_cpp/loggers/bt_file_logger_v2.h"
 
 #include "wasp_dsr_planner/behavior_tree_engine.hpp"
-#include "wasp_dsr_planner/executor/bt_types.hpp"
+#include "wasp_dsr_planner/executor/bt_utils.hpp"
 #include "wasp_dsr_planner/plugins_list.hpp"
 
 BehaviorTreeEngine::BehaviorTreeEngine(
-  std::string agent_name, int agent_id, std::string robot_name, bool use_dsr)
-: robot_name_(robot_name), use_dsr_(use_dsr)
+  std::string agent_name, int agent_id, std::string executor_name, bool use_dsr)
+: executor_name_(executor_name), use_dsr_(use_dsr)
 {
   // Create graph
   if (use_dsr_) {
@@ -84,7 +84,7 @@ void BehaviorTreeEngine::initBehaviorTree(
   if (use_dsr_) {
     blackboard_->set<std::shared_ptr<DSR::DSRGraph>>("dsr_graph", G_);
   }
-  blackboard_->set<std::string>("robot_name", robot_name_);
+  blackboard_->set<std::string>("executor_name", executor_name_);
 
   // Create the tree from the file
   std::cout << "Creating tree from file: " << tree_filename << std::endl;
@@ -108,7 +108,16 @@ void BehaviorTreeEngine::initBehaviorTree(
   std::cout << "Enabling Groot2 monitoring using port: " << publisher_port_ << std::endl;
 
   // Add the JSON exporter for the custom types
-  BT::JsonExporter::get().addConverter<Goal>();
+  //using AttrMap = std::map<std::string, DSR::Attribute>;
+  // BT::JsonExporter::get().addConverter<Goal>();
+  // BT::JsonExporter::get().addConverter<DSR::Node>();
+  //BT::JsonExporter::get().addConverter<DSR::DSRGraph>();
+  //BT::JsonExporter::get().addConverter<AttrMap>();
+  // BT::RegisterJsonDefinition<Goal>();
+  // BT::RegisterJsonDefinition<DSR::Node>();
+  // BT::RegisterJsonDefinition<DSR::DSRGraph>();
+  // BT::RegisterJsonDefinition<std::map<std::string, DSR::Attribute>>();
+
 
   // Execute the tree
   tree_.tickWhileRunning(std::chrono::milliseconds(100));
@@ -126,6 +135,6 @@ void BehaviorTreeEngine::insertDsrIntoBlackboard(BT::Tree & tree)
   for (auto & subtree : tree.subtrees) {
     auto & blackboard = subtree->blackboard;
     blackboard->set("dsr_graph", G_);
-    blackboard->set("robot_name", robot_name_);
+    blackboard->set("executor_name", executor_name_);
   }
 }

@@ -31,13 +31,13 @@ BT::NodeStatus UseCaseFinished::checkCondition()
 {
   auto success = BT::NodeStatus::SUCCESS;
   // Replace the 'is_performing' edge with a 'finished' edge between robot and use_case
-  if (auto robot_node = G_->get_node(robot_name_); robot_node.has_value()) {
+  if (auto robot_node = G_->get_node(executor_name_); robot_node.has_value()) {
     if (auto use_case_node = G_->get_node("use_case"); use_case_node.has_value()) {
       // Delete 'is_performing' edge between robot and use_case
       if (G_->delete_edge(robot_node.value().id(), use_case_node.value().id(), "is_performing")) {
         // Add 'finished' edge between robot and use_case
         auto new_edge = DSR::create_edge_with_priority<finished_edge_type>(
-          G_, robot_node.value().id(), use_case_node.value().id(), 0, robot_name_);
+          G_, robot_node.value().id(), use_case_node.value().id(), 0, executor_name_);
         // Add result_code attribute
         G_->add_or_modify_attrib_local<result_code_att>(use_case_node.value(), result_code_);
         G_->update_node(use_case_node.value());

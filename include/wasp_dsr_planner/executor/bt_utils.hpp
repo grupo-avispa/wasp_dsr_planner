@@ -26,15 +26,6 @@ struct Goal
   float x;
   float y;
   float yaw;
-
-  bool operator==(const Goal & p) const
-  {
-    return x == p.x && y == p.y && yaw == p.yaw;
-  }
-  bool operator!=(const Goal & p) const
-  {
-    return !(*this == p);
-  }
 };
 
 // Allow bi-directional convertion to JSON
@@ -152,6 +143,37 @@ convertFromString<std::map<std::string, DSR::Attribute>>(BT::StringView str)
     return output;
   }
 }
+
+/**
+ * @brief Try reading an import port first, and if that doesn't work
+ * fallback to reading directly the blackboard.
+ * The blackboard must be passed explicitly because config() is private in BT.CPP 4.X
+ *
+ * @param bt_node node
+ * @param blackboard the blackboard ovtained with node->config().blackboard
+ * @param param_name std::string
+ * @param behavior_tree_node the node
+ * @return <T>
+ */
+template<typename T> inline
+bool getInputPortOrBlackboard(
+  const BT::TreeNode & bt_node,
+  const BT::Blackboard & blackboard,
+  const std::string & param_name,
+  T & value)
+{
+  if (bt_node.getInput<T>(param_name, value)) {
+    return true;
+  }
+  if (blackboard.get<T>(param_name, value)) {
+    return true;
+  }
+  return false;
+}
+
+// Macro to remove boiler plate when using getInputPortOrBlackboard
+#define getInputOrBlackboard(name, value) \
+  getInputPortOrBlackboard(*this, *(this->config().blackboard), name, value);
 
 } // end namespace BT
 

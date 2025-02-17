@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "wasp_dsr_planner/executor/bt_utils.hpp"
 #include "wasp_dsr_planner/executor/decorator/sentence_builder.hpp"
 #include "wasp_dsr_planner/json_messages.hpp"
 
@@ -24,11 +25,8 @@ SentenceBuilder::SentenceBuilder(
 
   // Get the DSR graph from the blackboard
   G_ = config().blackboard->get<std::shared_ptr<DSR::DSRGraph>>("dsr_graph");
-  // Get the robot node name from the blackboard
-  robot_name_ = config().blackboard->get<std::string>("robot_name");
-
-  std::cout << "[" << xml_tag_name << ", " << decorator_name_ << "]: ";
-  std::cout << "Created DSR-BT node for the robot node '" << robot_name_ << "'" << std::endl;
+  // Get the executor node name from input or blackboard
+  getInputOrBlackboard("executor_name", executor_name_);
 }
 
 BT::NodeStatus SentenceBuilder::tick()

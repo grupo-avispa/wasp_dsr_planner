@@ -48,7 +48,7 @@ public:
    */
   static BT::PortsList providedPorts()
   {
-    return {};
+    return providedBasicPorts({});
   }
 
 private:

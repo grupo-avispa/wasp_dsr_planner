@@ -77,7 +77,7 @@ int main(int argc, char * argv[])
   auto config = parseConfig(configFilePath);
   auto agent_name = config["agent_name"];
   auto agent_id = config["agent_id"].empty() ? 0 : std::stoi(config["agent_id"]);
-  auto robot_name = config["robot_name"];
+  auto executor_name = config["executor_name"];
   auto tree_filename = config["bt_tree_file"];
   auto log_filepath = config["bt_log_path"];
   auto publisher_port =
@@ -95,7 +95,7 @@ int main(int argc, char * argv[])
   std::cout << "Configuration parameters for the wasp_dsr_planner:" << std::endl;
   std::cout << "Agent name: " << agent_name << std::endl;
   std::cout << "Agent id: " << agent_id << std::endl;
-  std::cout << "Robot name: " << robot_name << std::endl;
+  std::cout << "Executor name: " << executor_name << std::endl;
   std::cout << "Tree filename: " << tree_filename << std::endl;
   std::cout << "Log filepath: " << log_filepath << std::endl;
   std::cout << "Groot2 publisher port: " << publisher_port << std::endl;
@@ -103,7 +103,7 @@ int main(int argc, char * argv[])
   std::cout << "Plugin libraries: " << plugin_libs.size() << std::endl;
 
   // Create the behavior tree engine
-  auto tree = std::make_shared<BehaviorTreeEngine>(agent_name, agent_id, robot_name, use_dsr);
+  auto tree = std::make_shared<BehaviorTreeEngine>(agent_name, agent_id, executor_name, use_dsr);
   // Add Groot 2 publisher to publish BT status changes
   tree->setGrootMonitoring(publisher_port);
   // Initialize the behavior tree

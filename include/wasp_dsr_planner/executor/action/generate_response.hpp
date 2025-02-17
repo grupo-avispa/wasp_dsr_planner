@@ -20,7 +20,6 @@
 #include "dsr/api/dsr_api.h"
 
 #include "wasp_dsr_planner/executor/dsr_action.hpp"
-#include "wasp_dsr_planner/executor/bt_types.hpp"
 
 /**
  * @class GenerateResponse
@@ -42,10 +41,10 @@ public:
 
   static BT::PortsList providedPorts()
   {
-    return {
+    return providedBasicPorts({
       BT::InputPort<std::string>("text", "", "Prompt for Llama"),
       BT::OutputPort<std::string>("answer", "Final answer generated")
-    };
+    });
   }
 
 private:

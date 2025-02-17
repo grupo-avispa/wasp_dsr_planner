@@ -42,7 +42,7 @@ BT::NodeStatus PersonFound::checkCondition()
     auto from_node = G_->get_node(edge.from());
     auto to_node = G_->get_node(edge.to());
     if (from_node.has_value() && from_node.value().type() == "person") {
-      if (to_node.has_value() && to_node.value().name() == robot_name_) {
+      if (to_node.has_value() && to_node.value().name() == executor_name_) {
         // Filter the person node depending on the use case
         // We want person with empty menu
         if (filter_case_ == "menu") {

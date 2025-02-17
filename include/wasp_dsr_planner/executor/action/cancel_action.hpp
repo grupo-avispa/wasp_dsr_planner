@@ -51,6 +51,7 @@ public:
   static BT::PortsList providedPorts()
   {
     return {
+      BT::InputPort<std::string>("executor_name", "Name of the executor performing the action"),
       BT::InputPort<std::string>("action_name", "", "Name of the action node to cancel")
     };
   }
@@ -65,7 +66,7 @@ private:
 
   // DSR graph
   std::shared_ptr<DSR::DSRGraph> G_;
-  std::string robot_name_;
+  std::string executor_name_;
   std::string action_name_;
 
   std::string action_to_cancel_;

@@ -395,7 +395,6 @@ bool replace_edge(
   std::shared_ptr<DSR::DSRGraph> G, uint64_t from, uint64_t to, std::string old_edge,
   const std::string & source = "robot")
 {
-  std::string robot_name_ = "robot";
   // Check if the parent and child nodes exist and if the old edge exists
   auto parent_node = G->get_node(from);
   auto child_node = G->get_node(to);

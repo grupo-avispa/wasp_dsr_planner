@@ -48,9 +48,9 @@ public:
    */
   static BT::PortsList providedPorts()
   {
-    return {
+    return providedBasicPorts({
       BT::InputPort<std::string>("result_code", "", "Result code of the use case")
-    };
+    });
   }
 
 private:

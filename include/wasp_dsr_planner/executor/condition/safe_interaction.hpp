@@ -22,7 +22,6 @@
 #include "dsr/api/dsr_api.h"
 
 #include "wasp_dsr_planner/executor/dsr_condition.hpp"
-#include "wasp_dsr_planner/executor/bt_types.hpp"
 
 /**
  * @class SafeInteraction
@@ -49,10 +48,10 @@ public:
    */
   static BT::PortsList providedPorts()
   {
-    return {
+    return providedBasicPorts({
       BT::InputPort<uint64_t>("node_id", "Identifier node of the person you are interacting with"),
       BT::InputPort<Goal>("pose", "Pose of the person found")
-    };
+    });
   }
 
 private:

@@ -14,6 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "wasp_dsr_planner/executor/bt_utils.hpp"
 #include "wasp_dsr_planner/executor/decorator/distance_approach.hpp"
 
 DistanceApproach::DistanceApproach(
@@ -24,11 +25,8 @@ DistanceApproach::DistanceApproach(
 
   // Get the DSR graph from the blackboard
   G_ = config().blackboard->get<std::shared_ptr<DSR::DSRGraph>>("dsr_graph");
-  // Get the robot node name from the blackboard
-  robot_name_ = config().blackboard->get<std::string>("robot_name");
-
-  std::cout << "[" << xml_tag_name << ", " << decorator_name_ << "]: ";
-  std::cout << "Created DSR-BT node for the robot node '" << robot_name_ << "'" << std::endl;
+  // Get the executor node name from input or blackboard
+  getInputOrBlackboard("executor_name", executor_name_);
 }
 
 BT::NodeStatus DistanceApproach::tick()
@@ -42,7 +40,7 @@ BT::NodeStatus DistanceApproach::tick()
   getInput<Goal>("input_goal", input_goal);
 
   // Get the position of the robot
-  if (auto robot_node = G_->get_node(robot_name_); robot_node.has_value()) {
+  if (auto robot_node = G_->get_node(executor_name_); robot_node.has_value()) {
     auto pose_x = G_->get_attrib_by_name<pose_x_att>(robot_node.value());
     auto pose_y = G_->get_attrib_by_name<pose_y_att>(robot_node.value());
     auto pose_yaw = G_->get_attrib_by_name<pose_angle_att>(robot_node.value());

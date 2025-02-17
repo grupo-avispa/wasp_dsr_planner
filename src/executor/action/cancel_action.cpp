@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "wasp_dsr_planner/executor/bt_utils.hpp"
 #include "wasp_dsr_planner/executor/action/cancel_action.hpp"
 
 CancelAction::CancelAction(
@@ -22,11 +23,8 @@ CancelAction::CancelAction(
 {
   // Get the DSR graph from the blackboard
   G_ = config().blackboard->get<std::shared_ptr<DSR::DSRGraph>>("dsr_graph");
-  // Get the robot node name from the blackboard
-  robot_name_ = config().blackboard->get<std::string>("robot_name");
-
-  std::cout << "[" << xml_tag_name << ", " << action_name_ << "]: ";
-  std::cout << "Created DSR-BT node for the robot node '" << robot_name_ << "'" << std::endl;
+  // Get the executor node name from input or blackboard
+  getInputOrBlackboard("executor_name", executor_name_);
 }
 
 BT::NodeStatus CancelAction::tick()
@@ -47,12 +45,12 @@ BT::NodeStatus CancelAction::checkResult()
   auto success = BT::NodeStatus::FAILURE;
   getInput<std::string>("action_name", action_to_cancel_);
 
-  auto wants_to_edge = G_->get_edge(robot_name_, action_to_cancel_, "wants_to");
-  auto is_performing_edge = G_->get_edge(robot_name_, action_to_cancel_, "is_performing");
+  auto wants_to_edge = G_->get_edge(executor_name_, action_to_cancel_, "wants_to");
+  auto is_performing_edge = G_->get_edge(executor_name_, action_to_cancel_, "is_performing");
   if (wants_to_edge.has_value() || is_performing_edge.has_value()) {
     // Replace the 'wants_to' edge with a 'cancel' edge between robot and action
     if (DSR::replace_edge<cancel_edge_type>(
-        G_, robot_name_, action_to_cancel_, "wants_to", robot_name_))
+        G_, executor_name_, action_to_cancel_, "wants_to", executor_name_))
     {
       // Add result_code attribute
       if (auto action_node = G_->get_node(action_to_cancel_); action_node.has_value()) {
@@ -63,7 +61,7 @@ BT::NodeStatus CancelAction::checkResult()
       }
       // Replace the 'is_performing' edge with a 'abort' edge between robot and action
     } else if (DSR::replace_edge<abort_edge_type>(
-        G_, robot_name_, action_to_cancel_, "is_performing", robot_name_))
+        G_, executor_name_, action_to_cancel_, "is_performing", executor_name_))
     {
       // Add result_code attribute
       if (auto action_node = G_->get_node(action_to_cancel_); action_node.has_value()) {

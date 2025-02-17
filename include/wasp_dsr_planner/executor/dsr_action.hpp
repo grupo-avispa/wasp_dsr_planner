@@ -20,6 +20,7 @@
 #include "dsr/api/dsr_api.h"
 
 #include "wasp_dsr_planner/dsr_api_ext.hpp"
+#include "wasp_dsr_planner/executor/bt_utils.hpp"
 
 /**
  * @brief Main class for the DSR actions. This actions are used to create nodes in the DSR graph and
@@ -36,14 +37,10 @@ public:
     const BT::NodeConfiguration & conf)
   : CoroActionNode(xml_tag_name, conf), action_name_(action_name)
   {
-
     // Get the DSR graph from the blackboard
     G_ = config().blackboard->get<std::shared_ptr<DSR::DSRGraph>>("dsr_graph");
-    // Get the robot node name from the blackboard
-    robot_name_ = config().blackboard->get<std::string>("robot_name");
-
-    std::cout << "[" << xml_tag_name << ", " << action_name_ << "]: ";
-    std::cout << "Created DSR-BT node for the robot node '" << robot_name_ << "'" << std::endl;
+    // Get the executor node name from input or blackboard
+    getInputOrBlackboard("executor_name", executor_name_);
   }
 
   DSRAction() = delete;
@@ -54,7 +51,6 @@ public:
    */
   ~DSRAction()
   {
-    std::cout << "[" << action_name_ << "]: Destroyed DSR-BT node" << std::endl;
     G_.reset();
   }
 
@@ -99,7 +95,7 @@ public:
       for (const auto & edge: edges) {
         // Replace the 'wants_to' edge with a 'cancel' edge between robot and action
         if (DSR::replace_edge<cancel_edge_type>(
-            G_, edge.from(), edge.to(), "wants_to", robot_name_))
+            G_, edge.from(), edge.to(), "wants_to", executor_name_))
         {
           // Add result_code attribute to the node
           if (auto to_node = G_->get_node(edge.to()); to_node.has_value()) {
@@ -116,7 +112,7 @@ public:
       for (const auto & edge: edges) {
         // Replace the 'is_performing' edge with a 'abort' edge between robot and action
         if (DSR::replace_edge<abort_edge_type>(
-            G_, edge.from(), edge.to(), "is_performing", robot_name_))
+            G_, edge.from(), edge.to(), "is_performing", executor_name_))
         {
           // Add result_code attribute to the node
           if (auto to_node = G_->get_node(edge.to()); to_node.has_value()) {
@@ -137,6 +133,31 @@ public:
   }
 
     CoroActionNode::halt();
+  }
+
+  /**
+   * @brief Any subclass of BtActionNode that accepts parameters must provide a
+   * providedPorts method and call providedBasicPorts in it.
+   * @param addition Additional ports to add to BT port list
+   * @return BT::PortsList Containing basic ports along with node-specific ports
+   */
+  static BT::PortsList providedBasicPorts(BT::PortsList addition)
+  {
+    BT::PortsList basic = {
+      BT::InputPort<std::string>("executor_name", "Name of the executor performing the action"),
+    };
+    basic.insert(addition.begin(), addition.end());
+
+    return basic;
+  }
+
+  /**
+   * @brief Creates list of BT ports
+   * @return BT::PortsList Containing basic ports along with node-specific ports
+   */
+  static BT::PortsList providedPorts()
+  {
+    return providedBasicPorts({});
   }
 
 protected:
@@ -185,9 +206,9 @@ private:
   {
     bool success = false;
     std::cout << "[" << action_name_ << "]: Starting ..." << std::endl;
-    if (auto robot_node = G_->get_node(robot_name_); robot_node.has_value()) {
-      // Create a new node with the lowests priority and the source 'robot_name_'
-      auto new_node = DSR::create_node_with_priority<NODE_TYPE>(G_, action_name_, 0, robot_name_);
+    if (auto robot_node = G_->get_node(executor_name_); robot_node.has_value()) {
+      // Create a new node with the lowests priority and the source 'executor_name_'
+      auto new_node = DSR::create_node_with_priority<NODE_TYPE>(G_, action_name_, 0, executor_name_);
       // User defined function to add attributes from the BT node before start
       if (setAttributesBeforeStart(new_node)) {
         // Insert the node in the graph
@@ -197,7 +218,7 @@ private:
           std::cout << id.value() << "]" << std::endl;
           // Insert edge 'wants_to' between robot and action
           auto new_edge = DSR::create_edge_with_priority<wants_to_edge_type>(
-            G_, robot_node.value().id(), new_node.id(), 0, robot_name_);
+            G_, robot_node.value().id(), new_node.id(), 0, executor_name_);
           if (G_->insert_or_assign_edge(new_edge)) {
             success = true;
             std::cout << "Inserted new edge [" << robot_node.value().name() << "->";
@@ -223,7 +244,7 @@ private:
   BT::NodeStatus checkResult()
   {
     if (current_action_id_.has_value()) {
-      auto robot_node = G_->get_node(robot_name_);
+      auto robot_node = G_->get_node(executor_name_);
       if (robot_node.has_value()) {
         // Check if the robot has finished the action
         auto finished_edge =
@@ -262,7 +283,7 @@ private:
   }
 
   // Name of the robot
-  std::string robot_name_;
+  std::string executor_name_;
 
   // Current action id
   std::optional<uint64_t> current_action_id_;

@@ -34,7 +34,7 @@ void CanTrackPerson::getInputsOnTick()
 BT::NodeStatus CanTrackPerson::checkCondition()
 {
   auto success = BT::NodeStatus::FAILURE;
-  auto robot_node = G_->get_node(robot_name_);
+  auto robot_node = G_->get_node(executor_name_);
   auto tracking_node = G_->get_node("tracking");
   auto person_node = G_->get_node(person_id_);
   if (person_node.has_value() && person_node.value().type() == "person") {
@@ -43,13 +43,13 @@ BT::NodeStatus CanTrackPerson::checkCondition()
       std::cout << "The person is enable to be tracked" << std::endl;
       if (robot_node.has_value() && tracking_node.has_value()) {
         DSR::replace_edge<is_performing_edge_type>(
-          G_, robot_node.value().id(), tracking_node.value().id(), "wants_to", robot_name_);
+          G_, robot_node.value().id(), tracking_node.value().id(), "wants_to", executor_name_);
       }
       success = BT::NodeStatus::SUCCESS;
     } else {
       if (robot_node.has_value() && tracking_node.has_value()) {
         DSR::replace_edge<finished_edge_type>(
-          G_, robot_node.value().id(), tracking_node.value().id(), "wants_to", robot_name_);
+          G_, robot_node.value().id(), tracking_node.value().id(), "wants_to", executor_name_);
       }
       std::cout << "The person is NOT enable to be tracked" << std::endl;
     }

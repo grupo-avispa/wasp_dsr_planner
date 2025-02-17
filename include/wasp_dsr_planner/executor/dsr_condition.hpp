@@ -20,6 +20,7 @@
 #include "dsr/api/dsr_api.h"
 
 #include "wasp_dsr_planner/dsr_api_ext.hpp"
+#include "wasp_dsr_planner/executor/bt_utils.hpp"
 
 /**
  * @brief Main class for the DSR conditions. This conditions are used to check
@@ -35,14 +36,10 @@ public:
   : ConditionNode(xml_tag_name, conf),
     condition_name_(condition_name)
   {
-
     // Get the DSR graph from the blackboard
     G_ = config().blackboard->get<std::shared_ptr<DSR::DSRGraph>>("dsr_graph");
-    // Get the robot node name from the blackboard
-    robot_name_ = config().blackboard->get<std::string>("robot_name");
-
-    std::cout << "[" << xml_tag_name << ", " << condition_name_ << "]: ";
-    std::cout << "Created DSR-BT node for the robot node '" << robot_name_ << "'" << std::endl;
+    // Get the executor node name from input or blackboard
+    getInputOrBlackboard("executor_name", executor_name_);
   }
 
   DSRCondition() = delete;
@@ -73,6 +70,31 @@ public:
     return checkCondition();
   }
 
+  /**
+   * @brief Any subclass of BtActionNode that accepts parameters must provide a
+   * providedPorts method and call providedBasicPorts in it.
+   * @param addition Additional ports to add to BT port list
+   * @return BT::PortsList Containing basic ports along with node-specific ports
+   */
+  static BT::PortsList providedBasicPorts(BT::PortsList addition)
+  {
+    BT::PortsList basic = {
+      BT::InputPort<std::string>("executor_name", "Name of the executor performing the action"),
+    };
+    basic.insert(addition.begin(), addition.end());
+
+    return basic;
+  }
+
+  /**
+   * @brief Creates list of BT ports
+   * @return BT::PortsList Containing basic ports along with node-specific ports
+   */
+  static BT::PortsList providedPorts()
+  {
+    return providedBasicPorts({});
+  }
+
 protected:
   /**
    * @brief Derived classes can override this function to get the inputs on tick.
@@ -91,7 +113,7 @@ protected:
   std::shared_ptr<DSR::DSRGraph> G_;
 
   // Name of the robot
-  std::string robot_name_;
+  std::string executor_name_;
 
   // Name of the condition
   std::string condition_name_;

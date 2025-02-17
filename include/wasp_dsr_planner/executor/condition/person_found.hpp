@@ -22,7 +22,6 @@
 #include "dsr/api/dsr_api.h"
 
 #include "wasp_dsr_planner/executor/dsr_condition.hpp"
-#include "wasp_dsr_planner/executor/bt_types.hpp"
 
 /**
  * @class PersonFound
@@ -49,13 +48,13 @@ public:
    */
   static BT::PortsList providedPorts()
   {
-    return {
+    return providedBasicPorts({
       BT::InputPort<std::string>("filter_case", "", "Value to filter the person found (Optional)"),
       BT::OutputPort<float>("safe_distance", "Safe distance near the person to approach"),
       BT::OutputPort<uint64_t>("node_id", "Node Identifier of the person found"),
       BT::OutputPort<Goal>("pose", "Pose of the person found"),
       BT::OutputPort<float>("volume", "Volume level to say the text")
-    };
+    });
   }
 
 private:

@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "wasp_dsr_planner/executor/bt_utils.hpp"
 #include "wasp_dsr_planner/executor/action/wait_menu_selection.hpp"
 
 WaitMenuSelection::WaitMenuSelection(
@@ -22,11 +23,8 @@ WaitMenuSelection::WaitMenuSelection(
 {
   // Get the DSR graph from the blackboard
   G_ = config().blackboard->get<std::shared_ptr<DSR::DSRGraph>>("dsr_graph");
-  // Get the robot node name from the blackboard
-  robot_name_ = config().blackboard->get<std::string>("robot_name");
-
-  std::cout << "[" << xml_tag_name << ", " << action_name_ << "]: ";
-  std::cout << "Created DSR-BT node for the robot node '" << robot_name_ << "'" << std::endl;
+  // Get the executor node name from input or blackboard
+  getInputOrBlackboard("executor_name", executor_name_);
 }
 
 BT::NodeStatus WaitMenuSelection::tick()
@@ -53,11 +51,11 @@ BT::NodeStatus WaitMenuSelection::checkResult()
     }
     // Check if there is say node in the graph and abort it
     auto say_node = G_->get_node("say");
-    auto robot_node = G_->get_node(robot_name_);
+    auto robot_node = G_->get_node(executor_name_);
     if (robot_node.has_value() && say_node.has_value()) {
       if (G_->delete_edge(robot_node.value().id(), say_node.value().id(), "is_performing")) {
         auto edge = DSR::create_edge_with_priority<abort_edge_type>(
-          G_, robot_node.value().id(), say_node.value().id(), 0, robot_name_);
+          G_, robot_node.value().id(), say_node.value().id(), 0, executor_name_);
         if (G_->insert_or_assign_edge(edge)) {
           std::cout << "Aborted action " << say_node.value().name() << std::endl;
         }

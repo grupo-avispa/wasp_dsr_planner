@@ -33,7 +33,7 @@ BT::NodeStatus ResetPersonId::checkCondition()
   // Get the current person node id
   uint64_t person_node_id = config().blackboard->get<uint64_t>("current_person_node_id");
   // Replace the 'interacting' edge with a 'is_with' edge between person and robot
-  if (auto robot_node = G_->get_node(robot_name_); robot_node.has_value()) {
+  if (auto robot_node = G_->get_node(executor_name_); robot_node.has_value()) {
     if (auto person_node = G_->get_node(person_node_id);
       person_node.has_value() && person_node_id != 0)
     {
@@ -53,7 +53,7 @@ BT::NodeStatus ResetPersonId::checkCondition()
       if (G_->delete_edge(robot_node.value().id(), person_node.value().id(), "interacting")) {
         // Add 'is_with' edge between person and robot
         auto new_edge = DSR::create_edge_with_priority<is_with_edge_type>(
-          G_, person_node.value().id(), robot_node.value().id(), 0, robot_name_);
+          G_, person_node.value().id(), robot_node.value().id(), 0, executor_name_);
         if (!G_->insert_or_assign_edge(new_edge)) {
           std::cout << "[" << condition_name_ << "]: ";
           std::cout << "Error inserting 'is_with' edge between robot and person" << std::endl;

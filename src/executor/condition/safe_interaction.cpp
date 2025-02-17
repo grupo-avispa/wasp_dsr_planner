@@ -31,7 +31,7 @@ BT::NodeStatus SafeInteraction::checkCondition()
 {
   auto success = BT::NodeStatus::FAILURE;
   // Get the position of the robot
-  if (auto robot_node = G_->get_node(robot_name_); robot_node.has_value()) {
+  if (auto robot_node = G_->get_node(executor_name_); robot_node.has_value()) {
     auto pose_x = G_->get_attrib_by_name<pose_x_att>(robot_node.value());
     auto pose_y = G_->get_attrib_by_name<pose_y_att>(robot_node.value());
     auto pose_yaw = G_->get_attrib_by_name<pose_angle_att>(robot_node.value());

@@ -40,9 +40,9 @@ public:
 
   static BT::PortsList providedPorts()
   {
-    return {
+    return providedBasicPorts({
       BT::InputPort<std::string>("interface", "", "Interface to show in the screen")
-    };
+    });
   }
 
 private:

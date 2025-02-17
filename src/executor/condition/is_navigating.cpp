@@ -31,7 +31,7 @@ BT::NodeStatus IsNavigating::checkCondition()
   auto success = BT::NodeStatus::FAILURE;
   // Check if the robot is navigating
   if (auto move_node = G_->get_node("move"); move_node.has_value()) {
-    if (auto robot_node = G_->get_node(robot_name_); robot_node.has_value()) {
+    if (auto robot_node = G_->get_node(executor_name_); robot_node.has_value()) {
       auto is_performing_edge = G_->get_edge(
         robot_node.value().id(), move_node.value().id(), "is_performing");
       if (is_performing_edge.has_value()) {

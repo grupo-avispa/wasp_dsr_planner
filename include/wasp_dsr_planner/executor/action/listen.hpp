@@ -20,7 +20,6 @@
 #include "dsr/api/dsr_api.h"
 
 #include "wasp_dsr_planner/executor/dsr_action.hpp"
-#include "wasp_dsr_planner/executor/bt_types.hpp"
 
 /**
  * @class Listen
@@ -42,9 +41,9 @@ public:
 
   static BT::PortsList providedPorts()
   {
-    return {
+    return providedBasicPorts({
       BT::OutputPort<std::string>("text", "Text listened")
-    };
+    });
   }
 
 private:
