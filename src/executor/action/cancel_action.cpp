@@ -26,6 +26,8 @@ CancelAction::CancelAction(
     G_ = g_lock.get()->cast<std::shared_ptr<DSR::DSRGraph>>();
   // Get the executor node name from input or blackboard
   getInputOrBlackboard("executor_name", executor_name_);
+  // Get the source
+  source_ = config().blackboard->get<std::string>("source");
 }
 
 BT::NodeStatus CancelAction::tick()
@@ -51,7 +53,7 @@ BT::NodeStatus CancelAction::checkResult()
   if (wants_to_edge.has_value() || is_performing_edge.has_value()) {
     // Replace the 'wants_to' edge with a 'cancel' edge between robot and action
     if (DSR::replace_edge<cancel_edge_type>(
-        G_, executor_name_, action_to_cancel_, "wants_to", executor_name_))
+        G_, executor_name_, action_to_cancel_, "wants_to", source_))
     {
       // Add result_code attribute
       if (auto action_node = G_->get_node(action_to_cancel_); action_node.has_value()) {
@@ -62,7 +64,7 @@ BT::NodeStatus CancelAction::checkResult()
       }
       // Replace the 'is_performing' edge with a 'abort' edge between robot and action
     } else if (DSR::replace_edge<abort_edge_type>(
-        G_, executor_name_, action_to_cancel_, "is_performing", executor_name_))
+        G_, executor_name_, action_to_cancel_, "is_performing", source_))
     {
       // Add result_code attribute
       if (auto action_node = G_->get_node(action_to_cancel_); action_node.has_value()) {

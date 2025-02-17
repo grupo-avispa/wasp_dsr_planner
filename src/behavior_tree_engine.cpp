@@ -25,8 +25,8 @@
 #include "wasp_dsr_planner/plugins_list.hpp"
 
 BehaviorTreeEngine::BehaviorTreeEngine(
-  std::string agent_name, int agent_id, std::string executor_name, bool use_dsr)
-: executor_name_(executor_name), use_dsr_(use_dsr)
+  std::string agent_name, int agent_id, std::string executor_name, std::string source, bool use_dsr)
+: executor_name_(executor_name), source_(source), use_dsr_(use_dsr)
 {
   // Create graph
   if (use_dsr_) {
@@ -85,6 +85,7 @@ void BehaviorTreeEngine::initBehaviorTree(
     blackboard_->set<std::shared_ptr<DSR::DSRGraph>>("dsr_graph", G_);
   }
   blackboard_->set<std::string>("executor_name", executor_name_);
+  blackboard_->set<std::string>("source", source_);
 
   // Create the tree from the file
   std::cout << "Creating tree from file: " << tree_filename << std::endl;
@@ -108,11 +109,8 @@ void BehaviorTreeEngine::initBehaviorTree(
   std::cout << "Enabling Groot2 monitoring using port: " << publisher_port_ << std::endl;
 
   // Add the JSON exporter for the custom types
-  //using AttrMap = std::map<std::string, DSR::Attribute>;
-  // BT::JsonExporter::get().addConverter<Goal>();
-  // BT::JsonExporter::get().addConverter<DSR::Node>();
-  //BT::JsonExporter::get().addConverter<DSR::DSRGraph>();
-  //BT::JsonExporter::get().addConverter<AttrMap>();
+  BT::RegisterJsonDefinition<Goal>();
+  // BT::RegisterJsonDefinition<DSR::Node>();
   // BT::RegisterJsonDefinition<Goal>();
   // BT::RegisterJsonDefinition<DSR::Node>();
   // BT::RegisterJsonDefinition<DSR::DSRGraph>();
@@ -136,5 +134,6 @@ void BehaviorTreeEngine::insertDsrIntoBlackboard(BT::Tree & tree)
     auto & blackboard = subtree->blackboard;
     blackboard->set("dsr_graph", G_);
     blackboard->set("executor_name", executor_name_);
+    blackboard->set("source", source_);
   }
 }

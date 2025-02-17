@@ -37,7 +37,7 @@ BT::NodeStatus UseCaseFinished::checkCondition()
       if (G_->delete_edge(robot_node.value().id(), use_case_node.value().id(), "is_performing")) {
         // Add 'finished' edge between robot and use_case
         auto new_edge = DSR::create_edge_with_priority<finished_edge_type>(
-          G_, robot_node.value().id(), use_case_node.value().id(), 0, executor_name_);
+          G_, robot_node.value().id(), use_case_node.value().id(), 0, source_);
         // Add result_code attribute
         G_->add_or_modify_attrib_local<result_code_att>(use_case_node.value(), result_code_);
         G_->update_node(use_case_node.value());

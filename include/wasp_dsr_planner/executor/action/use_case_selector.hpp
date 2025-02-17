@@ -74,6 +74,9 @@ private:
   std::string executor_name_;
   std::string action_name_;
 
+  // Source of the action
+  std::string source_;
+
   // Use case
   std::string use_case_;
 };

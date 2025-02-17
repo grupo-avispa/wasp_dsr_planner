@@ -27,6 +27,8 @@ Interaction::Interaction(
     G_ = g_lock.get()->cast<std::shared_ptr<DSR::DSRGraph>>();
   // Get the executor node name from input or blackboard
   getInputOrBlackboard("executor_name", executor_name_);
+  // Get the source
+  source_ = config().blackboard->get<std::string>("source");
 }
 
 BT::NodeStatus Interaction::tick()
@@ -52,7 +54,7 @@ BT::NodeStatus Interaction::checkResult()
   if (robot_node.has_value() && person_node.has_value()) {
     if (G_->delete_edge(person_id_, robot_node.value().id(), "is_with")) {
       auto edge = DSR::create_edge_with_priority<interacting_edge_type>(
-        G_, robot_node.value().id(), person_id_, 0, executor_name_);
+        G_, robot_node.value().id(), person_id_, 0, source_);
       if (G_->insert_or_assign_edge(edge)) {
         std::cout << "[" << action_name_ << "]: Interacting edge " << std::endl;
         success = BT::NodeStatus::SUCCESS;

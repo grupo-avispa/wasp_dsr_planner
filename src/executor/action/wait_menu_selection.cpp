@@ -26,6 +26,8 @@ WaitMenuSelection::WaitMenuSelection(
     G_ = g_lock.get()->cast<std::shared_ptr<DSR::DSRGraph>>();
   // Get the executor node name from input or blackboard
   getInputOrBlackboard("executor_name", executor_name_);
+  // Get the source
+  source_ = config().blackboard->get<std::string>("source");
 }
 
 BT::NodeStatus WaitMenuSelection::tick()
@@ -56,7 +58,7 @@ BT::NodeStatus WaitMenuSelection::checkResult()
     if (robot_node.has_value() && say_node.has_value()) {
       if (G_->delete_edge(robot_node.value().id(), say_node.value().id(), "is_performing")) {
         auto edge = DSR::create_edge_with_priority<abort_edge_type>(
-          G_, robot_node.value().id(), say_node.value().id(), 0, executor_name_);
+          G_, robot_node.value().id(), say_node.value().id(), 0, source_);
         if (G_->insert_or_assign_edge(edge)) {
           std::cout << "Aborted action " << say_node.value().name() << std::endl;
         }

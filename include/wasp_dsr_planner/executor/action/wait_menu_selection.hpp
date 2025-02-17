@@ -64,6 +64,9 @@ private:
   std::shared_ptr<DSR::DSRGraph> G_;
   std::string executor_name_;
   std::string action_name_;
+
+  // Source of the action
+  std::string source_;
 };
 
 #endif  // PLANNER_AGENT__EXECUTOR__ACTION__WAIT_MENU_SELECTION_HPP_

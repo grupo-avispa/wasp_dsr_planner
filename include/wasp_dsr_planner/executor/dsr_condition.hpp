@@ -41,6 +41,8 @@ public:
     G_ = g_lock.get()->cast<std::shared_ptr<DSR::DSRGraph>>();
     // Get the executor node name from input or blackboard
     getInputOrBlackboard("executor_name", executor_name_);
+    // Get the source
+    source_ = config().blackboard->get<std::string>("source");
   }
 
   DSRCondition() = delete;
@@ -115,6 +117,9 @@ protected:
 
   // Name of the robot
   std::string executor_name_;
+
+  // Source of the action
+  std::string source_;
 
   // Name of the condition
   std::string condition_name_;

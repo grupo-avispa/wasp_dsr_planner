@@ -26,6 +26,8 @@ UseCaseSelector::UseCaseSelector(
     G_ = g_lock.get()->cast<std::shared_ptr<DSR::DSRGraph>>();
   // Get the executor node name from input or blackboard
   getInputOrBlackboard("executor_name", executor_name_);
+  // Get the source
+  source_ = config().blackboard->get<std::string>("source");
 }
 
 BT::NodeStatus UseCaseSelector::tick()
@@ -53,7 +55,7 @@ BT::NodeStatus UseCaseSelector::checkResult()
     if (wants_to_edge.has_value()) {
       // Replace the 'wants_to' edge with a 'is_performing' edge between robot and use_case
       if (DSR::replace_edge<is_performing_edge_type>(
-          G_, robot_node.value().id(), use_case_node.value().id(), "wants_to", executor_name_))
+          G_, robot_node.value().id(), use_case_node.value().id(), "wants_to", source_))
       {
         auto use_case_name = G_->get_attrib_by_name<use_case_id_att>(use_case_node.value());
         use_case_ = use_case_name.has_value() ? use_case_name.value() : "";

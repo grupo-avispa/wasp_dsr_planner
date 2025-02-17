@@ -25,6 +25,8 @@ GetAlarm::GetAlarm(
     G_ = g_lock.get()->cast<std::shared_ptr<DSR::DSRGraph>>();
   // Get the executor node name from input or blackboard
   getInputOrBlackboard("executor_name", executor_name_);
+  // Get the source
+  source_ = config().blackboard->get<std::string>("source");
 }
 
 BT::NodeStatus GetAlarm::tick()
@@ -66,7 +68,7 @@ BT::NodeStatus GetAlarm::checkResult()
         }
         // And replace edge
         DSR::replace_edge<is_performing_edge_type>(
-          G_, from_node.value().id(), to_node.value().id(), "wants_to", executor_name_);
+          G_, from_node.value().id(), to_node.value().id(), "wants_to", source_);
         result = BT::NodeStatus::SUCCESS;
       }
     }

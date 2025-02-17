@@ -43,13 +43,13 @@ BT::NodeStatus CanTrackPerson::checkCondition()
       std::cout << "The person is enable to be tracked" << std::endl;
       if (robot_node.has_value() && tracking_node.has_value()) {
         DSR::replace_edge<is_performing_edge_type>(
-          G_, robot_node.value().id(), tracking_node.value().id(), "wants_to", executor_name_);
+          G_, robot_node.value().id(), tracking_node.value().id(), "wants_to", source_);
       }
       success = BT::NodeStatus::SUCCESS;
     } else {
       if (robot_node.has_value() && tracking_node.has_value()) {
         DSR::replace_edge<finished_edge_type>(
-          G_, robot_node.value().id(), tracking_node.value().id(), "wants_to", executor_name_);
+          G_, robot_node.value().id(), tracking_node.value().id(), "wants_to", source_);
       }
       std::cout << "The person is NOT enable to be tracked" << std::endl;
     }

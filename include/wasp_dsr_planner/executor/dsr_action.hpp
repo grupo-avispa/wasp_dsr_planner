@@ -42,6 +42,8 @@ public:
     G_ = g_lock.get()->cast<std::shared_ptr<DSR::DSRGraph>>();
     // Get the executor node name from input or blackboard
     getInputOrBlackboard("executor_name", executor_name_);
+    // Get the source
+    source_ = config().blackboard->get<std::string>("source");
   }
 
   DSRAction() = delete;
@@ -96,7 +98,7 @@ public:
       for (const auto & edge: edges) {
         // Replace the 'wants_to' edge with a 'cancel' edge between robot and action
         if (DSR::replace_edge<cancel_edge_type>(
-            G_, edge.from(), edge.to(), "wants_to", executor_name_))
+            G_, edge.from(), edge.to(), "wants_to", source_))
         {
           // Add result_code attribute to the node
           if (auto to_node = G_->get_node(edge.to()); to_node.has_value()) {
@@ -113,7 +115,7 @@ public:
       for (const auto & edge: edges) {
         // Replace the 'is_performing' edge with a 'abort' edge between robot and action
         if (DSR::replace_edge<abort_edge_type>(
-            G_, edge.from(), edge.to(), "is_performing", executor_name_))
+            G_, edge.from(), edge.to(), "is_performing", source_))
         {
           // Add result_code attribute to the node
           if (auto to_node = G_->get_node(edge.to()); to_node.has_value()) {
@@ -208,8 +210,8 @@ private:
     bool success = false;
     std::cout << "[" << action_name_ << "]: Starting ..." << std::endl;
     if (auto robot_node = G_->get_node(executor_name_); robot_node.has_value()) {
-      // Create a new node with the lowests priority and the source 'executor_name_'
-      auto new_node = DSR::create_node_with_priority<NODE_TYPE>(G_, action_name_, 0, executor_name_);
+      // Create a new node with the lowests priority and the source 'source_'
+      auto new_node = DSR::create_node_with_priority<NODE_TYPE>(G_, action_name_, 0, source_);
       // User defined function to add attributes from the BT node before start
       if (setAttributesBeforeStart(new_node)) {
         // Insert the node in the graph
@@ -219,7 +221,7 @@ private:
           std::cout << id.value() << "]" << std::endl;
           // Insert edge 'wants_to' between robot and action
           auto new_edge = DSR::create_edge_with_priority<wants_to_edge_type>(
-            G_, robot_node.value().id(), new_node.id(), 0, executor_name_);
+            G_, robot_node.value().id(), new_node.id(), 0, source_);
           if (G_->insert_or_assign_edge(new_edge)) {
             success = true;
             std::cout << "Inserted new edge [" << robot_node.value().name() << "->";
@@ -285,6 +287,9 @@ private:
 
   // Name of the robot
   std::string executor_name_;
+
+  // Source of the action
+  std::string source_;
 
   // Current action id
   std::optional<uint64_t> current_action_id_;

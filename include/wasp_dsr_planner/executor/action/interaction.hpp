@@ -68,6 +68,9 @@ private:
   std::string executor_name_;
   std::string action_name_;
 
+  // Source of the action
+  std::string source_;
+
   uint64_t person_id_;
 };
 
