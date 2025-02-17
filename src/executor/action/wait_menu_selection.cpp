@@ -21,8 +21,9 @@ WaitMenuSelection::WaitMenuSelection(
   const BT::NodeConfiguration & conf)
 : CoroActionNode(xml_tag_name, conf), action_name_(action_name)
 {
-  // Get the DSR graph from the blackboard
-  G_ = config().blackboard->get<std::shared_ptr<DSR::DSRGraph>>("dsr_graph");
+  // Get the DSR graph from the blackboard (thread-safe)
+  auto g_lock = config().blackboard->getAnyLocked("dsr_graph");
+    G_ = g_lock.get()->cast<std::shared_ptr<DSR::DSRGraph>>();
   // Get the executor node name from input or blackboard
   getInputOrBlackboard("executor_name", executor_name_);
 }
