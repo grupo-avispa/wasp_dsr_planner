@@ -65,9 +65,11 @@ set(action_plugins
   dock
   get_intent
   get_role
+  get_task
   generate_response
   get_random_goal
   help
+  insert_edge
   insert_node
   interaction
   listen
