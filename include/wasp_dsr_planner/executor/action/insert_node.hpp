@@ -49,9 +49,9 @@ public:
   {
     return {
       BT::InputPort<std::string>("executor_name", "Name of the executor performing the action"),
-      BT::InputPort<DSR::Node>("node", "Node to insert"),
+      BT::InputPort<DSR::Node>("node", "Node to insert (name,type)"),
       BT::InputPort<std::map<std::string, DSR::Attribute>>(
-        "attributes", "Attributes of the node"),
+        "attributes", "Attributes of the node (name,value,type (int))"),
     };
   }
 
