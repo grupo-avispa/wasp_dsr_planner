@@ -36,10 +36,19 @@ BT_JSON_CONVERTER(Goal, goal)
   add_field("yaw", &goal.yaw);
 }
 
-BT_JSON_CONVERTER(DSR::Node, node)
+namespace nlohmann
 {
-  add_field("name", &node.name());
-  add_field("type", &node.type());
+inline void to_json(nlohmann::json & js, const DSR::Node & node)
+{
+  js["name"] = node.name();
+  js["type"] = node.type();
+}
+
+inline void from_json(const nlohmann::json & js, DSR::Node & node)
+{
+  js.at("name").get_to(node.name());
+  js.at("type").get_to(node.type());
+}
 }
 
 BT_JSON_CONVERTER(DSR::DSRGraph, graph)
