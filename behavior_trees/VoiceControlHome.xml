@@ -2,48 +2,47 @@
 <root BTCPP_format="4"
       main_tree_to_execute="BehaviorTree">
   <BehaviorTree ID="BehaviorTree">
-    <Parallel failure_count="1"
-              success_count="-1">
-      <Repeat num_cycles="-1">
-        <Sequence>
-          <RetryUntilSuccessful num_attempts="-1">
-            <Sequence>
-              <Listen text="{keyword}"/>
-              <CheckKeyword keyword="{keyword}"
-                            word_to_check="Hola robot"/>
-            </Sequence>
-          </RetryUntilSuccessful>
-          <Say text="Dime, te escucho"
-               volume="50.0"/>
-          <Listen text="{task}"/>
-          <GetTask entity="{entity}"
-                   intent="{intent}"
-                   question="{task}"/>
-        </Sequence>
-      </Repeat>
-      <Repeat num_cycles="-1">
-        <Switch3 case_1="move"
-                 case_2="charging"
-                 case_3="call"
-                 variable="{intent}">
-          <RetryUntilSuccessful num_attempts="-1">
-            <SubTree ID="MoveToZone"
-                     zone="{entity}"
+    <Sequence>
+      <InsertNode node="smarthome,world"
+                  attributes="source,smarthome,0"/>
+      <InsertEdge parent="smarthome"
+                  child="world"
+                  type="in"/>
+      <Parallel failure_count="1"
+                success_count="-1">
+        <Repeat num_cycles="-1">
+          <Sequence>
+            <RetryUntilSuccessful num_attempts="-1">
+              <Sequence>
+                <Listen text="{keyword}"/>
+                <CheckKeyword keyword="{keyword}"
+                              word_to_check="Hola casa"/>
+              </Sequence>
+            </RetryUntilSuccessful>
+            <Say text="Dime, te escucho"
+                 volume="50.0"/>
+            <Listen text="{task}"/>
+            <GetTask entity="{entity}"
+                     intent="{intent}"
+                     question="{task}"/>
+          </Sequence>
+        </Repeat>
+        <Repeat num_cycles="-1">
+          <Switch2 case_1="call"
+                   case_2="light"
+                   variable="{intent}">
+            <RetryUntilSuccessful num_attempts="-1">
+              <SubTree ID="CallRobot"
+                       _autoremap="true"/>
+            </RetryUntilSuccessful>
+            <SubTree ID="DoNothing"
                      _autoremap="true"/>
-          </RetryUntilSuccessful>
-          <RetryUntilSuccessful num_attempts="-1">
-            <SubTree ID="Charging"
+            <SubTree ID="DoNothing"
                      _autoremap="true"/>
-          </RetryUntilSuccessful>
-          <RetryUntilSuccessful num_attempts="-1">
-            <SubTree ID="CallRobot"
-                     _autoremap="true"/>
-          </RetryUntilSuccessful>
-          <SubTree ID="DoNothing"
-                   _autoremap="true"/>
-        </Switch3>
-      </Repeat>
-    </Parallel>
+          </Switch2>
+        </Repeat>
+      </Parallel>
+    </Sequence>
   </BehaviorTree>
 
   <BehaviorTree ID="CallRobot">
@@ -105,6 +104,17 @@
       <output_port name="intent">Primary intent from RASA</output_port>
       <input_port name="question">User question</input_port>
     </Action>
+    <Action ID="InsertEdge"
+            editable="true">
+      <input_port name="parent"/>
+      <input_port name="child"/>
+      <input_port name="type"/>
+    </Action>
+    <Action ID="InsertNode"
+            editable="true">
+      <input_port name="node"/>
+      <input_port name="attributes"/>
+    </Action>
     <Action ID="Listen"
             editable="true">
       <output_port name="text">Text listened</output_port>
@@ -113,10 +123,6 @@
             editable="true">
       <input_port name="goal">Goal to approach</input_port>
     </Action>
-    <SubTree ID="MoveToZone"
-             editable="true">
-      <input_port name="zone"/>
-    </SubTree>
     <Action ID="Say"
             editable="true">
       <input_port name="text">Text to say</input_port>
