@@ -38,19 +38,22 @@ BT::NodeStatus CheckKeyword::checkCondition()
   std::string norm1, norm2;
 
   for (char ch : keyword_) {
-      if (std::isalpha(static_cast<unsigned char>(ch)) || std::isspace(static_cast<unsigned char>(ch))) {
-          norm1 += std::tolower(static_cast<unsigned char>(ch));
-      }
+    if (std::isalpha(static_cast<unsigned char>(ch)) ||
+      std::isspace(static_cast<unsigned char>(ch)))
+    {
+      norm1 += std::tolower(static_cast<unsigned char>(ch));
+    }
   }
 
   for (char ch : word_to_check_) {
-      if (std::isalpha(static_cast<unsigned char>(ch)) || std::isspace(static_cast<unsigned char>(ch))) {
-          norm2 += std::tolower(static_cast<unsigned char>(ch));
-      }
+    if (std::isalpha(static_cast<unsigned char>(ch)) ||
+      std::isspace(static_cast<unsigned char>(ch)))
+    {
+      norm2 += std::tolower(static_cast<unsigned char>(ch));
+    }
   }
 
-  if(norm1 == norm2)
-  {
+  if(norm1 == norm2) {
     success = BT::NodeStatus::SUCCESS;
   }
 

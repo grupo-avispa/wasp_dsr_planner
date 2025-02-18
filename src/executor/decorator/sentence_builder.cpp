@@ -25,7 +25,7 @@ SentenceBuilder::SentenceBuilder(
 
   // Get the DSR graph from the blackboard (thread-safe)
   auto g_lock = config().blackboard->getAnyLocked("dsr_graph");
-    G_ = g_lock.get()->cast<std::shared_ptr<DSR::DSRGraph>>();
+  G_ = g_lock.get()->cast<std::shared_ptr<DSR::DSRGraph>>();
   // Get the executor node name from input or blackboard
   getInputOrBlackboard("executor_name", executor_name_);
 }
@@ -78,14 +78,14 @@ BT::NodeStatus SentenceBuilder::tick()
             std::endl;
           std::cout << "[" << decorator_name_ << "]: Menu choices: " << menu.value() << std::endl;
           MenuChoices menu_choices(nlohmann::json::parse(menu.value()));
-          sentence = "De segundo tenemos: " + menu_choices.segundo1 + " y " + 
+          sentence = "De segundo tenemos: " + menu_choices.segundo1 + " y " +
             menu_choices.segundo2 + ". " + "De postre tenemos: " + menu_choices.postre1;
           setOutput("text", sentence);
           return child_node_->executeTick();
         }
       }
     }
-    } else if (use_case == "menu2_first") {
+  } else if (use_case == "menu2_first") {
     if (auto use_case_node = G_->get_node("use_case"); use_case_node.has_value()) {
       if (person_node.has_value()) {
         auto person_name = G_->get_attrib_by_name<identifier_att>(person_node.value());
@@ -113,14 +113,14 @@ BT::NodeStatus SentenceBuilder::tick()
             std::endl;
           std::cout << "[" << decorator_name_ << "]: Menu choices: " << menu.value() << std::endl;
           MenuChoices menu_choices(nlohmann::json::parse(menu.value()));
-          sentence = "De segundo tenemos: " + menu_choices.segundo1 + " y " + 
+          sentence = "De segundo tenemos: " + menu_choices.segundo1 + " y " +
             menu_choices.segundo2 + ". " + "De postre tenemos: " + menu_choices.postre1;
           setOutput("text", sentence);
           return child_node_->executeTick();
         }
       }
     }
-    } else if (use_case == "menu3_first") {
+  } else if (use_case == "menu3_first") {
     if (auto use_case_node = G_->get_node("use_case"); use_case_node.has_value()) {
       if (person_node.has_value()) {
         auto person_name = G_->get_attrib_by_name<identifier_att>(person_node.value());
@@ -148,14 +148,14 @@ BT::NodeStatus SentenceBuilder::tick()
             std::endl;
           std::cout << "[" << decorator_name_ << "]: Menu choices: " << menu.value() << std::endl;
           MenuChoices menu_choices(nlohmann::json::parse(menu.value()));
-          sentence = "De segundo tenemos: " + menu_choices.segundo1 + " y " + 
+          sentence = "De segundo tenemos: " + menu_choices.segundo1 + " y " +
             menu_choices.segundo2 + ". " + "De postre tenemos: " + menu_choices.postre1;
           setOutput("text", sentence);
           return child_node_->executeTick();
         }
       }
     }
-    } else if (use_case == "menu4_first") {
+  } else if (use_case == "menu4_first") {
     if (auto use_case_node = G_->get_node("use_case"); use_case_node.has_value()) {
       if (person_node.has_value()) {
         auto person_name = G_->get_attrib_by_name<identifier_att>(person_node.value());
@@ -183,14 +183,14 @@ BT::NodeStatus SentenceBuilder::tick()
             std::endl;
           std::cout << "[" << decorator_name_ << "]: Menu choices: " << menu.value() << std::endl;
           MenuChoices menu_choices(nlohmann::json::parse(menu.value()));
-          sentence = "De segundo tenemos: " + menu_choices.segundo1 + " y " + 
+          sentence = "De segundo tenemos: " + menu_choices.segundo1 + " y " +
             menu_choices.segundo2 + ". " + "De postre tenemos: " + menu_choices.postre1;
           setOutput("text", sentence);
           return child_node_->executeTick();
         }
       }
     }
-    } else if (use_case == "menu5_first") {
+  } else if (use_case == "menu5_first") {
     if (auto use_case_node = G_->get_node("use_case"); use_case_node.has_value()) {
       if (person_node.has_value()) {
         auto person_name = G_->get_attrib_by_name<identifier_att>(person_node.value());
@@ -218,14 +218,14 @@ BT::NodeStatus SentenceBuilder::tick()
             std::endl;
           std::cout << "[" << decorator_name_ << "]: Menu choices: " << menu.value() << std::endl;
           MenuChoices menu_choices(nlohmann::json::parse(menu.value()));
-          sentence = "De segundo tenemos: " + menu_choices.segundo1 + " y " + 
+          sentence = "De segundo tenemos: " + menu_choices.segundo1 + " y " +
             menu_choices.segundo2 + ". " + "De postre tenemos: " + menu_choices.postre1;
           setOutput("text", sentence);
           return child_node_->executeTick();
         }
       }
     }
-    } else if (use_case == "menu6_first") {
+  } else if (use_case == "menu6_first") {
     if (auto use_case_node = G_->get_node("use_case"); use_case_node.has_value()) {
       if (person_node.has_value()) {
         auto person_name = G_->get_attrib_by_name<identifier_att>(person_node.value());
@@ -253,14 +253,14 @@ BT::NodeStatus SentenceBuilder::tick()
             std::endl;
           std::cout << "[" << decorator_name_ << "]: Menu choices: " << menu.value() << std::endl;
           MenuChoices menu_choices(nlohmann::json::parse(menu.value()));
-          sentence = "De segundo tenemos: " + menu_choices.segundo1 + " y " + 
+          sentence = "De segundo tenemos: " + menu_choices.segundo1 + " y " +
             menu_choices.segundo2 + ". " + "De postre tenemos: " + menu_choices.postre1;
           setOutput("text", sentence);
           return child_node_->executeTick();
         }
       }
     }
-    } else if (use_case == "menu7_first") {
+  } else if (use_case == "menu7_first") {
     if (auto use_case_node = G_->get_node("use_case"); use_case_node.has_value()) {
       if (person_node.has_value()) {
         auto person_name = G_->get_attrib_by_name<identifier_att>(person_node.value());
@@ -288,7 +288,7 @@ BT::NodeStatus SentenceBuilder::tick()
             std::endl;
           std::cout << "[" << decorator_name_ << "]: Menu choices: " << menu.value() << std::endl;
           MenuChoices menu_choices(nlohmann::json::parse(menu.value()));
-          sentence = "De segundo tenemos: " + menu_choices.segundo1 + " y " + 
+          sentence = "De segundo tenemos: " + menu_choices.segundo1 + " y " +
             menu_choices.segundo2 + ". " + "De postre tenemos: " + menu_choices.postre1;
           setOutput("text", sentence);
           return child_node_->executeTick();
@@ -378,10 +378,10 @@ BT::NodeStatus SentenceBuilder::tick()
       return child_node_->executeTick();
     }
   } else if(use_case == "alarm") {
-      sentence = "Hola, ¿se encuentra usted bien o necesita alguna ayuda?";
-      setOutput("text", sentence);
-      return child_node_->executeTick();
-  }else {
+    sentence = "Hola, ¿se encuentra usted bien o necesita alguna ayuda?";
+    setOutput("text", sentence);
+    return child_node_->executeTick();
+  } else {
     std::cout << "[" << decorator_name_ << "]: Not use_case contemplated" << std::endl;
     return BT::NodeStatus::FAILURE;
   }

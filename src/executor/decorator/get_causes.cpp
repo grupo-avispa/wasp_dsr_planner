@@ -24,7 +24,7 @@ GetCauses::GetCauses(
 
   // Get the DSR graph from the blackboard (thread-safe)
   auto g_lock = config().blackboard->getAnyLocked("dsr_graph");
-    G_ = g_lock.get()->cast<std::shared_ptr<DSR::DSRGraph>>();
+  G_ = g_lock.get()->cast<std::shared_ptr<DSR::DSRGraph>>();
   // Get the executor node name from input or blackboard
   getInputOrBlackboard("executor_name", executor_name_);
 }
@@ -269,8 +269,8 @@ BT::NodeStatus GetCauses::tick()
   auto success = BT::NodeStatus::FAILURE;
   std::cout << "[" << decorator_name_ << "]: Ticking ..." << std::endl;
   // Get the input ports
-  getInput<std::string>("causal_log_file",csvFile_);
-  getInput<std::string>("dictionary_file",dictionaryCsvFile_);
+  getInput<std::string>("causal_log_file", csvFile_);
+  getInput<std::string>("dictionary_file", dictionaryCsvFile_);
   std::string effect;
   getInput<std::string>("intent", effect);
   std::string entity;
@@ -286,7 +286,8 @@ BT::NodeStatus GetCauses::tick()
   std::cout << final_result << std::endl;
   std::string prompt = "You are a social assistive robot. According to that role " + role +
     " of the target that you are answering and the question asked " + question +
-    " .Only compress and contract the answer with the most meaningful information according the previous role and question: " + final_result;
+    " .Only compress and contract the answer with the most meaningful information according the previous role and question: "
+    + final_result;
   setOutput("text", prompt);
   success = child_node_->executeTick();
   return success;
