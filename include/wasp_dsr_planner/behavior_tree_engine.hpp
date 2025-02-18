@@ -77,7 +77,7 @@ private:
   std::string source_;
 
   BT::Tree tree_;
-  BT::Blackboard::Ptr blackboard_;
+  BT::Blackboard::Ptr global_blackboard_;
 
   // Groot2 monitoring
   std::unique_ptr<BT::Groot2Publisher> groot_publisher_;

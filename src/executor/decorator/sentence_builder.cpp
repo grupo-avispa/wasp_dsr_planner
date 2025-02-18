@@ -22,9 +22,8 @@ SentenceBuilder::SentenceBuilder(
   const std::string & decorator_name, const BT::NodeConfiguration & conf)
 : BT::DecoratorNode(xml_tag_name, conf), decorator_name_(decorator_name)
 {
-
   // Get the DSR graph from the blackboard (thread-safe)
-  auto g_lock = config().blackboard->getAnyLocked("dsr_graph");
+  auto g_lock = config().blackboard->getAnyLocked("@dsr_graph");
   G_ = g_lock.get()->cast<std::shared_ptr<DSR::DSRGraph>>();
   // Get the executor node name from input or blackboard
   getInputOrBlackboard("executor_name", executor_name_);

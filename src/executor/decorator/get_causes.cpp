@@ -21,9 +21,8 @@ GetCauses::GetCauses(
   const std::string & decorator_name, const BT::NodeConfiguration & conf)
 : BT::DecoratorNode(xml_tag_name, conf), decorator_name_(decorator_name)
 {
-
   // Get the DSR graph from the blackboard (thread-safe)
-  auto g_lock = config().blackboard->getAnyLocked("dsr_graph");
+  auto g_lock = config().blackboard->getAnyLocked("@dsr_graph");
   G_ = g_lock.get()->cast<std::shared_ptr<DSR::DSRGraph>>();
   // Get the executor node name from input or blackboard
   getInputOrBlackboard("executor_name", executor_name_);
@@ -287,7 +286,8 @@ BT::NodeStatus GetCauses::tick()
   std::string prompt = "You are a social assistive robot. According to that role " + role +
     " of the target that you are answering and the question asked " + question +
     " .Only compress and contract the answer with the most meaningful information according the previous role and question: "
-    + final_result;
+    +
+    final_result;
   setOutput("text", prompt);
   success = child_node_->executeTick();
   return success;

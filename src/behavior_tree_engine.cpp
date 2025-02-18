@@ -41,7 +41,7 @@ BehaviorTreeEngine::BehaviorTreeEngine(
 
 BehaviorTreeEngine::~BehaviorTreeEngine()
 {
-  blackboard_.reset();
+  global_blackboard_.reset();
   groot_publisher_.reset();
   G_.reset();
 }
@@ -73,17 +73,18 @@ void BehaviorTreeEngine::initBehaviorTree(
   // Print all the registered nodes
   std::cout << "Loaded BT plugins: " << factory.manifests().size() << std::endl;
 
-  // Create the blackboard that will be shared by all nodes in the tree
-  blackboard_ = BT::Blackboard::create();
-  // Put items on the blackboard
-  blackboard_->set<std::shared_ptr<DSR::DSRGraph>>("dsr_graph", G_);
-  blackboard_->set<std::string>("executor_name", executor_name_);
-  blackboard_->set<std::string>("source", source_);
+  // Create the global blackboard that will be shared by all sub-trees
+  global_blackboard_ = BT::Blackboard::create();
+  // Put items on the blackboard: only the DSR graph and the source
+  global_blackboard_->set<std::shared_ptr<DSR::DSRGraph>>("dsr_graph", G_);
+  global_blackboard_->set<std::string>("source", source_);
 
   // Create the tree from the file
   std::cout << "Creating tree from file: " << tree_filename << std::endl;
+  // Create a local blackboard
+  auto root_blackboard = BT::Blackboard::create(global_blackboard_);
   try {
-    tree_ = factory.createTreeFromFile(tree_filename.c_str(), blackboard_);
+    tree_ = factory.createTreeFromFile(tree_filename.c_str(), root_blackboard);
     insertDsrIntoBlackboard(tree_);
   } catch (const std::exception & e) {
     std::cout << "Exception when loading BT: " << e.what() << std::endl;
@@ -116,11 +117,9 @@ void BehaviorTreeEngine::setGrootMonitoring(uint16_t publisher_port)
 
 void BehaviorTreeEngine::insertDsrIntoBlackboard(BT::Tree & tree)
 {
-  // Set the blackboard for all nodes in the tree
+  // Set the blackboard for all nodes in the sub-tree: only the executor name
   for (auto & subtree : tree.subtrees) {
     auto & blackboard = subtree->blackboard;
-    blackboard->set("dsr_graph", G_);
     blackboard->set("executor_name", executor_name_);
-    blackboard->set("source", source_);
   }
 }

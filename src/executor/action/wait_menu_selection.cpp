@@ -22,12 +22,12 @@ WaitMenuSelection::WaitMenuSelection(
 : CoroActionNode(xml_tag_name, conf), action_name_(action_name)
 {
   // Get the DSR graph from the blackboard (thread-safe)
-  auto g_lock = config().blackboard->getAnyLocked("dsr_graph");
+  auto g_lock = config().blackboard->getAnyLocked("@dsr_graph");
   G_ = g_lock.get()->cast<std::shared_ptr<DSR::DSRGraph>>();
+  // Get the source
+  source_ = config().blackboard->get<std::string>("@source");
   // Get the executor node name from input or blackboard
   getInputOrBlackboard("executor_name", executor_name_);
-  // Get the source
-  source_ = config().blackboard->get<std::string>("source");
 }
 
 BT::NodeStatus WaitMenuSelection::tick()
