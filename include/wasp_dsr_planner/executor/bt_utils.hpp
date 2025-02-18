@@ -36,35 +36,12 @@ BT_JSON_CONVERTER(Goal, goal)
   add_field("yaw", &goal.yaw);
 }
 
-namespace nlohmann
+namespace DSR
 {
-inline void to_json(nlohmann::json & js, const DSR::Node & node)
+BT_JSON_CONVERTER(DSR::Node, node)
 {
-  js["name"] = node.name();
-  js["type"] = node.type();
-}
-
-inline void from_json(const nlohmann::json & js, DSR::Node & node)
-{
-  js.at("name").get_to(node.name());
-  js.at("type").get_to(node.type());
-}
-}
-
-BT_JSON_CONVERTER(DSR::DSRGraph, graph)
-{
-  auto nodes_size = graph.get_nodes().size();
-  std::vector<DSR::Edge> edges;
-  for (const auto & node : graph.get_nodes()) {
-    if (auto edges_gr = graph.get_edges(node.id()); edges_gr.has_value()) {
-      for (const auto & edge_pair : edges_gr.value()) {
-        edges.push_back(edge_pair.second);
-      }
-    }
-  }
-  auto edges_size = edges.size();
-  add_field("nodes", &nodes_size);
-  add_field("edges", &edges_size);
+  add_field("name", &node.name());
+  add_field("type", &node.type());
 }
 
 using AttrMap = std::map<std::string, DSR::Attribute>;
@@ -77,6 +54,7 @@ BT_JSON_CONVERTER(AttrMap, attributes)
     add_field("type", &att_str[i + 2]);
   }
 }
+}  // namespace DSR
 
 // Template specialization to converts a string to custom types
 namespace BT

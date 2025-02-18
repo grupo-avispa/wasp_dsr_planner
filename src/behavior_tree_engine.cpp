@@ -111,9 +111,7 @@ void BehaviorTreeEngine::initBehaviorTree(
   // Add the JSON exporter for the custom types
   BT::RegisterJsonDefinition<Goal>();
   BT::RegisterJsonDefinition<DSR::Node>();
-  // BT::RegisterJsonDefinition<DSR::DSRGraph>();
-  // BT::RegisterJsonDefinition<std::map<std::string, DSR::Attribute>>();
-
+  BT::RegisterJsonDefinition<std::map<std::string, DSR::Attribute>>();
 
   // Execute the tree
   tree_.tickWhileRunning(std::chrono::milliseconds(100));
