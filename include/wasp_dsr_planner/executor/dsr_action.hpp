@@ -127,13 +127,13 @@ public:
       }
 
     // Remove all 'is_finished' edges and the action node
-    edges = G_->get_node_edges_by_type(action_node.value(), "is_finished");
-    for (const auto & edge: edges) {
-      if (G_->delete_edge(edge.from(), edge.to(), "is_finished")){
-        G_->delete_node(edge.to());
+      edges = G_->get_node_edges_by_type(action_node.value(), "is_finished");
+      for (const auto & edge: edges) {
+        if (G_->delete_edge(edge.from(), edge.to(), "is_finished")) {
+          G_->delete_node(edge.to());
+        }
       }
     }
-  }
 
     CoroActionNode::halt();
   }
@@ -176,7 +176,8 @@ protected:
    *
    * @param node The node to be modified.
    */
-  virtual bool setAttributesBeforeStart(DSR::Node & /*node*/) {
+  virtual bool setAttributesBeforeStart(DSR::Node & /*node*/)
+  {
     return true;
   }
 
@@ -185,7 +186,8 @@ protected:
    *
    * @param node The node that has finished.
    */
-  virtual bool setOutputsAfterFinished(DSR::Node & /*node*/) {
+  virtual bool setOutputsAfterFinished(DSR::Node & /*node*/)
+  {
     return true;
   }
 

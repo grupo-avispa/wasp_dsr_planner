@@ -50,7 +50,8 @@ public:
   {
     return providedBasicPorts({
       BT::InputPort<std::string>("keyword", "", "Expected keyword to be listened by the robot"),
-      BT::InputPort<std::string>("word_to_check", "", "Word to check if it is the expected keyword"),
+      BT::InputPort<std::string>("word_to_check", "",
+        "Word to check if it is the expected keyword"),
     });
   }
 
