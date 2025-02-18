@@ -25,30 +25,25 @@
 #include "wasp_dsr_planner/plugins_list.hpp"
 
 BehaviorTreeEngine::BehaviorTreeEngine(
-  std::string agent_name, int agent_id, std::string executor_name, std::string source, bool use_dsr)
-: executor_name_(executor_name), source_(source), use_dsr_(use_dsr)
+  std::string agent_name, int agent_id, std::string executor_name, std::string source)
+: executor_name_(executor_name), source_(source)
 {
+  // Register types
+  qRegisterMetaType<DSR::Node>("Node");
+  qRegisterMetaType<DSR::Edge>("Edge");
+  qRegisterMetaType<uint64_t>("uint64_t");
+  qRegisterMetaType<std::string>("std::string");
+  qRegisterMetaType<std::vector<std::string>>("std::vector<std::string>");
+  qRegisterMetaType<DSR::SignalInfo>("DSR::SignalInfo");
   // Create graph
-  if (use_dsr_) {
-    // Register types
-    qRegisterMetaType<DSR::Node>("Node");
-    qRegisterMetaType<DSR::Edge>("Edge");
-    qRegisterMetaType<uint64_t>("uint64_t");
-    qRegisterMetaType<std::string>("std::string");
-    qRegisterMetaType<std::vector<std::string>>("std::vector<std::string>");
-    qRegisterMetaType<DSR::SignalInfo>("DSR::SignalInfo");
-
-    G_ = std::make_shared<DSR::DSRGraph>(agent_name, agent_id, "");
-  }
+  G_ = std::make_shared<DSR::DSRGraph>(agent_name, agent_id, "");
 }
 
 BehaviorTreeEngine::~BehaviorTreeEngine()
 {
   blackboard_.reset();
   groot_publisher_.reset();
-  if (use_dsr_) {
-    G_.reset();
-  }
+  G_.reset();
 }
 
 void BehaviorTreeEngine::initBehaviorTree(
@@ -81,9 +76,7 @@ void BehaviorTreeEngine::initBehaviorTree(
   // Create the blackboard that will be shared by all nodes in the tree
   blackboard_ = BT::Blackboard::create();
   // Put items on the blackboard
-  if (use_dsr_) {
-    blackboard_->set<std::shared_ptr<DSR::DSRGraph>>("dsr_graph", G_);
-  }
+  blackboard_->set<std::shared_ptr<DSR::DSRGraph>>("dsr_graph", G_);
   blackboard_->set<std::string>("executor_name", executor_name_);
   blackboard_->set<std::string>("source", source_);
 
@@ -91,9 +84,7 @@ void BehaviorTreeEngine::initBehaviorTree(
   std::cout << "Creating tree from file: " << tree_filename << std::endl;
   try {
     tree_ = factory.createTreeFromFile(tree_filename.c_str(), blackboard_);
-    if (use_dsr_) {
-      insertDsrIntoBlackboard(tree_);
-    }
+    insertDsrIntoBlackboard(tree_);
   } catch (const std::exception & e) {
     std::cout << "Exception when loading BT: " << e.what() << std::endl;
     exit(-1);
