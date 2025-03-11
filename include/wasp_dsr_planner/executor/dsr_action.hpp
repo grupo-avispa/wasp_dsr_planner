@@ -258,15 +258,17 @@ private:
         if (finished_edge.has_value()) {
           // Set output after finished
           auto current_action_node = G_->get_node(current_action_id_.value());
-          if (setOutputsAfterFinished(current_action_node.value())) {
+          bool output = setOutputsAfterFinished(current_action_node.value());
             if (G_->delete_edge(robot_node.value().id(), current_action_id_.value(), "finished") &&
               G_->delete_node(current_action_id_.value()))
             {
+            if(output)
+            {
               current_action_id_.reset();
               return BT::NodeStatus::SUCCESS;
+            } else {
+              return BT::NodeStatus::FAILURE;
             }
-          } else {
-            return BT::NodeStatus::FAILURE;
           }
         }
         // Check if the robot has failed the action
