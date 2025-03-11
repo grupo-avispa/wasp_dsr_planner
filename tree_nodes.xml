@@ -39,17 +39,21 @@
     </Action>
     <Action ID="Listen">
       <output_port name="text">Text listened</output_port>
+      <input_port name="executor_name">Executor node</input_port>
     </Action>
     <Action ID="Move">
       <input_port name="goal">Goal to approach</input_port>
+      <input_port name="executor_name">Executor node</input_port>
     </Action>
     <Action ID="Play">
       <input_port name="sound">Name of the file to play</input_port>
       <input_port name="volume"default="50.0">Volume level to play the sound</input_port>
+      <input_port name="executor_name">Executor node</input_port>
     </Action>
     <Action ID="Say">
       <input_port name="text">Text to say</input_port>
       <input_port name="volume"default="50.0">Volume level to say the text</input_port>
+      <input_port name="executor_name">Executor node</input_port>
     </Action>
     <Action ID="SetVolume">
       <input_port name="volume" default="50.0">Volume level to set</input_port>

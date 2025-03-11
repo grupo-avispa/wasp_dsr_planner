@@ -1,25 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<root BTCPP_format="4" main_tree_to_execute="BehaviorTree">
+<root BTCPP_format="4"
+      main_tree_to_execute="BehaviorTree">
   <BehaviorTree ID="BehaviorTree">
     <Sequence>
-      <InsertNode node="smarthome,world" attributes="source,smarthome,0"/>
-      <InsertEdge parent="smarthome" child="world" type="in"/>
-      <Parallel failure_count="1" success_count="-1">
+      <InsertNode node="smarthome,world"
+                  attributes="source,smarthome,0"/>
+      <InsertEdge parent="smarthome"
+                  child="world"
+                  type="in"/>
+      <Parallel failure_count="1"
+                success_count="-1">
         <Repeat num_cycles="-1">
           <Sequence>
             <RetryUntilSuccessful num_attempts="-1">
               <Sequence>
-                <Listen text="{keyword}"/>
-                <CheckKeyword keyword="{keyword}" word_to_check="Hola casa"/>
+                <Listen text="{keyword}"
+                        executor_name="smarthome"/>
+                <CheckKeyword keyword="{keyword}"
+                              word_to_check="Hola casa"/>
               </Sequence>
             </RetryUntilSuccessful>
-            <Say text="Dime, te escucho" volume="50.0"/>
-            <Listen text="{task}"/>
-            <GetTask entity="{entity}" intent="{intent}" question="{task}"/>
+            <Say text="Dime, te escucho"
+                 volume="50.0"
+                 executor_name="smarthome"/>
+            <Listen text="{task}"
+                    executor_name="smarthome"/>
+            <GetTask entity="{entity}"
+                     intent="{intent}"
+                     question="{task}"
+                     executor_name="smarthome"/>
           </Sequence>
         </Repeat>
         <Repeat num_cycles="-1">
-          <Switch2 case_1="call" case_2="light" variable="{intent}">
+          <Switch2 case_1="call"
+                   case_2="light"
+                   variable="{intent}">
             <RetryUntilSuccessful num_attempts="-1">
               <SubTree ID="CallRobot"/>
             </RetryUntilSuccessful>
@@ -32,18 +47,25 @@
   </BehaviorTree>
 
   <BehaviorTree ID="CallRobot">
-    <Move goal="-8.1,3.62,-1.57"/>
+    <Move goal="-8.1,3.62,-1.57"
+          executor_name="robot"/>
   </BehaviorTree>
 
   <BehaviorTree ID="Charging">
     <Fallback>
       <Sequence name="Charging">
-        <Say name="NoBatterySay" text="Tengo que ir a cargarme" volume="50.0"/>
-        <RetryUntilSuccessful name="RetryDocking" num_attempts="3">
+        <Say name="NoBatterySay"
+             text="Tengo que ir a cargarme"
+             volume="50.0"
+             executor_name=""/>
+        <RetryUntilSuccessful name="RetryDocking"
+                              num_attempts="3">
           <Dock/>
         </RetryUntilSuccessful>
-        <UseCaseFinished name="ChargingSuccess" result_code="Robot docked succesfully"/>
-        <UseCaseFinished name="ChargingFailure" result_code="Robot cannot dock."/>
+        <UseCaseFinished name="ChargingSuccess"
+                         result_code="Robot docked succesfully"/>
+        <UseCaseFinished name="ChargingFailure"
+                         result_code="Robot cannot dock."/>
       </Sequence>
     </Fallback>
   </BehaviorTree>
@@ -58,50 +80,51 @@
     </Repeat>
   </BehaviorTree>
 
-  <BehaviorTree ID="MoveToZone">
-    <Sequence>
-      <GetRandomGoal goal="{goal}" zone="{zone}"/>
-      <Move goal="{goal}"/>
-    </Sequence>
-  </BehaviorTree>
-
   <!-- Description of Node Models (used by Groot) -->
   <TreeNodesModel>
-    <Condition ID="CheckKeyword" editable="true">
+    <Condition ID="CheckKeyword"
+               editable="true">
       <input_port name="keyword">Keyword </input_port>
       <input_port name="word_to_check">Word to check</input_port>
     </Condition>
     <Action ID="Dock"/>
-    <Action ID="GetRandomGoal" editable="true">
-      <output_port name="goal">Goal to approach</output_port>
-      <input_port name="zone">Where to move the robot</input_port>
-    </Action>
-    <Action ID="GetTask" editable="true">
+    <Action ID="GetTask"
+            editable="true">
       <output_port name="entity">Entity from RASA</output_port>
       <output_port name="intent">Primary intent from RASA</output_port>
       <input_port name="question">User question</input_port>
+      <input_port name="executor_name">Executor node</input_port>
     </Action>
-    <Action ID="InsertEdge" editable="true">
+    <Action ID="InsertEdge"
+            editable="true">
       <input_port name="parent"/>
       <input_port name="child"/>
       <input_port name="type"/>
     </Action>
-    <Action ID="InsertNode" editable="true">
+    <Action ID="InsertNode"
+            editable="true">
       <input_port name="node"/>
       <input_port name="attributes"/>
     </Action>
-    <Action ID="Listen" editable="true">
+    <Action ID="Listen">
       <output_port name="text">Text listened</output_port>
+      <input_port name="executor_name">Executor node</input_port>
     </Action>
-    <Action ID="Move" editable="true">
+    <Action ID="Move"
+            editable="true">
       <input_port name="goal">Goal to approach</input_port>
+      <input_port name="executor_name">Executor node</input_port>
     </Action>
-    <Action ID="Say" editable="true">
+    <Action ID="Say">
       <input_port name="text">Text to say</input_port>
-      <input_port name="volume" default="50.0">Volume level to say the text</input_port>
+      <input_port name="volume"
+                  default="50.0">Volume level to say the text</input_port>
+      <input_port name="executor_name">Executor node</input_port>
     </Action>
-    <Condition ID="UseCaseFinished" editable="true">
-      <input_port name="result_code" type="std::string">Result code of the use case</input_port>
+    <Condition ID="UseCaseFinished"
+               editable="true">
+      <input_port name="result_code"
+                  type="std::string">Result code of the use case</input_port>
     </Condition>
   </TreeNodesModel>
 
