@@ -31,37 +31,37 @@ BT::NodeStatus ResetPersonId::checkCondition()
 {
   auto success = BT::NodeStatus::SUCCESS;
   // Get the current person node id
-  uint64_t person_node_id = config().blackboard->get<uint64_t>("current_person_node_id");
-  // Replace the 'interacting' edge with a 'is_with' edge between person and robot
-  if (auto robot_node = G_->get_node(executor_name_); robot_node.has_value()) {
-    if (auto person_node = G_->get_node(person_node_id);
-      person_node.has_value() && person_node_id != 0)
-    {
-      if (auto use_case_node = G_->get_node("use_case"); use_case_node.has_value()) {
-        auto use_case_id = G_->get_attrib_by_name<use_case_id_att>(use_case_node.value());
-        if (use_case_id.value() == "neuron") {
-          // TODO: This is a temporary solution and must be performed by the webserver
-          G_->add_or_modify_attrib_local<neuron_att>(person_node.value(), false);
-          G_->update_node(person_node.value());
-        }
-        if (use_case_id.value() == "reminder") {
-          G_->add_or_modify_attrib_local<reminder_att>(person_node.value(), false);
-          G_->update_node(person_node.value());
-        }
-      }
-      // Delete 'interacting' edge between robot and person
-      if (G_->delete_edge(robot_node.value().id(), person_node.value().id(), "interacting")) {
-        // Add 'is_with' edge between person and robot
-        auto new_edge = DSR::create_edge_with_priority<is_with_edge_type>(
-          G_, person_node.value().id(), robot_node.value().id(), 0, source_);
-        if (!G_->insert_or_assign_edge(new_edge)) {
-          std::cout << "[" << condition_name_ << "]: ";
-          std::cout << "Error inserting 'is_with' edge between robot and person" << std::endl;
-          success = BT::NodeStatus::FAILURE;
-        }
-      }
-    }
-  }
+  // uint64_t person_node_id = config().blackboard->get<uint64_t>("current_person_node_id");
+  // // Replace the 'interacting' edge with a 'is_with' edge between person and robot
+  // if (auto robot_node = G_->get_node(executor_name_); robot_node.has_value()) {
+  //   if (auto person_node = G_->get_node(person_node_id);
+  //     person_node.has_value() && person_node_id != 0)
+  //   {
+  //     if (auto use_case_node = G_->get_node("use_case"); use_case_node.has_value()) {
+  //       auto use_case_id = G_->get_attrib_by_name<use_case_id_att>(use_case_node.value());
+  //       if (use_case_id.value() == "neuron") {
+  //         // TODO: This is a temporary solution and must be performed by the webserver
+  //         G_->add_or_modify_attrib_local<neuron_att>(person_node.value(), false);
+  //         G_->update_node(person_node.value());
+  //       }
+  //       if (use_case_id.value() == "reminder") {
+  //         G_->add_or_modify_attrib_local<reminder_att>(person_node.value(), false);
+  //         G_->update_node(person_node.value());
+  //       }
+  //     }
+  //     // Delete 'interacting' edge between robot and person
+  //     if (G_->delete_edge(robot_node.value().id(), person_node.value().id(), "interacting")) {
+  //       // Add 'is_with' edge between person and robot
+  //       auto new_edge = DSR::create_edge_with_priority<is_with_edge_type>(
+  //         G_, person_node.value().id(), robot_node.value().id(), 0, source_);
+  //       if (!G_->insert_or_assign_edge(new_edge)) {
+  //         std::cout << "[" << condition_name_ << "]: ";
+  //         std::cout << "Error inserting 'is_with' edge between robot and person" << std::endl;
+  //         success = BT::NodeStatus::FAILURE;
+  //       }
+  //     }
+  //   }
+  // }
   // Reset the current person node id
   config().blackboard->set<uint64_t>("current_person_node_id", 0);
   return success;

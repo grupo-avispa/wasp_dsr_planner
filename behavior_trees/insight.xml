@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4"
+      main_tree_to_execute="MainTree">
+  <BehaviorTree ID="FollowingPerson">
+    <RetryUntilSuccessful num_attempts="-1">
+      <Repeat num_cycles="-1">
+        <Sequence>
+          <ResetPersonId/>
+          <Fallback>
+            <Sequence>
+              <RetryUntilSuccessful num_attempts="-1">
+                <PersonFound filter_case="following"
+                             node_id="{person_id}"
+                             pose="{person_pose}"
+                             safe_distance="{person_distance}"
+                             volume="{person_volume}"/>
+              </RetryUntilSuccessful>
+              <DistanceApproach distance="{person_distance}"
+                                input_goal="{person_pose}"
+                                output_goal="{goal}">
+                <SafeInteraction node_id="{person_id}"
+                                 pose="{goal}"/>
+              </DistanceApproach>
+            </Sequence>
+            <Sequence>
+              <RetryUntilSuccessful num_attempts="5">
+                <Move goal="{goal}"
+                      executor_name="robot"/>
+              </RetryUntilSuccessful>
+              <ResetPersonId/>
+            </Sequence>
+          </Fallback>
+        </Sequence>
+      </Repeat>
+    </RetryUntilSuccessful>
+  </BehaviorTree>
+
+  <BehaviorTree ID="MainTree">
+    <Sequence>
+      <RetryUntilSuccessful num_attempts="-1">
+        <CheckMedicine/>
+      </RetryUntilSuccessful>
+      <Fallback>
+        <Parallel failure_count="1"
+                  success_count="-1">
+          <SubTree ID="FollowingPerson"/>
+          <Repeat num_cycles="-1">
+            <CheckMedicine/>
+          </Repeat>
+        </Parallel>
+        <Thinking prompt="lost_medicine"/>
+      </Fallback>
+    </Sequence>
+  </BehaviorTree>
+
+  <!-- Description of Node Models (used by Groot) -->
+  <TreeNodesModel>
+    <Condition ID="CheckMedicine"
+               editable="true"/>
+    <Decorator ID="DistanceApproach">
+      <input_port name="distance"
+                  type="double">Distance to approach</input_port>
+      <input_port name="input_goal"
+                  type="Goal">Original goal to approach</input_port>
+      <output_port name="output_goal"
+                   type="Goal">New goal to approach</output_port>
+    </Decorator>
+    <Action ID="Move">
+      <input_port name="goal">Goal to approach</input_port>
+      <input_port name="executor_name">Executor node</input_port>
+    </Action>
+    <Condition ID="PersonFound">
+      <input_port name="filter_case">Value to filter the person found (Optional)</input_port>
+      <output_port name="node_id">Node Identifier of the person found</output_port>
+      <output_port name="pose">Pose of the person found</output_port>
+      <output_port name="safe_distance">Safe distance near the person to approach</output_port>
+      <output_port name="volume">Volume level to say the text</output_port>
+    </Condition>
+    <Condition ID="ResetPersonId"/>
+    <Condition ID="SafeInteraction">
+      <input_port name="node_id">Node Identifier of the person found</input_port>
+      <input_port name="pose">Pose of the person found</input_port>
+    </Condition>
+    <Action ID="Thinking"
+            editable="true">
+      <input_port name="prompt">Thinking about this topic</input_port>
+    </Action>
+  </TreeNodesModel>
+
+</root>

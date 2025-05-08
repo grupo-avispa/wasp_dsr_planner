@@ -79,6 +79,7 @@ set(action_plugins
   set_volume
   sign
   show
+  think
   use_case_selector
   wait_menu_selection
 )
@@ -92,6 +93,7 @@ endforeach()
 set(condition_plugins
   can_track_person
   check_keyword
+  check_medicine
   is_button_pushed
   is_navigating
   person_found

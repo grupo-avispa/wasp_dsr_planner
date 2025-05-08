@@ -81,16 +81,18 @@ BT::NodeStatus PersonFound::checkCondition()
               setOutput("pose", Goal(pose_x.value(), pose_y.value(), pose_yaw.value()));
             }
             // Set the output port with the safe distance to approach the person
-            auto safe_distance = G_->get_attrib_by_name<safe_distance_att>(from_node.value());
-            if (safe_distance.has_value()) {
-              setOutput("safe_distance", safe_distance.value());
-            }
+            // auto safe_distance = G_->get_attrib_by_name<safe_distance_att>(from_node.value());
+            // if (safe_distance.has_value()) {
+            //   setOutput("safe_distance", safe_distance.value());
+            // }
             // Set the output port with the volume to say the text
-            auto comm_parameters = G_->get_attrib_by_name<comm_parameters_att>(from_node.value());
-            if (comm_parameters.has_value()) {
-              CommParameters parameters(nlohmann::json::parse(comm_parameters.value()));
-              setOutput("volume", parameters.volume);
-            }
+            // auto comm_parameters = G_->get_attrib_by_name<comm_parameters_att>(from_node.value());
+            // if (comm_parameters.has_value()) {
+            //   CommParameters parameters(nlohmann::json::parse(comm_parameters.value()));
+            //   setOutput("volume", parameters.volume);
+            // }
+            setOutput("safe_distance", 1.5);
+            setOutput("volume", 50.0);
             success = BT::NodeStatus::SUCCESS;
             break;
           }
