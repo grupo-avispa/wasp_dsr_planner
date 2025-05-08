@@ -37,8 +37,8 @@
 
   <BehaviorTree ID="MainTree">
     <Sequence>
-      <InsertNode node="medicine"
-                  attributes=""/>
+      <InsertNode node="medicine,world"
+                  attributes="source,robot,0"/>
       <InsertEdge parent="robot"
                   child="medicine"
                   type="has"/>
