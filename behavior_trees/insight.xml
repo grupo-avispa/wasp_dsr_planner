@@ -37,6 +37,11 @@
 
   <BehaviorTree ID="MainTree">
     <Sequence>
+      <InsertNode node="medicine"
+                  attributes=""/>
+      <InsertEdge parent="robot"
+                  child="medicine"
+                  type="has"/>
       <RetryUntilSuccessful num_attempts="-1">
         <CheckMedicine/>
       </RetryUntilSuccessful>
@@ -65,6 +70,16 @@
       <output_port name="output_goal"
                    type="Goal">New goal to approach</output_port>
     </Decorator>
+    <Action ID="InsertEdge"
+            editable="true">
+      <input_port name="parent"/>
+      <input_port name="child"/>
+      <input_port name="type"/>
+    </Action>
+    <Action ID="InsertNode">
+      <input_port name="node">Node to insert</input_port>
+      <input_port name="attributes">Attributes of the node</input_port>
+    </Action>
     <Action ID="Move">
       <input_port name="goal">Goal to approach</input_port>
       <input_port name="executor_name">Executor node</input_port>
