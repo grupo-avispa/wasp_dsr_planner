@@ -33,6 +33,18 @@ bool Think::setAttributesBeforeStart(DSR::Node & node)
   bool success = false;
   if (!prompt_.empty()) {
     G_->add_or_modify_attrib_local<text_att>(node, prompt_);
+    // Updatear el DSR "trucando" el estado
+    auto robot_node = G_->get_node("robot");
+    auto following_node = G_->get_node("following");
+    auto medicine_node = G_->get_node("medicine");
+    if(robot_node.has_value() && following_node.has_value()) {
+      DSR::replace_edge<abort_edge_type>(
+        G_, robot_node.value().id(), following_node.value().id(), "is_performing", "robot");
+    }
+    if(robot_node.has_value() && medicine_node.has_value()) {
+      DSR::replace_edge<lost_edge_type>(
+        G_, robot_node.value().id(), medicine_node.value().id(), "has", "robot");
+    }
     success = true;
   } else {
     std::cout << "[" << action_name_ << "]: Prompt is not set" << std::endl;
