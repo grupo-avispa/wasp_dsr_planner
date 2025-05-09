@@ -38,7 +38,7 @@ BT::NodeStatus CheckMedicine::checkCondition()
   for (const auto & edge: has_edges) {
     auto from_node = G_->get_node(edge.from());
     auto to_node = G_->get_node(edge.to());
-    if (from_node.has_value() && from_node.value().name() == executor_name_) {
+    if (from_node.has_value() && from_node.value().name() == "robot") {
       if (to_node.has_value() && to_node.value().name() == "medicine") {
         std::cout << "Edge has between robot and medicine found" << std::endl;
         success = BT::NodeStatus::SUCCESS;

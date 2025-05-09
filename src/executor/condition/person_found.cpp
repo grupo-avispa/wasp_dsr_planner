@@ -91,7 +91,7 @@ BT::NodeStatus PersonFound::checkCondition()
             //   CommParameters parameters(nlohmann::json::parse(comm_parameters.value()));
             //   setOutput("volume", parameters.volume);
             // }
-            setOutput("safe_distance", 1.5);
+            setOutput("safe_distance", 0.75);
             setOutput("volume", 50.0);
             success = BT::NodeStatus::SUCCESS;
             break;
