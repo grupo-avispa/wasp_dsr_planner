@@ -41,9 +41,8 @@ bool Think::setAttributesBeforeStart(DSR::Node & node)
       DSR::replace_edge<abort_edge_type>(
         G_, robot_node.value().id(), following_node.value().id(), "is_performing", "robot");
     }
-    if(robot_node.has_value() && medicine_node.has_value()) {
-      DSR::replace_edge<lost_edge_type>(
-        G_, robot_node.value().id(), medicine_node.value().id(), "has", "robot");
+    if(medicine_node.has_value()) {
+      G_->delete_node("medicine");
     }
     success = true;
   } else {
