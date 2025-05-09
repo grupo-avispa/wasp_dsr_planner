@@ -50,6 +50,11 @@
       <RetryUntilSuccessful num_attempts="-1">
         <CheckMedicine/>
       </RetryUntilSuccessful>
+      <InsertNode node="following,action"
+                  attributes="source,robot,0"/>
+      <InsertEdge parent="robot"
+                  child="following"
+                  type="is_performing"/>
       <Fallback>
         <Parallel failure_count="1"
                   success_count="-1">
@@ -108,6 +113,7 @@
     <Action ID="Think"
             editable="true">
       <input_port name="prompt">Thinking about this topic</input_port>
+      <input_port name="executor_name">Executor node</input_port>
     </Action>
   </TreeNodesModel>
 
