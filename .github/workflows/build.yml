@@ -1,0 +1,78 @@
+# GitHub Actions workflow to build WASP DSR Planner
+
+name: Build WASP DSR Planner
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  install-behaviortree-cpp:
+    name: Install BehaviorTree.CPP
+    runs-on: ubuntu-24.04
+    container:
+      image: grupoavispa/behaviortree_cpp:4.6
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Cache dependencies
+        id: cache-btcpp
+        uses: actions/cache@v4.2.0
+        with:
+          path: |
+            /usr/local/include
+            /usr/local/lib
+          key: behaviortree-cpp-${{ runner.os }}-${{ hashFiles('**/*') }}
+          restore-keys: |
+            behaviortree-cpp-${{ runner.os }}-
+
+  build:
+    name: Build Project
+    runs-on: ubuntu-latest
+    container:
+      image: grupoavispa/cortex:development-latest
+    needs: install-behaviortree-cpp
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            /usr/local/include
+            /usr/local/lib
+          key: behaviortree-cpp-${{ runner.os }}-${{ hashFiles('**/*') }}
+          restore-keys: |
+            behaviortree-cpp-${{ runner.os }}-
+
+      - name: Cache APT Packages
+        uses: awalsh128/cache-apt-pkgs-action@v1.4.3
+        with:
+          packages: |
+            cmake
+            make
+            build-essential
+            libboost-all-dev
+            nlohmann-json3-dev
+            libzmq3-dev
+
+      - name: Restore cache
+        id: restore-cache-btcpp
+        uses: actions/cache@v3
+        with:
+          path : |
+            /usr/local/include
+            /usr/local/lib
+          key: behaviortree-cpp-${{ runner.os }}-${{ hashFiles('**/*') }}
+          restore-keys: |
+            behaviortree-cpp-${{ runner.os }}-
+
+      - name: Build project
+        run: |
+          mkdir -p build && cd build
+          cmake ..
+          make -j$(nproc)
+          sudo make install
