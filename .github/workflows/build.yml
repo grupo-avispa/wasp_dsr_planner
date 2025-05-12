@@ -52,11 +52,11 @@ jobs:
         uses: awalsh128/cache-apt-pkgs-action@v1.4.3
         with:
           packages: |
-            make
-            cmake
-            build-essential
-            libboost-all-dev
-            nlohmann-json3-dev
+            make \
+            cmake \
+            build-essential \
+            libboost-all-dev \
+            nlohmann-json3-dev \
             libzmq3-dev
 
       - name: Restore cache
