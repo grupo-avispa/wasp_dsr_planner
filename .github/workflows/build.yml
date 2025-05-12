@@ -30,7 +30,7 @@ jobs:
 
   build:
     name: Build Project
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     container:
       image: grupoavispa/cortex:development-latest
     needs: install-behaviortree-cpp
@@ -38,8 +38,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Cache dependencies
-        uses: actions/cache@v3
+      - name: Restore BT cache
+        id: restore-cache-btcpp
+        uses: actions/cache@v4.2.0
         with:
           path: |
             /usr/local/include
@@ -52,23 +53,12 @@ jobs:
         uses: awalsh128/cache-apt-pkgs-action@v1.4.3
         with:
           packages: |
-            make \
-            cmake \
-            build-essential \
-            libboost-all-dev \
-            nlohmann-json3-dev \
+            make
+            cmake
+            build-essential
+            libboost-all-dev
+            nlohmann-json3-dev
             libzmq3-dev
-
-      - name: Restore cache
-        id: restore-cache-btcpp
-        uses: actions/cache@v3
-        with:
-          path : |
-            /usr/local/include
-            /usr/local/lib
-          key: behaviortree-cpp-${{ runner.os }}-${{ hashFiles('**/*') }}
-          restore-keys: |
-            behaviortree-cpp-${{ runner.os }}-
 
       - name: Build project
         run: |
