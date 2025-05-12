@@ -52,8 +52,8 @@ jobs:
         uses: awalsh128/cache-apt-pkgs-action@v1.4.3
         with:
           packages: |
-            cmake
             make
+            cmake
             build-essential
             libboost-all-dev
             nlohmann-json3-dev

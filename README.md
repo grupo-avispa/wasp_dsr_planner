@@ -1,6 +1,8 @@
 # wasp_dsr_planner
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Build](https://github.com/grupo-avispa/wasp_dsr_planner/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/grupo-avispa/wasp_dsr_planner/actions/workflows/build.yml)
+
 
 The `wasp_dsr_planner` is responsible for loading and executing a Behavior Tree (BT) in which different use cases are executed. 
 
