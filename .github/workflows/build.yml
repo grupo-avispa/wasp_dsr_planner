@@ -41,9 +41,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4.2.2
 
-      # - name: Workaround restore system directories
-      #   run: sudo chown root /bin/tar && sudo chmod u+s /bin/tar
-
       - name: Restore BT cache
         id: restore-cache-btcpp
         uses: actions/cache@v4.2.0
@@ -59,4 +56,4 @@ jobs:
           mkdir -p build && cd build
           cmake ..
           make -j$(nproc)
-          sudo make install
+          make install
