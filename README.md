@@ -9,7 +9,11 @@ The `wasp_dsr_planner` is responsible for loading and executing a Behavior Tree 
 
 ## Installation
 
-To install the `wasp_dsr_planner` package, you can use the following command:
+### Building from Source
+
+#### Building
+
+To build from source, clone the latest version from this repository and compile the package using the following command:
 
 ```bash
 mkdir build
