@@ -1,6 +1,6 @@
 # GitHub Actions workflow to build WASP DSR Planner
 
-name: Build WASP DSR Planner
+name: Build
 
 on:
   push:
