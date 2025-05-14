@@ -52,7 +52,6 @@ jobs:
 
       - name: Build project
         run: |
-          ls -la
           mkdir -p build && cd build
           cmake ..
           make -j$(nproc)
