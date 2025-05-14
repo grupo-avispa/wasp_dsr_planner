@@ -11,6 +11,11 @@ The `wasp_dsr_planner` is responsible for loading and executing a Behavior Tree 
 
 ### Building from Source
 
+#### Dependencies
+
+- [Cortex](https://github.com/grupo-avispa/cortex) (Library for Deep State Representation)
+- [BehaviorTree.CPP](https://www.behaviortree.dev) (Behavior Tree library)
+
 #### Building
 
 To build from source, clone the latest version from this repository and compile the package using the following command:
