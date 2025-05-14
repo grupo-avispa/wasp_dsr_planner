@@ -59,6 +59,7 @@ This package contains the following BT nodes:
  * `get_intent`: Gets the intent of the person.
  * `get_random_goal`: Gets a random goal from a zone.
  * `get_role`: Gets the role of the person.
+ * `get_task`: Gets the task of the robot.
  * `help`: Add an alarm.
  * `insert_node`: Inserts a node in the DSR.
  * `interaction`: Set the person as interacting.
@@ -74,6 +75,7 @@ This package contains the following BT nodes:
 
 ## Condition Nodes
  * `can_track_person`: Checks if the agent can track a person.
+ * `check_keyword`: Checks if a word match with the keyword decided.
  * `is_button_pushed`: Checks if a button is pushed.
  * `is_navigating`: Checks if the agent is currently navigating.
  * `person_found`: Checks if a person has been found.
