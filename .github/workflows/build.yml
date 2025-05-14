@@ -25,8 +25,8 @@ jobs:
             /usr/local/include
             /usr/local/lib
           key: behaviortree-cpp-${{ runner.os }}-${{ hashFiles('**/*') }}
-          restore-keys: |
-            behaviortree-cpp-${{ runner.os }}-
+      - name: Test if cache hit
+        run: ls -la /usr/local/include/
 
   build:
     name: Build Project
@@ -43,6 +43,9 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4.2.2
 
+      - name: Workaround restore system directories
+        run: sudo chown root /bin/tar && sudo chmod u+s /bin/tar
+
       - name: Restore BT cache
         id: restore-cache-btcpp
         uses: actions/cache@v4.2.0
@@ -51,8 +54,6 @@ jobs:
             /usr/local/include
             /usr/local/lib
           key: behaviortree-cpp-${{ runner.os }}-${{ hashFiles('**/*') }}
-          restore-keys: |
-            behaviortree-cpp-${{ runner.os }}-
 
       - name: Build project
         run: |
