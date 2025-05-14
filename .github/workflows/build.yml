@@ -23,10 +23,8 @@ jobs:
         with:
           path: |
             /usr/local/include
-            /usr/local/lib
-          key: behaviortree-cpp-${{ runner.os }}-${{ hashFiles('**/*') }}
-      - name: Test if cache hit
-        run: ls -la /usr/local/lib/
+            /usr/local/lib/libbehaviortree_cpp*
+          key: behaviortree-cpp-${{ runner.os }}-ubuntu-24.04
 
   build:
     name: Build Project
@@ -43,8 +41,8 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4.2.2
 
-      - name: Workaround restore system directories
-        run: sudo chown root /bin/tar && sudo chmod u+s /bin/tar
+      # - name: Workaround restore system directories
+      #   run: sudo chown root /bin/tar && sudo chmod u+s /bin/tar
 
       - name: Restore BT cache
         id: restore-cache-btcpp
@@ -52,8 +50,8 @@ jobs:
         with:
           path: |
             /usr/local/include
-            /usr/local/lib
-          key: behaviortree-cpp-${{ runner.os }}-${{ hashFiles('**/*') }}
+            /usr/local/lib/libbehaviortree_cpp*
+          key: behaviortree-cpp-${{ runner.os }}-ubuntu-24.04
 
       - name: Build project
         run: |
