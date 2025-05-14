@@ -43,6 +43,10 @@ Then, you can run the `wasp_dsr_planner` package using the following command:
 wasp_dsr_planner /opt/wasp/wasp_dsr_planner/params/default.conf
 ```
 
+## Example
+
+![BT VoiceControl](doc/VoiceControl.svg)
+
 ## BT Nodes
 
 This package contains the following BT nodes:
