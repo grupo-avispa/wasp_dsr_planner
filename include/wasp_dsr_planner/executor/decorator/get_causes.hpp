@@ -63,6 +63,9 @@ public:
       BT::InputPort<std::string>("entity", "Entity from RASA"),
       BT::InputPort<std::string>("question", "Question received"),
       BT::InputPort<std::string>("role", "Role of the asker"),
+      BT::InputPort<std::string>("causal_log_file", "Causal log file"),
+      BT::InputPort<std::string>("dictionary_file", "Dictionary file with effect descriptions"),
+      // Output port for the text prompt
       BT::OutputPort<std::string>("text", "Prompt for Llama")
     };
   }

@@ -75,7 +75,7 @@ BT::NodeStatus UseCaseSelector::checkResult()
     }
   }
 
-  return BT::NodeStatus::IDLE;
+  return BT::NodeStatus::SUCCESS;
 }
 
 #include "behaviortree_cpp/bt_factory.h"

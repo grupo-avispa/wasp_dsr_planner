@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4"
+      main_tree_to_execute="MainTree">
+  <include path="./Charging.xml"/>
+
+  <include path="./Following.xml"/>
+
+  <include path="./Explain.xml"/>
+
+  <include path="./Interaction.xml"/>
+
+  <BehaviorTree ID="DoNothing">
+    <Repeat num_cycles="-1">
+      <ForceSuccess>
+        <Delay delay_msec="1000">
+          <AlwaysSuccess name="IdleSuccess"/>
+        </Delay>
+      </ForceSuccess>
+    </Repeat>
+  </BehaviorTree>
+
+  <BehaviorTree ID="MainTree">
+    <Parallel failure_count="1"
+              success_count="-1">
+      <Repeat num_cycles="-1">
+        <UseCaseSelector executor_name="robot"
+                         use_case="{variant}"/>
+      </Repeat>
+      <Switch6 case_1="charging"
+               case_2="object_fallen"
+               case_3="interaction"
+               case_4="following"
+               case_5="explanation"
+               case_6="move"
+               variable="{variant}">
+        <SubTree ID="Charging"/>
+        <SubTree ID="Object_lost"/>
+        <SubTree ID="Interact"
+                 _autoremap="true"/>
+        <SubTree ID="FollowingPerson"/>
+        <SubTree ID="Explain"/>
+        <SubTree ID="MoveToZone"
+                 zone="{entity}"
+                 _autoremap="true"/>
+        <SubTree ID="DoNothing"/>
+      </Switch6>
+    </Parallel>
+  </BehaviorTree>
+
+  <BehaviorTree ID="MoveToZone">
+    <Sequence>
+      <GetRandomGoal goal="{goal}"
+                     zone="{zone}"
+                     executor_name="robot"/>
+      <RetryUntilSuccessful num_attempts="5">
+        <Move goal="{goal}"
+              executor_name="robot"/>
+      </RetryUntilSuccessful>
+    </Sequence>
+  </BehaviorTree>
+
+  <BehaviorTree ID="Object_lost">
+    <Sequence>
+      <Say text="Alarm! I have lost the medicine!"
+           volume="50.0"
+           executor_name="robot"/>
+      <UseCaseFinished result_code="Medicine lost"
+                       executor_name="robot"/>
+      <SubTree ID="DoNothing"/>
+    </Sequence>
+  </BehaviorTree>
+
+  <!-- Description of Node Models (used by Groot) -->
+  <TreeNodesModel>
+    <Action ID="GetRandomGoal">
+      <output_port name="goal">Goal to approach</output_port>
+      <input_port name="zone">Where to move the robot</input_port>
+      <input_port name="executor_name">Executor node</input_port>
+    </Action>
+    <Action ID="Move">
+      <input_port name="goal">Goal to approach</input_port>
+      <input_port name="executor_name">Executor node</input_port>
+    </Action>
+    <SubTree ID="MoveToZone"
+             editable="true">
+      <input_port name="zone"/>
+    </SubTree>
+    <Action ID="Say">
+      <input_port name="text">Text to say</input_port>
+      <input_port name="volume"
+                  default="50.0">Volume level to say the text</input_port>
+      <input_port name="executor_name">Executor node</input_port>
+    </Action>
+    <Condition ID="UseCaseFinished">
+      <input_port name="result_code"
+                  type="std::string">Result code of the use case</input_port>
+      <input_port name="executor_name">Executor node</input_port>
+    </Condition>
+    <Action ID="UseCaseSelector">
+      <input_port name="executor_name">Executor node</input_port>
+      <output_port name="use_case">Name of the use case</output_port>
+    </Action>
+  </TreeNodesModel>
+
+</root>

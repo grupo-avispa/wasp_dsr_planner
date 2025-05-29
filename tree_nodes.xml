@@ -3,11 +3,15 @@
     <!-- ############################### ACTION NODES ################################# -->
     <Action ID="CancelAction">
       <input_port name="action_name">Action to cancel</input_port>
+      <input_port name="executor_name">Executor node</input_port>
     </Action>
-    <Action ID="Dock"/>
+    <Action ID="Dock">
+		<input_port name="executor_name">Executor node</input_port>
+	</Action>
     <Action ID="GenerateResponse">
       <output_port name="answer">Final answer generated</output_port>
       <input_port name="text">Prompt for Llama</input_port>
+      <input_port name="executor_name">Executor node</input_port>
     </Action>
     <Action ID="GetAlarm">
       <output_port name="alarm">Person alarm</output_port>
@@ -17,22 +21,43 @@
       <output_port name="entity">Entity from RASA</output_port>
       <output_port name="intent">Primary intent from RASA</output_port>
       <input_port name="question">User question</input_port>
+      <input_port name="executor_name">Executor node</input_port>
     </Action>
     <Action ID="GetRandomGoal">
       <output_port name="goal">Goal to approach</output_port>
       <input_port name="zone">Where to move the robot</input_port>
+      <input_port name="executor_name">Executor node</input_port>
     </Action>
     <Action ID="GetRole">
       <output_port name="entity"/>
       <output_port name="intent"/>
       <input_port name="question"/>
+      <input_port name="executor_name">Executor node</input_port>
+    </Action>
+    <Action ID="GetTask"
+            editable="true">
+      <output_port name="entity">Entity from RASA</output_port>
+      <output_port name="intent">Primary intent from RASA</output_port>
+      <input_port name="question">User question</input_port>
+      <input_port name="executor_name">Executor node</input_port>
     </Action>
     <Action ID="Help">
       <input_port name="goal">Goal to approach</input_port>
     </Action>
+    <Action ID="Think"
+            editable="true">
+      <input_port name="prompt">Thinking about this topic</input_port>
+      <input_port name="executor_name">Executor node</input_port>
+    </Action>
     <Action ID="InsertNode">
       <input_port name="node">Node to insert</input_port>
       <input_port name="attributes">Attributes of the node</input_port>
+    </Action>
+        <Action ID="InsertEdge"
+            editable="true">
+      <input_port name="parent"/>
+      <input_port name="child"/>
+      <input_port name="type"/>
     </Action>
     <Action ID="Interaction">
       <input_port name="node_id" type="unsigned long">Node id of the person found</input_port>
@@ -55,6 +80,11 @@
       <input_port name="volume"default="50.0">Volume level to say the text</input_port>
       <input_port name="executor_name">Executor node</input_port>
     </Action>
+    <Action ID="SetUseCase"
+            editable="true">
+      <input_port name="use_case">Setting new use case</input_port>
+      <input_port name="executor_name">Executor node</input_port>
+    </Action>
     <Action ID="SetVolume">
       <input_port name="volume" default="50.0">Volume level to set</input_port>
     </Action>
@@ -71,6 +101,14 @@
     <Condition ID="CanTrackPerson">
       <input_port name="node_id"/>
     </Condition>
+    <Condition ID="CheckKeyword"
+               editable="true">
+      <input_port name="keyword">Keyword</input_port>
+      <input_port name="word_to_check">Word to check</input_port>
+      <input_port name="executor_name">Executor node</input_port>
+    </Condition>
+    <Condition ID="CheckMedicine"
+               editable="true"/>
     <Condition ID="IsButtonPushed"/>
     <Condition ID="IsNavigating"/>
     <Condition ID="PersonFound">
@@ -79,14 +117,19 @@
       <output_port name="pose">Pose of the person found</output_port>
       <output_port name="safe_distance">Safe distance near the person to approach</output_port>
       <output_port name="volume">Volume level to say the text</output_port>
+      <input_port name="executor_name">Executor node</input_port>
     </Condition>
-    <Condition ID="ResetPersonId"/>
+    <Condition ID="ResetPersonId">
+		<input_port name="executor_name">Executor node</input_port>
+	</Condition>
     <Condition ID="SafeInteraction">
       <input_port name="node_id">Node Identifier of the person found</input_port>
       <input_port name="pose">Pose of the person found</input_port>
+      <input_port name="executor_name">Executor node</input_port>
     </Condition>
     <Condition ID="UseCaseFinished">
       <input_port name="result_code" type="std::string">Result code of the use case</input_port>
+      <input_port name="executor_name">Executor node</input_port>
     </Condition>
 
     <!-- ############################### CONTROL NODES ################################# -->
@@ -154,6 +197,7 @@
       <input_port name="question">Question received</input_port>
       <input_port name="role">Role of the asker</input_port>
       <output_port name="text">Prompt for Llama</output_port>
+      <input_port name="executor_name">Executor node</input_port>
     </Decorator>
     <Decorator ID="SentenceBuilder">
       <input_port name="node_id">Identifier node of the person you are interacting with</input_port>

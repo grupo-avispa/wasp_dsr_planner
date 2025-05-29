@@ -47,6 +47,7 @@ BT::NodeStatus UseCaseFinished::checkCondition()
           std::cout << "Error inserting 'finished' edge between robot and use_case" << std::endl;
           success = BT::NodeStatus::FAILURE;
         }
+        G_->delete_node("set_use_case");  // Delete the set_use_case node
       }
     }
   }

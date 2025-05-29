@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4"
+      main_tree_to_execute="Explain">
+  <BehaviorTree ID="Explain">
+    <Sequence>
+      <Say text="What explanation do you need?"
+           volume="50.0"
+           executor_name="robot"/>
+      <Parallel failure_count="1"
+                success_count="2">
+        <Listen text="{question}"
+                executor_name="robot"/>
+        <GetIntent entity="{entity}"
+                   intent="{intent}"
+                   question="{question}"
+                   executor_name="robot"/>
+        <GetRole entity="{entity2}"
+                 intent="{role}"
+                 question="{question}"
+                 executor_name="robot"/>
+      </Parallel>
+      <GetCauses causal_log_file="/home/galeas/repos/insight/explanation_files/insight_causal_log.csv"
+                 dictionary_file="/home/galeas/repos/insight/explanation_files/insight_dictionary,csv"
+                 entity="{entity}"
+                 intent="{intent}"
+                 question="{question}"
+                 role="{role}"
+                 text="{prompt}"
+                 executor_name="robot">
+        <GenerateResponse answer="{answer}"
+                          text="{prompt}"
+                          executor_name="robot"/>
+      </GetCauses>
+      <Say text="{answer}"
+           volume="50.0"
+           executor_name="robot"/>
+    </Sequence>
+  </BehaviorTree>
+
+  <!-- Description of Node Models (used by Groot) -->
+  <TreeNodesModel>
+    <Action ID="GenerateResponse">
+      <output_port name="answer">Final answer generated</output_port>
+      <input_port name="text">Prompt for Llama</input_port>
+      <input_port name="executor_name">Executor node</input_port>
+    </Action>
+    <Decorator ID="GetCauses">
+      <input_port name="causal_log_file">Path of causal_log</input_port>
+      <input_port name="dictionary_file">Path of dictionary</input_port>
+      <input_port name="entity">Entity from RASA</input_port>
+      <input_port name="intent">Intent from RASA</input_port>
+      <input_port name="question">Question received</input_port>
+      <input_port name="role">Role of the asker</input_port>
+      <output_port name="text">Prompt for Llama</output_port>
+      <input_port name="executor_name">Executor node</input_port>
+    </Decorator>
+    <Action ID="GetIntent">
+      <output_port name="entity">Entity from RASA</output_port>
+      <output_port name="intent">Primary intent from RASA</output_port>
+      <input_port name="question">User question</input_port>
+      <input_port name="executor_name">Executor node</input_port>
+    </Action>
+    <Action ID="GetRole">
+      <output_port name="entity"/>
+      <output_port name="intent"/>
+      <input_port name="question"/>
+      <input_port name="executor_name">Executor node</input_port>
+    </Action>
+    <Action ID="Listen">
+      <output_port name="text">Text listened</output_port>
+      <input_port name="executor_name">Executor node</input_port>
+    </Action>
+    <Action ID="Say">
+      <input_port name="text">Text to say</input_port>
+      <input_port name="volume"
+                  default="50.0">Volume level to say the text</input_port>
+      <input_port name="executor_name">Executor node</input_port>
+    </Action>
+  </TreeNodesModel>
+
+</root>

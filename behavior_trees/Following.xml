@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4"
+      main_tree_to_execute="FollowingPerson">
+  <BehaviorTree ID="FollowingPerson">
+    <Parallel failure_count="1"
+              success_count="-1">
+      <RetryUntilSuccessful num_attempts="-1">
+        <Repeat num_cycles="-1">
+          <Sequence>
+            <ResetPersonId executor_name="robot"/>
+            <CancelAction action_name="move"
+                          executor_name=""/>
+            <Fallback>
+              <Sequence>
+                <RetryUntilSuccessful num_attempts="-1">
+                  <PersonFound filter_case="following"
+                               node_id="{person_id}"
+                               pose="{person_pose}"
+                               safe_distance="{person_distance}"
+                               volume="{person_volume}"
+                               executor_name="robot"/>
+                </RetryUntilSuccessful>
+                <DistanceApproach distance="{person_distance}"
+                                  input_goal="{person_pose}"
+                                  output_goal="{goal}"
+                                  executor_name="robot">
+                  <SafeInteraction node_id="{person_id}"
+                                   pose="{goal}"
+                                   executor_name="robot"/>
+                </DistanceApproach>
+              </Sequence>
+              <Sequence>
+                <RetryUntilSuccessful num_attempts="5">
+                  <Move goal="{goal}"
+                        executor_name="robot"/>
+                </RetryUntilSuccessful>
+                <ResetPersonId executor_name="robot"/>
+              </Sequence>
+            </Fallback>
+          </Sequence>
+        </Repeat>
+      </RetryUntilSuccessful>
+      <Fallback>
+        <Inverter>
+          <RetryUntilSuccessful num_attempts="-1">
+            <Sequence>
+              <Listen text="{keyword}"
+                      executor_name="robot"/>
+              <CheckKeyword keyword="{keyword}"
+                            word_to_check="stop"
+                            executor_name="robot"/>
+            </Sequence>
+          </RetryUntilSuccessful>
+        </Inverter>
+        <Sequence>
+          <UseCaseFinished result_code="Following finished succesfully"
+                           executor_name="robot"/>
+          <Repeat num_cycles="-1">
+            <ForceSuccess>
+              <Delay delay_msec="1000">
+                <AlwaysSuccess/>
+              </Delay>
+            </ForceSuccess>
+          </Repeat>
+        </Sequence>
+      </Fallback>
+    </Parallel>
+  </BehaviorTree>
+
+  <!-- Description of Node Models (used by Groot) -->
+  <TreeNodesModel>
+    <Action ID="CancelAction">
+      <input_port name="action_name">Action to cancel</input_port>
+      <input_port name="executor_name">Executor node</input_port>
+    </Action>
+    <Condition ID="CheckKeyword"
+               editable="true">
+      <input_port name="keyword">Keyword</input_port>
+      <input_port name="word_to_check">Word to check</input_port>
+      <input_port name="executor_name">Executor node</input_port>
+    </Condition>
+    <Decorator ID="DistanceApproach">
+      <input_port name="distance"
+                  type="double">Distance to approach</input_port>
+      <input_port name="input_goal"
+                  type="Goal">Original goal to approach</input_port>
+      <output_port name="output_goal"
+                   type="Goal">New goal to approach</output_port>
+      <input_port name="executor_name">Executor node</input_port>
+    </Decorator>
+    <Action ID="Listen">
+      <output_port name="text">Text listened</output_port>
+      <input_port name="executor_name">Executor node</input_port>
+    </Action>
+    <Action ID="Move">
+      <input_port name="goal">Goal to approach</input_port>
+      <input_port name="executor_name">Executor node</input_port>
+    </Action>
+    <Condition ID="PersonFound">
+      <input_port name="filter_case">Value to filter the person found (Optional)</input_port>
+      <output_port name="node_id">Node Identifier of the person found</output_port>
+      <output_port name="pose">Pose of the person found</output_port>
+      <output_port name="safe_distance">Safe distance near the person to approach</output_port>
+      <output_port name="volume">Volume level to say the text</output_port>
+      <input_port name="executor_name">Executor node</input_port>
+    </Condition>
+    <Condition ID="ResetPersonId">
+      <input_port name="executor_name">Executor node</input_port>
+    </Condition>
+    <Condition ID="SafeInteraction">
+      <input_port name="node_id">Node Identifier of the person found</input_port>
+      <input_port name="pose">Pose of the person found</input_port>
+      <input_port name="executor_name">Executor node</input_port>
+    </Condition>
+    <Condition ID="UseCaseFinished">
+      <input_port name="result_code"
+                  type="std::string">Result code of the use case</input_port>
+      <input_port name="executor_name">Executor node</input_port>
+    </Condition>
+  </TreeNodesModel>
+
+</root>

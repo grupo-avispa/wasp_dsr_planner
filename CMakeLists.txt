@@ -76,6 +76,7 @@ set(action_plugins
   move
   play
   say
+  set_use_case
   set_volume
   sign
   show

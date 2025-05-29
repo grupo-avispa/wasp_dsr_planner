@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4"
+      main_tree_to_execute="Interact">
+  <BehaviorTree ID="Interact">
+    <Repeat num_cycles="-1">
+      <Sequence>
+        <RetryUntilSuccessful num_attempts="-1">
+          <Sequence>
+            <Listen text="{keyword}"
+                    executor_name="robot"/>
+            <CheckKeyword keyword="{keyword}"
+                          word_to_check="Robot"
+                          executor_name="robot"/>
+          </Sequence>
+        </RetryUntilSuccessful>
+        <Say text="Tell me"
+             volume="50.0"
+             executor_name="robot"/>
+        <Listen text="{task}"
+                executor_name="robot"/>
+        <GetTask entity="{entity}"
+                 intent="{intent}"
+                 question="{task}"
+                 executor_name="robot"/>
+        <SetUseCase use_case="{intent}"
+                    executor_name="robot"/>
+        <SubTree ID="IdleInteraction"/>
+      </Sequence>
+    </Repeat>
+  </BehaviorTree>
+
+  <BehaviorTree ID="IdleInteraction">
+  <Repeat num_cycles="-1">
+    <ForceSuccess>
+      <Delay delay_msec="1000">
+        <AlwaysSuccess name="IdleSuccess"/>
+      </Delay>
+    </ForceSuccess>
+  </Repeat>
+</BehaviorTree>
+
+
+  <!-- Description of Node Models (used by Groot) -->
+  <TreeNodesModel>
+    <Condition ID="CheckKeyword"
+               editable="true">
+      <input_port name="keyword"/>
+      <input_port name="word_to_check"/>
+    </Condition>
+    <Action ID="GetTask"
+            editable="true">
+      <output_port name="entity">Entity from RASA</output_port>
+      <output_port name="intent">Primary intent from RASA</output_port>
+      <input_port name="question">User question</input_port>
+    </Action>
+    <Action ID="Listen">
+      <output_port name="text">Text listened</output_port>
+    </Action>
+    <Action ID="Say">
+      <input_port name="text">Text to say</input_port>
+      <input_port name="volume"
+                  default="50.0">Volume level to say the text</input_port>
+      <input_port name="executor_name">Executor node</input_port>
+    </Action>
+    <Action ID="SetUseCase"
+            editable="true">
+      <input_port name="use_case">Setting new use case</input_port>
+    </Action>
+  </TreeNodesModel>
+
+</root>
