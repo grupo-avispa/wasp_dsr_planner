@@ -6,10 +6,10 @@
       <Say text="What explanation do you need?"
            volume="50.0"
            executor_name="robot"/>
+      <Listen text="{question}"
+              executor_name="robot"/>
       <Parallel failure_count="1"
                 success_count="2">
-        <Listen text="{question}"
-                executor_name="robot"/>
         <GetIntent entity="{entity}"
                    intent="{intent}"
                    question="{question}"
@@ -19,8 +19,8 @@
                  question="{question}"
                  executor_name="robot"/>
       </Parallel>
-      <GetCauses causal_log_file="/home/galeas/repos/insight/explanation_files/insight_causal_log.csv"
-                 dictionary_file="/home/galeas/repos/insight/explanation_files/insight_dictionary,csv"
+      <GetCauses causal_log_file="/home/galeas/repos/insight/explanation_files/insight_causal_log_fall.csv"
+                 dictionary_file="/home/galeas/repos/insight/explanation_files/insight_dictionary.csv"
                  entity="{entity}"
                  intent="{intent}"
                  question="{question}"
@@ -34,6 +34,15 @@
       <Say text="{answer}"
            volume="50.0"
            executor_name="robot"/>
+      <UseCaseFinished result_code="Explain finished succesfully"
+                       executor_name="robot"/>
+      <Repeat num_cycles="-1">
+        <ForceSuccess>
+          <Delay delay_msec="1000">
+            <AlwaysSuccess/>
+          </Delay>
+        </ForceSuccess>
+      </Repeat>
     </Sequence>
   </BehaviorTree>
 
@@ -76,6 +85,11 @@
                   default="50.0">Volume level to say the text</input_port>
       <input_port name="executor_name">Executor node</input_port>
     </Action>
+    <Condition ID="UseCaseFinished">
+      <input_port name="result_code"
+                  type="std::string">Result code of the use case</input_port>
+      <input_port name="executor_name">Executor node</input_port>
+    </Condition>
   </TreeNodesModel>
 
 </root>
