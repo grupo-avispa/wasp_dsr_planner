@@ -72,6 +72,7 @@ set(action_plugins
   insert_edge
   insert_node
   interaction
+  lang_invoke
   listen
   move
   play

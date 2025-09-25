@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4"
+      main_tree_to_execute="BehaviorTree">
+  <BehaviorTree ID="BehaviorTree">
+    <Parallel failure_count="1"
+              success_count="1">
+      <Repeat num_cycles="-1">
+        <UseCaseSelector use_case="{variant}"/>
+      </Repeat>
+      <Switch4 case_1="wandering"
+               case_2="charging"
+               case_3="lang"
+               case_4="command"
+               variable="{variant}">
+        <SubTree ID="Wandering"/>
+        <SubTree ID="Charging"/>
+        <SubTree ID="Lang"/>
+        <SubTree ID="Command"/>
+        <SubTree ID="DoNothing"/>
+      </Switch4>
+    </Parallel>
+  </BehaviorTree>
+
+  <BehaviorTree ID="Charging">
+    <Fallback>
+      <Sequence name="Charging">
+        <Parallel name="SayAndShow"
+                  failure_count="1"
+                  success_count="2">
+          <Say name="NoBatterySay"
+               text="Lo siento, tengo que ir a cargarme"
+               volume="50.0"
+               executor_name=""/>
+          <Show name="LowBatteryInterface"
+                interface="low_battery"/>
+        </Parallel>
+        <IfThenElse name="TryCharging">
+          <RetryUntilSuccessful name="RetryDocking"
+                                num_attempts="3">
+            <Dock executor_name=""/>
+          </RetryUntilSuccessful>
+          <UseCaseFinished name="ChargingSuccess"
+                           result_code="Robot docked succesfully"
+                           executor_name=""/>
+          <UseCaseFinished name="ChargingFailure"
+                           result_code="Robot cannot dock."
+                           executor_name=""/>
+        </IfThenElse>
+        <SubTree ID="DoNothing"/>
+      </Sequence>
+      <SubTree ID="DoNothing"/>
+    </Fallback>
+  </BehaviorTree>
+
+  <BehaviorTree ID="Command">
+    <Sequence>
+      <Say text="Tell me"
+           volume="50.0"
+           executor_name="robot"/>
+      <Listen text="{task}"
+              executor_name="robot"/>
+      <GetTask entity="{entity}"
+               intent="{intent}"
+               question="{task}"
+               executor_name="robot"/>
+      <SetUseCase use_case="{intent}"
+                  executor_name="robot"/>
+      <SubTree ID="DoNothing"/>
+    </Sequence>
+  </BehaviorTree>
+
+  <BehaviorTree ID="DoNothing">
+    <Repeat num_cycles="-1">
+      <ForceSuccess>
+        <Delay delay_msec="1000">
+          <AlwaysSuccess name="DoNothing"/>
+        </Delay>
+      </ForceSuccess>
+    </Repeat>
+  </BehaviorTree>
+
+  <BehaviorTree ID="Lang">
+    <Sequence>
+      <Say text="Hello, stand in front of me so I can see you."
+           volume="50.0"
+           executor_name="robot"/>
+      <Delay delay_msec="2000">
+        <IfThenElse>
+          <PersonFound filter_case=""
+                       node_id="{person_id}"
+                       pose="{person_pose}"
+                       safe_distance="{person_distance}"
+                       volume="{person_volume}"
+                       executor_name="robot"/>
+          <Sequence>
+            <Interaction node_id="{person_id}"/>
+            <Say text="Thank you! Now tell me, what do you need?"
+                 volume="50.0"
+                 executor_name="robot"/>
+          </Sequence>
+          <Say text="I&apos;m sorry, I haven&apos;t been able to identify you. Please identify yourself when you tell me what you need."
+               volume="50.0"
+               executor_name="robot"/>
+        </IfThenElse>
+      </Delay>
+      <Listen text="{query}"
+              executor_name="robot"/>
+      <LangInvoke query="{query}"
+                  response="{response}"/>
+      <Say text="{response}"
+           volume="50.0"
+           executor_name="robot"/>
+    </Sequence>
+  </BehaviorTree>
+
+  <BehaviorTree ID="Wandering">
+    <Fallback>
+      <Sequence name="Wandering">
+        <ResetPersonId executor_name="robot"/>
+        <Parallel failure_count="1"
+                  success_count="1">
+          <Repeat name="RepeatMoveInfinitely"
+                  num_cycles="-1">
+            <SubTree ID="DoNothing"/>
+          </Repeat>
+          <Sequence>
+            <RetryUntilSuccessful num_attempts="-1">
+              <Sequence>
+                <Listen text="{keyword}"
+                        executor_name="robot"/>
+                <CheckKeyword keyword="{keyword}"
+                              word_to_check="Hello robot"
+                              executor_name="robot"/>
+              </Sequence>
+            </RetryUntilSuccessful>
+            <SetUseCase use_case="lang"
+                        executor_name="robot"/>
+          </Sequence>
+        </Parallel>
+        <SubTree ID="DoNothing"/>
+      </Sequence>
+      <SubTree ID="DoNothing"/>
+    </Fallback>
+  </BehaviorTree>
+
+  <!-- Description of Node Models (used by Groot) -->
+  <TreeNodesModel>
+    <Condition ID="CheckKeyword"
+               editable="true">
+      <input_port name="keyword">Keyword</input_port>
+      <input_port name="word_to_check">Word to check</input_port>
+      <input_port name="executor_name">Executor node</input_port>
+    </Condition>
+    <Action ID="Dock">
+      <input_port name="executor_name">Executor node</input_port>
+    </Action>
+    <Action ID="GetTask"
+            editable="true">
+      <output_port name="entity">Entity from RASA</output_port>
+      <output_port name="intent">Primary intent from RASA</output_port>
+      <input_port name="question">User question</input_port>
+      <input_port name="executor_name">Executor node</input_port>
+    </Action>
+    <Action ID="Interaction">
+      <input_port name="node_id"
+                  type="unsigned long">Node id of the person found</input_port>
+    </Action>
+    <Action ID="LangInvoke"
+            editable="true">
+      <input_port name="query">User query</input_port>
+      <output_port name="response">LLM response</output_port>
+    </Action>
+    <Action ID="Listen">
+      <output_port name="text">Text listened</output_port>
+      <input_port name="executor_name">Executor node</input_port>
+    </Action>
+    <Condition ID="PersonFound">
+      <input_port name="filter_case">Value to filter the person found (Optional)</input_port>
+      <output_port name="node_id">Node Identifier of the person found</output_port>
+      <output_port name="pose">Pose of the person found</output_port>
+      <output_port name="safe_distance">Safe distance near the person to approach</output_port>
+      <output_port name="volume">Volume level to say the text</output_port>
+      <input_port name="executor_name">Executor node</input_port>
+    </Condition>
+    <Condition ID="ResetPersonId">
+      <input_port name="executor_name">Executor node</input_port>
+    </Condition>
+    <Action ID="Say">
+      <input_port name="text">Text to say</input_port>
+      <input_port name="volume"
+                  default="50.0">Volume level to say the text</input_port>
+      <input_port name="executor_name">Executor node</input_port>
+    </Action>
+    <Action ID="SetUseCase"
+            editable="true">
+      <input_port name="use_case">Setting new use case</input_port>
+      <input_port name="executor_name">Executor node</input_port>
+    </Action>
+    <Action ID="Show">
+      <input_port name="interface"
+                  type="std::string">Interface to show in the screen</input_port>
+    </Action>
+    <Condition ID="UseCaseFinished">
+      <input_port name="result_code"
+                  type="std::string">Result code of the use case</input_port>
+      <input_port name="executor_name">Executor node</input_port>
+    </Condition>
+    <Action ID="UseCaseSelector">
+      <output_port name="use_case">Name of the use case</output_port>
+    </Action>
+  </TreeNodesModel>
+
+</root>
