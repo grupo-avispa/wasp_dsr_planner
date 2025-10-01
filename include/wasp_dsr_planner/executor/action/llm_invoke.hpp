@@ -13,8 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef PLANNER_AGENT__EXECUTOR__EXECUTOR__ACTION__LANGINVOKE_HPP_
-#define PLANNER_AGENT__EXECUTOR__EXECUTOR__ACTION__LANGINVOKE_HPP_
+#ifndef PLANNER_AGENT__EXECUTOR__EXECUTOR__ACTION__LLMINVOKE_HPP_
+#define PLANNER_AGENT__EXECUTOR__EXECUTOR__ACTION__LLMINVOKE_HPP_
 
 #include "behaviortree_cpp/behavior_tree.h"
 #include "dsr/api/dsr_api.h"
@@ -22,14 +22,14 @@
 #include "wasp_dsr_planner/executor/dsr_action.hpp"
 
 /**
- * @class LangInvoke
- * @brief This BT action node insert a DSR node of type 'lang_invoke' and
+ * @class LlmInvoke
+ * @brief This BT action node insert a DSR node of type 'llm_invoke' and
  * invoke the language model to process the input text and generate a response.
  */
-class LangInvoke : public DSRAction<lang_invoke_node_type>
+class LlmInvoke : public DSRAction<llm_invoke_node_type>
 {
 public:
-  LangInvoke(
+  LlmInvoke(
     const std::string & xml_tag_name, const std::string & action_name,
     const BT::NodeConfiguration & conf);
 
@@ -51,4 +51,4 @@ private:
   std::string query_;
 };
 
-#endif  // PLANNER_AGENT__EXECUTOR__EXECUTOR__ACTION__LANGINVOKE_HPP_
+#endif  // PLANNER_AGENT__EXECUTOR__EXECUTOR__ACTION__LLMINVOKE_HPP_

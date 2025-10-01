@@ -15,21 +15,21 @@
 
 #include <limits>
 
-#include "wasp_dsr_planner/executor/action/lang_invoke.hpp"
+#include "wasp_dsr_planner/executor/action/llm_invoke.hpp"
 
-LangInvoke::LangInvoke(
+LlmInvoke::LlmInvoke(
   const std::string & xml_tag_name, const std::string & action_name,
   const BT::NodeConfiguration & conf)
-: DSRAction<lang_invoke_node_type>(xml_tag_name, action_name, conf)
+: DSRAction<llm_invoke_node_type>(xml_tag_name, action_name, conf)
 {
 }
 
-void LangInvoke::getInputsOnTick()
+void LlmInvoke::getInputsOnTick()
 {
   getInput<std::string>("query", query_);
 }
 
-bool LangInvoke::setAttributesBeforeStart(DSR::Node & node)
+bool LlmInvoke::setAttributesBeforeStart(DSR::Node & node)
 {
   bool success = false;
   if (!query_.empty()) {
@@ -41,7 +41,7 @@ bool LangInvoke::setAttributesBeforeStart(DSR::Node & node)
   return success;
 }
 
-bool LangInvoke::setOutputsAfterFinished(DSR::Node & node)
+bool LlmInvoke::setOutputsAfterFinished(DSR::Node & node)
 {
   bool success = false;
   if (auto response = G_->get_attrib_by_name<response_att>(node); response.has_value()) {
@@ -55,8 +55,8 @@ bool LangInvoke::setOutputsAfterFinished(DSR::Node & node)
 BT_REGISTER_NODES(factory) {
   BT::NodeBuilder builder =
     [](const std::string & name, const BT::NodeConfiguration & config) {
-      return std::make_unique<LangInvoke>(name, "lang_invoke", config);
+      return std::make_unique<LlmInvoke>(name, "llm_invoke", config);
     };
 
-  factory.registerBuilder<LangInvoke>("LangInvoke", builder);
+  factory.registerBuilder<LlmInvoke>("LlmInvoke", builder);
 }
