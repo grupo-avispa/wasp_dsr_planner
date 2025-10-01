@@ -9,12 +9,12 @@
       </Repeat>
       <Switch4 case_1="wandering"
                case_2="charging"
-               case_3="lang"
+               case_3="llm"
                case_4="command"
                variable="{variant}">
         <SubTree ID="Wandering"/>
         <SubTree ID="Charging"/>
-        <SubTree ID="Lang"/>
+        <SubTree ID="Llm"/>
         <SubTree ID="Command"/>
         <SubTree ID="DoNothing"/>
       </Switch4>
@@ -79,7 +79,7 @@
     </Repeat>
   </BehaviorTree>
 
-  <BehaviorTree ID="Lang">
+  <BehaviorTree ID="Llm">
     <Sequence>
       <Say text="Hello, stand in front of me so I can see you."
            volume="50.0"
@@ -105,8 +105,8 @@
       </Delay>
       <Listen text="{query}"
               executor_name="robot"/>
-      <LangInvoke query="{query}"
-                  response="{response}"/>
+      <LlmInvoke query="{query}"
+                 response="{response}"/>
       <Say text="{response}"
            volume="50.0"
            executor_name="robot"/>
@@ -165,14 +165,14 @@
       <input_port name="node_id"
                   type="unsigned long">Node id of the person found</input_port>
     </Action>
-    <Action ID="LangInvoke"
-            editable="true">
-      <input_port name="query">User query</input_port>
-      <output_port name="response">LLM response</output_port>
-    </Action>
     <Action ID="Listen">
       <output_port name="text">Text listened</output_port>
       <input_port name="executor_name">Executor node</input_port>
+    </Action>
+    <Action ID="LlmInvoke"
+            editable="true">
+      <input_port name="query">User query</input_port>
+      <output_port name="response">LLM response</output_port>
     </Action>
     <Condition ID="PersonFound">
       <input_port name="filter_case">Value to filter the person found (Optional)</input_port>
