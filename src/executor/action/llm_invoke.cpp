@@ -27,6 +27,7 @@ LlmInvoke::LlmInvoke(
 void LlmInvoke::getInputsOnTick()
 {
   getInput<std::string>("query", query_);
+  getInput<std::string>("person_name", person_name_);
 }
 
 bool LlmInvoke::setAttributesBeforeStart(DSR::Node & node)
@@ -34,9 +35,11 @@ bool LlmInvoke::setAttributesBeforeStart(DSR::Node & node)
   bool success = false;
   if (!query_.empty()) {
     G_->add_or_modify_attrib_local<query_att>(node, query_);
+    G_->add_or_modify_attrib_local<identifier_att>(node, person_name_);
+    std::cout << "[" << action_name_ << "]: Inserting llm_invoke node with query: " << query_ << " and with person name: " << person_name_ << std::endl;
     success = true;
   } else {
-    std::cout << "[" << action_name_ << "]: Query is not set" << std::endl;
+    std::cout << "[" << action_name_ << "]: Query and/or person name is not set" << std::endl;
   }
   return success;
 }

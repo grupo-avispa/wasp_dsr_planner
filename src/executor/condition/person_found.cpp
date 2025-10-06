@@ -73,6 +73,7 @@ BT::NodeStatus PersonFound::checkCondition()
             std::cout << "Person found with id: " << person_id.value() << std::endl;
             // Set the output port with the node id of the person
             setOutput("node_id", from_node.value().id());
+            setOutput("person_name", person_id.value());
             // Set the output port with the pose of the person
             auto pose_x = G_->get_attrib_by_name<pose_x_att>(from_node.value());
             auto pose_y = G_->get_attrib_by_name<pose_y_att>(from_node.value());

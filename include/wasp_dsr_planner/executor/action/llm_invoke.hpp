@@ -43,12 +43,14 @@ public:
   {
     return providedBasicPorts({
       BT::InputPort<std::string>("query", "User query to process"),
+      BT::InputPort<std::string>("person_name", "unknown", "Name of the person to address in the LLM query (Optional)"),
       BT::OutputPort<std::string>("response", "Response from language model")
     });
   }
 
 private:
   std::string query_;
+  std::string person_name_;
 };
 
 #endif  // PLANNER_AGENT__EXECUTOR__EXECUTOR__ACTION__LLMINVOKE_HPP_

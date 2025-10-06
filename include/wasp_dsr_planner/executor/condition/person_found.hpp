@@ -50,6 +50,7 @@ public:
   {
     return providedBasicPorts({
       BT::InputPort<std::string>("filter_case", "", "Value to filter the person found (Optional)"),
+      BT::OutputPort<std::string>("person_name", "Name of the person found"),
       BT::OutputPort<float>("safe_distance", "Safe distance near the person to approach"),
       BT::OutputPort<uint64_t>("node_id", "Node Identifier of the person found"),
       BT::OutputPort<Goal>("pose", "Pose of the person found"),
