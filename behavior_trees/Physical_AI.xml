@@ -87,20 +87,20 @@
       <Delay delay_msec="2000">
         <IfThenElse>
           <PersonFound filter_case=""
-                       node_id="{person_id}"
                        person_name="{person_name}"
+                       node_id="{person_id}"
                        pose="{person_pose}"
                        safe_distance="{person_distance}"
                        volume="{person_volume}"
                        executor_name="robot"/>
           <Sequence>
             <Interaction node_id="{person_id}"
-                          executor_name="robot"/>
+                         executor_name="robot"/>
             <Say text="Thank you! Now tell me, what do you need?"
                  volume="50.0"
                  executor_name="robot"/>
           </Sequence>
-          <Say text="I am sorry, I haven't been able to identify you. Please identify yourself when you tell me what you need."
+          <Say text="I am sorry, I haven&apos;t been able to identify you. Please identify yourself when you tell me what you need."
                volume="50.0"
                executor_name="robot"/>
         </IfThenElse>
@@ -168,6 +168,7 @@
     <Action ID="Interaction">
       <input_port name="node_id"
                   type="unsigned long">Node id of the person found</input_port>
+      <input_port name="executor_name">Executor node</input_port>
     </Action>
     <Action ID="Listen">
       <output_port name="text">Text listened</output_port>
@@ -179,6 +180,7 @@
       <input_port name="person_name"
                   default="unknown">Name of the person to address in the LLM query (Optional)</input_port>
       <output_port name="response">LLM response</output_port>
+      <input_port name="executor_name">Executor node</input_port>
     </Action>
     <Condition ID="PersonFound">
       <input_port name="filter_case">Value to filter the person found (Optional)</input_port>
